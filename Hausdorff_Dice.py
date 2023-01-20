@@ -30,21 +30,33 @@ def main(argv):
     parser = argparse.ArgumentParser(description 
                                      = "HD, volDSC and surfDSC computation")
     parser.add_argument("-i", "--input-folder",
-                        dest="input_folder",
+                        dest="input_folder_path",
                         metavar="PATH",
                         default=None,
                         required=True,
                         help="Path to the folder of input DICOM study/ies",
                         )
+    # TODO maybe it is better to change the name otutput_folder
+    parser.add_argument("-o", "--output-folder",
+                        dest="output_folder_path",
+                        metavar="PATH",
+                        default=False,
+                        required=False,
+                        help="""Path where patient folders will be moved after
+                             execution (optional)
+                             """,
+                        )
     
     args = parser.parse_args(argv)
         
+    # TODO check if keep this or not
     # Check required arguments
-    if args.input_folder == None:
+    if args.input_folder_path == None:
         logging.warning('Please specify input DICOM study folder!')
      
     # Convert to python path style
-    input_folder_path = args.input_folder.replace('\\', '/')
+    input_folder_path = args.input_folder_path.replace('\\', '/')
+    output_folder_path = args.output_folder_path.replace('\\', '/')
     
     # TODO put some checks and alternatives if input_folder is already
     # patient_folder and if input_folder contains files and not only dir.
@@ -61,11 +73,13 @@ def main(argv):
         rtstruct_folder_path = os.path.join(patient_folder_path,
                                             rtstruct_folder,
                                             )
+        # FIXME if the folder already exists it will exit with an error
         os.mkdir(rtstruct_folder_path)
         dicom_series_folder = "DICOM"
         dicom_series_folder_path = os.path.join(patient_folder_path,
                                                 dicom_series_folder,
                                                 )
+        # FIXME if the folder already exists it will exit with an error
         os.mkdir(dicom_series_folder_path)
         for file in os.listdir(patient_folder_path):
             file_path = os.path.join(patient_folder_path,
@@ -111,15 +125,27 @@ def main(argv):
         surface_dice = surface_distance.compute_surface_dice_at_tolerance(surf_dists,
                                                                           tolerance_mm=3,
                                                                           )
-        print("Surface Dice:",surface_dice)
+        print(f"{patient_folder} surface Dice:",surface_dice)
         hausdorff_distance = surface_distance.compute_robust_hausdorff(surf_dists,
                                                                        percent=95,
                                                                        )
-        print("95% Hausdorff distance:",hausdorff_distance,"mm")
+        print(f"{patient_folder} 95% Hausdorff distance:",hausdorff_distance,"mm")
         volume_dice = surface_distance.compute_dice_coefficient(reference_segment_labelmap,
                                                                 segment_to_compare_labelmap,
                                                                 )
-        print("Volumetric Dice:",volume_dice)
+        print(f"{patient_folder} Volumetric Dice:",volume_dice)
+        
+        # TODO check if this indentation can be acceptable
+        # Moving patient folder to a different location, if the destination
+        # folder does not exist it will be automatically created.
+        if output_folder_path:
+            shutil.move(patient_folder_path,
+                        os.path.join(output_folder_path, patient_folder),
+                        )
+            #TODO this should not be a print and should be shorter
+            print(f"{patient_folder} successfully moved to {output_folder_path}")
+        else:
+            pass
         
                      
 
