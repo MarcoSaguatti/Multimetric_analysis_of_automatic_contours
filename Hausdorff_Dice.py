@@ -6,6 +6,7 @@ import logging
 import pandas as pd
 import os
 import shutil
+import json
 
 from rt_utils import RTStructBuilder
 import surface_distance
@@ -58,17 +59,16 @@ def main(argv):
     input_folder_path = args.input_folder_path.replace('\\', '/')
     output_folder_path = args.output_folder_path.replace('\\', '/')
     
-    # TODO should be in a config file:
-    # MBS and DL names are always the same (in my case)
-    compared_methods = ["Manual-MBS", "Manual-DL", "MBS-DL"]
-    mbs_segments = ["Prostate_MBS", "Rectum_MBS", "Bladder_MBS", "FemoralHead (Left)_MBS", "FemoralHead (Right)_MBS"]
-    dl_segments = ["Prostate_DL", "Anorectum_DL", "Bladder_DL", "Femur_Head_L_DL", "Femur_Head_R_DL"]
-    alias_names = ['Prostate', 'Rectum', 'Bladder', 'FemoralHead (Left)', 'FemoralHead (Right)']
-    bladder_names = ['Vescica']
-    prostate_names = ['CTV']
-    rectum_names = ['Retto']
-    left_femur_names = ['FemoreSn']
-    right_femur_names = ['FemoreDx']
+    # Opening the json file where the lists of names are stored
+    fd = open(r"C:\Users\Marco\Desktop\università\Magistrale\software_and_computing\project\config.json", "r")
+    config = json.load(fd)
+    
+    # This lists do not change during execution so it is possible to assign
+    # them to variables
+    compared_methods = config["Compared methods"]
+    mbs_segments = config["MBS segments"]
+    dl_segments = config["DL segments"]
+    alias_names = config["Alias names"]
     
     # TODO put some checks and alternatives if input_folder is already
     # patient_folder and if input_folder contains files and not only dir.
@@ -122,19 +122,19 @@ def main(argv):
                                                rtstruct_file_path,
                                                )
         
-        # TODO create the three lists: manual, DL, MBS.
+        # Creates the list of manual segments
         all_segments = rtstruct.get_roi_names()
         manual_segments = [0 for i in range(len(alias_names))]
         for name in all_segments:
-            if name in prostate_names:
+            if name in config["Prostate names"]:
                 manual_segments[0] = name
-            elif name in rectum_names:
+            elif name in config["Rectum names"]:
                 manual_segments[1] = name
-            elif name in bladder_names:
+            elif name in config["Bladder names"]:
                 manual_segments[2] = name
-            elif name in left_femur_names:
+            elif name in config["Left femur names"]:
                 manual_segments[3] = name
-            elif name in right_femur_names:
+            elif name in config["Right femur names"]:
                 manual_segments[4] = name
             else:
                 # TODO update name lists if the name is not present asking
