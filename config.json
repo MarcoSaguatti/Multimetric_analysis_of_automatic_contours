@@ -26,20 +26,29 @@
         "Femoral head (right)"
     ],
     "Bladder names": [
-        "Vescica"
+        "Vescica",
+        "vescica",
+        "Bladder"
     ],
     "Prostate names": [
-        "CTV"
+        "CTV",
+        "Prostata",
+        "prostata"
     ],
     "Rectum names": [
-        "Retto"
+        "Retto",
+        "RettoAno"
     ],
     "Left femur names": [
         "FemoreSn",
-        "TestaFemoraleSn"
+        "TestaFemoraleSn",
+        "FemoreSinistro",
+        "femoreSin"
     ],
     "Right femur names": [
         "FemoreDx",
-        "TestaFemoraleDx"
+        "TestaFemoraleDx",
+        "FemoreDestro",
+        "femoreDes"
     ]
 }

@@ -37,6 +37,13 @@ def main(argv):
                         required=True,
                         help="Path to the folder of input DICOM study/ies",
                         )
+    parser.add_argument("-c", "--config-path",
+                        dest="config_path",
+                        metavar="PATH",
+                        default=None,
+                        required=True,
+                        help="Path to the configuration json file",
+                        )
     # TODO maybe it is better to change the name otutput_folder
     parser.add_argument("-o", "--output-folder",
                         dest="output_folder_path",
@@ -54,15 +61,17 @@ def main(argv):
     # Check required arguments
     if args.input_folder_path == None:
         logging.warning('Please specify input DICOM study folder!')
+    if args.config_path == None:
+        logging.warning('Please specify where is the configuration file!')
      
     # Convert to python path style
     input_folder_path = args.input_folder_path.replace('\\', '/')
     output_folder_path = args.output_folder_path.replace('\\', '/')
+    config_path = args.config_path.replace('\\', '/')
     
-    # TODO the path should be passd as an argument from command line, and
-    # check if it should be better to change names
+    # TODO check if it should be better to change names
     # Opening the json file where the lists of names are stored
-    fd = open(r"C:\Users\Marco\Desktop\università\Magistrale\software_and_computing\project\config.json")
+    fd = open(config_path)
     config = json.load(fd)
     
     # This lists do not change during execution so it is possible to assign
@@ -152,7 +161,7 @@ def main(argv):
                     # TODO check if it is correct to print on the standard
                     # output, if it coorect how I wrote the code and put some
                     # check to the input provided by the user.
-                    what_is = input("To which alias name is {name} associated? Enter P (Prostate), A (Anorectum), B (Bladder), L (Left femur) or R (Right femur) \n").upper()
+                    what_is = input(f"To which alias name is {name} associated? Enter P (Prostate), A (Anorectum), B (Bladder), L (Left femur) or R (Right femur) \n").upper()
                     if what_is == "P":
                         manual_segments[0] = name
                         config["Prostate names"].append(name)
@@ -222,11 +231,10 @@ def main(argv):
         else:
             pass
      
-    # TODO check if it is better to change names, the path should be passed
-    # as argument in command line.
+    # TODO check if it is better to change names
     # Updating config.json
     json_object = json.dumps(config, indent=4)
-    with open(r"C:\Users\Marco\Desktop\università\Magistrale\software_and_computing\project\config.json", "w") as outfile:
+    with open(config_path, "w") as outfile:
         outfile.write(json_object)
     
     # with open(r"C:\Users\Marco\Documents\tirocinio\scripting_3DSlicer\config.json", "w") as outfile:
