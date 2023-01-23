@@ -1,51 +1,45 @@
 {
-	"Compared methods" : [
-		"Manual-MBS",
-		"Manual-DL",
-		"MBS-DL"
-	],
-
-	"MBS segments" : [
-		"Prostate_MBS",
-		"Rectum_MBS",
-		"Bladder_MBS",
-		"FemoralHead (Left)_MBS",
-		"FemoralHead (Right)_MBS"
-	],
-
-	"DL segments" : [
-		"Prostate_DL",
-		"Anorectum_DL",
-		"Bladder_DL",
-		"Femur_Head_L_DL",
-		"Femur_Head_R_DL"
-	],
-
-	"Alias names" : [
-		"Prostate",
-		"Rectum",
-		"Bladder",
-		"Femoral head (left)",
-		"Femoral head (right)"
-	],
-
-	"Bladder names" : [
-		"Vescica"
-	],
-
-	"Prostate names" : [
-		"CTV"
-	],
-
-	"Rectum names" : [
-		"Retto"
-	],
-
-	"Left femur names" : [
-		"FemoreSn"
-	],
-
-	"Right femur names" : [
-		"FemoreDx"
-	]
+    "Compared methods": [
+        "Manual-MBS",
+        "Manual-DL",
+        "MBS-DL"
+    ],
+    "MBS segments": [
+        "Prostate_MBS",
+        "Rectum_MBS",
+        "Bladder_MBS",
+        "FemoralHead (Left)_MBS",
+        "FemoralHead (Right)_MBS"
+    ],
+    "DL segments": [
+        "Prostate_DL",
+        "Anorectum_DL",
+        "Bladder_DL",
+        "Femur_Head_L_DL",
+        "Femur_Head_R_DL"
+    ],
+    "Alias names": [
+        "Prostate",
+        "Rectum",
+        "Bladder",
+        "Femoral head (left)",
+        "Femoral head (right)"
+    ],
+    "Bladder names": [
+        "Vescica"
+    ],
+    "Prostate names": [
+        "CTV"
+    ],
+    "Rectum names": [
+        "Retto"
+    ],
+    "Left femur names": [
+        "FemoreSn",
+        "TestaFemoraleSn"
+    ],
+    "Right femur names": [
+        "FemoreDx",
+        "TestaFemoraleDx"
+    ]
 }

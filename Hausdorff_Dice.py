@@ -59,8 +59,10 @@ def main(argv):
     input_folder_path = args.input_folder_path.replace('\\', '/')
     output_folder_path = args.output_folder_path.replace('\\', '/')
     
+    # TODO the path should be passd as an argument from command line, and
+    # check if it should be better to change names
     # Opening the json file where the lists of names are stored
-    fd = open(r"C:\Users\Marco\Desktop\università\Magistrale\software_and_computing\project\config.json", "r")
+    fd = open(r"C:\Users\Marco\Desktop\università\Magistrale\software_and_computing\project\config.json")
     config = json.load(fd)
     
     # This lists do not change during execution so it is possible to assign
@@ -122,6 +124,8 @@ def main(argv):
                                                rtstruct_file_path,
                                                )
         
+        # TODO put some code to handle the case in whichone or more of the
+        # OARs is not present.
         # Creates the list of manual segments
         all_segments = rtstruct.get_roi_names()
         manual_segments = [0 for i in range(len(alias_names))]
@@ -137,9 +141,40 @@ def main(argv):
             elif name in config["Right femur names"]:
                 manual_segments[4] = name
             else:
+                # TODO remove MBS and DL segments before user check
                 # TODO update name lists if the name is not present asking
-                # to the user.
-                continue
+                # to the user, find a way to write the text in the next line
+                to_keep = input(f"Do you want to keep {name}? Enter Y (yes) or N (no) \n").upper()
+                # TODO put some code to handle the case in which the user
+                # provides the wrong input, and see if there is a better way
+                # to write the following if-else.
+                if to_keep == "Y":
+                    # TODO check if it is correct to print on the standard
+                    # output, if it coorect how I wrote the code and put some
+                    # check to the input provided by the user.
+                    what_is = input("To which alias name is {name} associated? Enter P (Prostate), A (Anorectum), B (Bladder), L (Left femur) or R (Right femur) \n").upper()
+                    if what_is == "P":
+                        manual_segments[0] = name
+                        config["Prostate names"].append(name)
+                        print(name,"added to Prostate names in config.json")
+                    elif what_is == "A":
+                        manual_segments[1] = name
+                        config["Rectum names"].append(name)
+                        print(name,"added to Rectum names in config.json")
+                    elif what_is == "B":
+                        manual_segments[2] = name
+                        config["Bladder names"].append(name)
+                        print(name,"added to Bladder names in config.json")
+                    elif what_is == "L":
+                        manual_segments[3] = name
+                        config["Left femur names"].append(name)
+                        print(name,"added to Left femur names in config.json")
+                    elif what_is == "R":
+                        manual_segments[4] = name
+                        config["Right femur names"].append(name)
+                        print(name,"added to Right femur names in config.json")
+                elif to_keep == "N":
+                    continue
         
         # TODO should be subdivided into functions, and shoud be run also with
         # DL segments.
@@ -186,6 +221,16 @@ def main(argv):
             print(f"{patient_folder} successfully moved to {output_folder_path}")
         else:
             pass
+     
+    # TODO check if it is better to change names, the path should be passed
+    # as argument in command line.
+    # Updating config.json
+    json_object = json.dumps(config, indent=4)
+    with open(r"C:\Users\Marco\Desktop\università\Magistrale\software_and_computing\project\config.json", "w") as outfile:
+        outfile.write(json_object)
+    
+    # with open(r"C:\Users\Marco\Documents\tirocinio\scripting_3DSlicer\config.json", "w") as outfile:
+    #     outfile.write(json_object)
         
                      
 
