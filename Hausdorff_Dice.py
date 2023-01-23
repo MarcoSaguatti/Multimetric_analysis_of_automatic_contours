@@ -133,13 +133,17 @@ def main(argv):
                                                rtstruct_file_path,
                                                )
         
-        # TODO put some code to handle the case in whichone or more of the
+        # TODO put some code to handle the case in which one or more of the
         # OARs is not present.
         # Creates the list of manual segments
         all_segments = rtstruct.get_roi_names()
         manual_segments = [0 for i in range(len(alias_names))]
         for name in all_segments:
-            if name in config["Prostate names"]:
+            if name in mbs_segments:
+                continue
+            elif name in dl_segments:
+                continue
+            elif name in config["Prostate names"]:
                 manual_segments[0] = name
             elif name in config["Rectum names"]:
                 manual_segments[1] = name
@@ -150,9 +154,6 @@ def main(argv):
             elif name in config["Right femur names"]:
                 manual_segments[4] = name
             else:
-                # TODO remove MBS and DL segments before user check
-                # TODO update name lists if the name is not present asking
-                # to the user, find a way to write the text in the next line
                 to_keep = input(f"Do you want to keep {name}? Enter Y (yes) or N (no) \n").upper()
                 # TODO put some code to handle the case in which the user
                 # provides the wrong input, and see if there is a better way
