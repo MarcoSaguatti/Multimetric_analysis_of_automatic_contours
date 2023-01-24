@@ -8,6 +8,7 @@ import os
 import shutil
 import json
 
+import pydicom
 from rt_utils import RTStructBuilder
 import surface_distance
 
@@ -100,7 +101,7 @@ def main(argv):
                                             )
         # FIXME if the folder already exists it will exit with an error
         os.mkdir(rtstruct_folder_path)
-        dicom_series_folder = "DICOM"
+        dicom_series_folder = "CT"
         dicom_series_folder_path = os.path.join(patient_folder_path,
                                                 dicom_series_folder,
                                                 )
@@ -127,6 +128,18 @@ def main(argv):
                     pass
             else:
                 pass
+        
+        # TODO check if the names are good or must be changed, put this in a
+        # function, and check if it is ok to keep it here.
+        # Extracting voxel spacing
+        ct_images = os.listdir(dicom_series_folder_path)
+        slices =[pydicom.read_file(dicom_series_folder_path+'/'+s, force=True) for s in ct_images]
+        slices = sorted(slices, key=lambda x:x.ImagePositionPatient[2])
+        pixel_spacing_mm = list(map(float, slices[0].PixelSpacing._list))
+        slice_thickness_mm = float(slices[0].SliceThickness)
+        voxel_spacing_mm = pixel_spacing_mm.copy()
+        voxel_spacing_mm.append(slice_thickness_mm)
+        print("voxel spacing (mm):",voxel_spacing_mm)
             
         # Reading current patient files
         rtstruct = RTStructBuilder.create_from(dicom_series_folder_path, 
@@ -195,10 +208,6 @@ def main(argv):
             # Binary labelmap creation
             reference_segment_labelmap = rtstruct.get_roi_mask_by_name(manual_segments[index])
             segment_to_compare_labelmap = rtstruct.get_roi_mask_by_name(mbs_segments[index])
-        
-            # TODO must be extracted from images, and see if it is better to put
-            # it in another part of the code.
-            voxel_spacing_mm = [0.977, 0.977, 3]
             
             # TODO shorten names
             # Metrics computation
