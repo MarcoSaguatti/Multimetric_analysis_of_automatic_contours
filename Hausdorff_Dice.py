@@ -138,6 +138,9 @@ def main(argv):
         frame_of_reference_uid = rtstruct_dataset["FrameOfReferenceUID"].value
         print("Frame of reference UID:",frame_of_reference_uid)
         
+        # TODO  put here a check on frame_of_reference_uid to see if this
+        # study was already in the dataframe, print something to the user to
+        # inform and maybe put patient folder in a different path.
         
         # TODO check if the names are good or must be changed, put this in a
         # function, and check if it is ok to keep it here.
@@ -209,35 +212,44 @@ def main(argv):
                 elif to_keep == "N":
                     continue
         
-        # TODO should be subdivided into functions, and shoud be run also with
-        # DL segments.
-        # Computing HD, DSC and SDSC for every segment in manual and MBS lists
-        for index in range(len(alias_names)):
+        # With these lists it is possible to use a for loop to perform
+        # manual-MBS, manual-DL and MBS-DL comparisons.
+        reference_segments = [manual_segments, manual_segments, mbs_segments]
+        to_compare_segments = [mbs_segments, dl_segments, dl_segments]
+        
+        # TODO should be subdivided into functions.
+        # Computing HD, DSC and SDSC for every segment in manual and MBS lists.
+        for compared_methods_index in range(len(compared_methods)):
+            # TODO maybe print some message to let the user know what's going
+            # on and extract here values to store that are not segment
+            # dependent.
             
-            # TODO automatic extraction of the contour is needed
-            # Binary labelmap creation
-            reference_segment_labelmap = patient_data.get_roi_mask_by_name(manual_segments[index])
-            segment_to_compare_labelmap = patient_data.get_roi_mask_by_name(mbs_segments[index])
-            
-            # TODO shorten names
-            # Metrics computation
-            surf_dists = surface_distance.compute_surface_distances(reference_segment_labelmap,
-                                                                    segment_to_compare_labelmap,
-                                                                    voxel_spacing_mm,
-                                                                    )
-            surface_dice = surface_distance.compute_surface_dice_at_tolerance(surf_dists,
-                                                                              tolerance_mm=3,
-                                                                              )
-            print(patient_folder,alias_names[index],"surface Dice:",surface_dice)
-            hausdorff_distance = surface_distance.compute_robust_hausdorff(surf_dists,
-                                                                           percent=95,
-                                                                           )
-            print(patient_folder,alias_names[index],"95% Hausdorff distance:",hausdorff_distance,"mm")
-            volume_dice = surface_distance.compute_dice_coefficient(reference_segment_labelmap,
-                                                                    segment_to_compare_labelmap,
-                                                                    )
-            print(patient_folder,alias_names[index],"volumetric Dice:",volume_dice)
-            
+            for segment_index in range(len(alias_names)):
+                
+                # TODO automatic extraction of the contour is needed
+                # Binary labelmap creation
+                reference_segment_labelmap = patient_data.get_roi_mask_by_name(reference_segments[compared_methods_index][segment_index])
+                segment_to_compare_labelmap = patient_data.get_roi_mask_by_name(to_compare_segments[compared_methods_index][segment_index])
+                
+                # TODO shorten names
+                # Metrics computation
+                surf_dists = surface_distance.compute_surface_distances(reference_segment_labelmap,
+                                                                        segment_to_compare_labelmap,
+                                                                        voxel_spacing_mm,
+                                                                        )
+                surface_dice = surface_distance.compute_surface_dice_at_tolerance(surf_dists,
+                                                                                  tolerance_mm=3,
+                                                                                  )
+                print(patient_folder,alias_names[segment_index],compared_methods[compared_methods_index],"surface Dice:",surface_dice)
+                hausdorff_distance = surface_distance.compute_robust_hausdorff(surf_dists,
+                                                                               percent=95,
+                                                                               )
+                print(patient_folder,alias_names[segment_index],compared_methods[compared_methods_index],"95% Hausdorff distance:",hausdorff_distance,"mm")
+                volume_dice = surface_distance.compute_dice_coefficient(reference_segment_labelmap,
+                                                                        segment_to_compare_labelmap,
+                                                                        )
+                print(patient_folder,alias_names[segment_index],compared_methods[compared_methods_index],"volumetric Dice:",volume_dice)
+                
         
         # TODO check if this indentation can be acceptable
         # Moving patient folder to a different location, if the destination
