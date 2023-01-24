@@ -45,6 +45,15 @@ def main(argv):
                         required=True,
                         help="Path to the configuration json file",
                         )
+    parser.add_argument("-e", "--excel-path",
+                        dest="excel_path",
+                        metavar="PATH",
+                        default=None,
+                        required=True,
+                        help="""Path to the .xlsx file (if not present it will
+                             be automatically created
+                             """,
+                        )
     # TODO maybe it is better to change the name otutput_folder
     parser.add_argument("-o", "--output-folder",
                         dest="output_folder_path",
@@ -61,14 +70,20 @@ def main(argv):
     # TODO check if keep this or not
     # Check required arguments
     if args.input_folder_path == None:
-        logging.warning('Please specify input DICOM study folder!')
+        logging.warning("Please specify input DICOM study folder!")
     if args.config_path == None:
-        logging.warning('Please specify where is the configuration file!')
+        logging.warning("Please specify where is the configuration file!")
+    if args.config_path == None:
+        logging.warning("""Please specify the location of
+                        .xlsx file where data will be stored
+                        """,
+                        )
      
     # Convert to python path style
-    input_folder_path = args.input_folder_path.replace('\\', '/')
-    output_folder_path = args.output_folder_path.replace('\\', '/')
-    config_path = args.config_path.replace('\\', '/')
+    input_folder_path = args.input_folder_path.replace("\\", "/")
+    output_folder_path = args.output_folder_path.replace("\\", "/")
+    config_path = args.config_path.replace("\\", "/")
+    excel_path = args.excel_path.replace("\\", "/")
     
     # TODO check if it should be better to change names
     # Opening the json file where the lists of names are stored
@@ -149,7 +164,7 @@ def main(argv):
         # function, and check if it is ok to keep it here.
         # Extracting voxel spacing
         ct_images = os.listdir(dicom_series_folder_path)
-        slices =[pydicom.read_file(dicom_series_folder_path+'/'+s, force=True) for s in ct_images]
+        slices =[pydicom.read_file(dicom_series_folder_path+"/"+s, force=True) for s in ct_images]
         slices = sorted(slices, key=lambda x:x.ImagePositionPatient[2])
         pixel_spacing_mm = list(map(float, slices[0].PixelSpacing._list))
         slice_thickness_mm = float(slices[0].SliceThickness)
@@ -288,7 +303,6 @@ def main(argv):
         else:
             pass
         
-    # TODO drop the indices column.
     # Creating the dataframe
     dataframe = pd.DataFrame(final_data,
                              columns=["Patient ID",
@@ -302,8 +316,9 @@ def main(argv):
                                       "Surface Dice similarity coefficient",
                                       ],
                              )
-    # TODO path must be given as parameter
-    dataframe.to_excel(r"C:/Users/Marco/Desktop/università/Magistrale/software_and_computing\prova.xlsx")
+    
+    # Saving dataframe to excel
+    dataframe.to_excel(excel_path, sheet_name="Data", index=False)
      
     # TODO check if it is better to change names
     # Updating config.json
