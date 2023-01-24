@@ -128,6 +128,16 @@ def main(argv):
                     pass
             else:
                 pass
+            
+        # TODO check if it is a good position and if it must be put in a
+        # function.
+        # Extraction of patient ID and frame of reference UID
+        rtstruct_dataset = pydicom.dcmread(rtstruct_file_path)
+        patient_id = rtstruct_dataset["PatientID"].value
+        print("Patient ID:",patient_id)
+        frame_of_reference_uid = rtstruct_dataset["FrameOfReferenceUID"].value
+        print("Frame of reference UID:",frame_of_reference_uid)
+        
         
         # TODO check if the names are good or must be changed, put this in a
         # function, and check if it is ok to keep it here.
@@ -142,14 +152,14 @@ def main(argv):
         print("voxel spacing (mm):",voxel_spacing_mm)
             
         # Reading current patient files
-        rtstruct = RTStructBuilder.create_from(dicom_series_folder_path, 
+        patient_data = RTStructBuilder.create_from(dicom_series_folder_path, 
                                                rtstruct_file_path,
                                                )
         
         # TODO put some code to handle the case in which one or more of the
         # OARs is not present.
         # Creates the list of manual segments
-        all_segments = rtstruct.get_roi_names()
+        all_segments = patient_data.get_roi_names()
         manual_segments = [0 for i in range(len(alias_names))]
         for name in all_segments:
             if name in mbs_segments:
@@ -206,8 +216,8 @@ def main(argv):
             
             # TODO automatic extraction of the contour is needed
             # Binary labelmap creation
-            reference_segment_labelmap = rtstruct.get_roi_mask_by_name(manual_segments[index])
-            segment_to_compare_labelmap = rtstruct.get_roi_mask_by_name(mbs_segments[index])
+            reference_segment_labelmap = patient_data.get_roi_mask_by_name(manual_segments[index])
+            segment_to_compare_labelmap = patient_data.get_roi_mask_by_name(mbs_segments[index])
             
             # TODO shorten names
             # Metrics computation
