@@ -82,6 +82,9 @@ def main(argv):
     dl_segments = config["DL segments"]
     alias_names = config["Alias names"]
     
+    # List where final data will be stored.
+    final_data = []
+    
     # TODO put some checks and alternatives if input_folder is already
     # patient_folder and if input_folder contains files and not only dir.
     patient_folders = [folder for folder in os.listdir(input_folder_path)]
@@ -222,9 +225,12 @@ def main(argv):
         for compared_methods_index in range(len(compared_methods)):
             # TODO maybe print some message to let the user know what's going
             # on and extract here values to store that are not segment
-            # dependent.
+            # dependent, and clean the code.
+            
             
             for segment_index in range(len(alias_names)):
+                # TODO all this part must be rewritten with correct rows
+                # length.
                 
                 # TODO automatic extraction of the contour is needed
                 # Binary labelmap creation
@@ -237,20 +243,39 @@ def main(argv):
                                                                         segment_to_compare_labelmap,
                                                                         voxel_spacing_mm,
                                                                         )
+                
                 surface_dice = surface_distance.compute_surface_dice_at_tolerance(surf_dists,
                                                                                   tolerance_mm=3,
                                                                                   )
-                print(patient_folder,alias_names[segment_index],compared_methods[compared_methods_index],"surface Dice:",surface_dice)
-                hausdorff_distance = surface_distance.compute_robust_hausdorff(surf_dists,
-                                                                               percent=95,
-                                                                               )
-                print(patient_folder,alias_names[segment_index],compared_methods[compared_methods_index],"95% Hausdorff distance:",hausdorff_distance,"mm")
+                #print(patient_folder,alias_names[segment_index],compared_methods[compared_methods_index],"surface Dice:",surface_dice)
+                
                 volume_dice = surface_distance.compute_dice_coefficient(reference_segment_labelmap,
                                                                         segment_to_compare_labelmap,
                                                                         )
-                print(patient_folder,alias_names[segment_index],compared_methods[compared_methods_index],"volumetric Dice:",volume_dice)
+                #print(patient_folder,alias_names[segment_index],compared_methods[compared_methods_index],"volumetric Dice:",volume_dice)
                 
-        
+                
+                hausdorff_distance = surface_distance.compute_robust_hausdorff(surf_dists,
+                                                                               percent=95,
+                                                                               )
+                #print(patient_folder,alias_names[segment_index],compared_methods[compared_methods_index],"95% Hausdorff distance:",hausdorff_distance,"mm")
+                
+                # Creating a temporary list to store the current row of the
+                # final dataframe.
+                row_data = [patient_id,
+                            frame_of_reference_uid,
+                            compared_methods[compared_methods_index],
+                            reference_segments[compared_methods_index][segment_index],
+                            to_compare_segments[compared_methods_index][segment_index],
+                            alias_names[segment_index],
+                            hausdorff_distance,
+                            volume_dice,
+                            surface_dice,
+                            ]
+                
+                # Adding the constructed raw to final_data
+                final_data.append(row_data)
+      
         # TODO check if this indentation can be acceptable
         # Moving patient folder to a different location, if the destination
         # folder does not exist it will be automatically created.
@@ -262,6 +287,23 @@ def main(argv):
             print(f"{patient_folder} successfully moved to {output_folder_path}")
         else:
             pass
+        
+    # TODO drop the indices column.
+    # Creating the dataframe
+    dataframe = pd.DataFrame(final_data,
+                             columns=["Patient ID",
+                                      "Frame of reference",
+                                      "Compared methods",
+                                      "Reference segment name",
+                                      "Compared segment name",
+                                      "Alias name",
+                                      "95% Hausdorff distance (mm)",
+                                      "Volumetric Dice similarity coefficient",
+                                      "Surface Dice similarity coefficient",
+                                      ],
+                             )
+    # TODO path must be given as parameter
+    dataframe.to_excel(r"C:/Users/Marco/Desktop/università/Magistrale/software_and_computing\prova.xlsx")
      
     # TODO check if it is better to change names
     # Updating config.json
