@@ -25,8 +25,6 @@ def main(argv):
     between manual and automatic segmentations for pelvic structures.
     
     """
-    # TODO Create the backbone of the script (open the dcm files), then add 
-    #one new small piece at the time
                      
     # Parse command-line arguments
     parser = argparse.ArgumentParser(description 
@@ -64,6 +62,13 @@ def main(argv):
                              execution (optional)
                              """,
                         )
+    parser.add_argument("-j", "--join-data",
+                        dest="join_data",
+                        metavar=bool,
+                        default=False,
+                        required=False,
+                        help="Join previously extracted data with new ones",
+                        )
     
     args = parser.parse_args(argv)
         
@@ -85,13 +90,15 @@ def main(argv):
     config_path = args.config_path.replace("\\", "/")
     excel_path = args.excel_path.replace("\\", "/")
     
-    # TODO check if it should be better to change names
+    # If true new data will be concatenated wit old ones
+    join_data = args.join_data
+    
     # Opening the json file where the lists of names are stored
     fd = open(config_path)
     config = json.load(fd)
     
-    # This lists do not change during execution so it is possible to assign
-    # them to variables
+    # Extracting compared segmentation methods, mbs, dl and alias segments
+    # names.
     compared_methods = config["Compared methods"]
     mbs_segments = config["MBS segments"]
     dl_segments = config["DL segments"]
@@ -99,6 +106,16 @@ def main(argv):
     
     # List where final data will be stored.
     final_data = []
+    
+    if join_data:
+        try:
+            # loading existing data
+            old_dataframe = pd.read_excel(excel_path)
+            print(f"Successfully loaded {excel_path}")
+        except:
+            # TODO check if it is correct to use print
+            print(f"Failed to load {excel_path}")
+    #TODO maybe put some descriptive message in the else case
     
     # TODO put some checks and alternatives if input_folder is already
     # patient_folder and if input_folder contains files and not only dir.
@@ -152,13 +169,12 @@ def main(argv):
         # Extraction of patient ID and frame of reference UID
         rtstruct_dataset = pydicom.dcmread(rtstruct_file_path)
         patient_id = rtstruct_dataset["PatientID"].value
-        print("Patient ID:",patient_id)
         frame_of_reference_uid = rtstruct_dataset["FrameOfReferenceUID"].value
-        print("Frame of reference UID:",frame_of_reference_uid)
         
         # TODO  put here a check on frame_of_reference_uid to see if this
         # study was already in the dataframe, print something to the user to
-        # inform and maybe put patient folder in a different path.
+        # inform and maybe put patient folder in a different path. (only if
+        # join_data == True)
         
         # TODO check if the names are good or must be changed, put this in a
         # function, and check if it is ok to keep it here.
@@ -304,7 +320,7 @@ def main(argv):
             pass
         
     # Creating the dataframe
-    dataframe = pd.DataFrame(final_data,
+    new_dataframe = pd.DataFrame(final_data,
                              columns=["Patient ID",
                                       "Frame of reference",
                                       "Compared methods",
@@ -317,8 +333,19 @@ def main(argv):
                                       ],
                              )
     
+    if join_data:
+        try:
+            frames = [old_dataframe, new_dataframe]
+            new_dataframe = pd.concat(frames, ignore_index=True)
+            print("Old and new dataframe concatenated")
+        except NameError:
+            print("""There is not an old dataframe, concatenation not
+                  performed""")
+            # pass
+        
+    
     # Saving dataframe to excel
-    dataframe.to_excel(excel_path, sheet_name="Data", index=False)
+    new_dataframe.to_excel(excel_path, sheet_name="Data", index=False)
      
     # TODO check if it is better to change names
     # Updating config.json
