@@ -25,6 +25,8 @@ def main(argv):
     between manual and automatic segmentations for pelvic structures.
     
     """
+    # TODO use more prints to make the user know whats going on during
+    # execution (then see if it is better to use print, log messages or other)
                      
     # Parse command-line arguments
     parser = argparse.ArgumentParser(description 
@@ -171,11 +173,26 @@ def main(argv):
         patient_id = rtstruct_dataset["PatientID"].value
         frame_of_reference_uid = rtstruct_dataset["FrameOfReferenceUID"].value
         
-        # TODO  put here a check on frame_of_reference_uid to see if this
-        # study was already in the dataframe, print something to the user to
-        # inform and maybe put patient folder in a different path. (only if
-        # join_data == True)
-        
+        # TODO use better names. How do I have to manage folders of patient
+        # already done? Is there a better way to write this?
+        # Handle the case in which the study is already in the dataframe
+        if join_data:
+            try:
+                for frame_of_reference in old_dataframe.loc[:,"Frame of reference"]:
+                    if frame_of_reference == frame_of_reference_uid:
+                        print("""This study is alreday in the dataframe, going
+                              to the next one
+                              """,
+                              )
+                        frame_uid_in_old_data = True
+                        break
+                    else:
+                        frame_uid_in_old_data = False
+                if frame_uid_in_old_data:
+                    continue
+            except NameError:
+                pass
+                        
         # TODO check if the names are good or must be changed, put this in a
         # function, and check if it is ok to keep it here.
         # Extracting voxel spacing
@@ -335,6 +352,7 @@ def main(argv):
     
     if join_data:
         try:
+            # Concatenating old and new datagrames
             frames = [old_dataframe, new_dataframe]
             new_dataframe = pd.concat(frames, ignore_index=True)
             print("Old and new dataframe concatenated")
