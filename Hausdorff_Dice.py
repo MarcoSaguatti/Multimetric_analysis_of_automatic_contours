@@ -135,14 +135,38 @@ def main(argv):
         rtstruct_folder_path = os.path.join(patient_folder_path,
                                             rtstruct_folder,
                                             )
-        # FIXME if the folder already exists it will exit with an error
-        os.mkdir(rtstruct_folder_path)
+        
+        # TODO put some comments to describe
+        try:
+            os.mkdir(rtstruct_folder_path)
+        except FileExistsError:
+            # TODO in this case execution must stop and print out the correct
+            # error message to let the user know what is wrong e what must be
+            # done to correct.
+            # TODO this is an example, modify it
+            # sys.exit("Patient folders must contain only .dcm files")
+            pass
+        
         dicom_series_folder = "CT"
         dicom_series_folder_path = os.path.join(patient_folder_path,
                                                 dicom_series_folder,
                                                 )
-        # FIXME if the folder already exists it will exit with an error
-        os.mkdir(dicom_series_folder_path)
+        
+        # TODO put some comments to describe
+        try:
+            os.mkdir(dicom_series_folder_path)
+        except FileExistsError:
+            # TODO in this case execution must stop and print out the correct
+            # error message to let the user know what is wrong e what must be
+            # done to correct.
+            pass
+        
+        # TODO if CT and RTSTRUCT folders already have data inside there
+        # could be problems if there are other data otside (maybe exit from
+        # the execution and tell the user: There are dcm file both inside
+        # patient_folder and CT and RTSTRUCT folders and I don't want to mix
+        # your file. Clean up your data and try again).
+        # Moving dcm files in the new folders
         for file in os.listdir(patient_folder_path):
             file_path = os.path.join(patient_folder_path,
                                      file,
@@ -156,14 +180,17 @@ def main(argv):
                 elif file.startswith("RS"):
                    shutil.move(file_path,
                                rtstruct_folder_path,
-                               )
-                   rtstruct_file_path = os.path.join(rtstruct_folder_path,
-                                                     file,
-                                                     )
+                               )  
                 else:
                     pass
             else:
                 pass
+        
+        # Extracting rtstruct file path
+        for file in os.listdir(rtstruct_folder_path):
+            rtstruct_file_path = os.path.join(rtstruct_folder_path,
+                                                     file,
+                                                     )
             
         # TODO check if it is a good position and if it must be put in a
         # function.
