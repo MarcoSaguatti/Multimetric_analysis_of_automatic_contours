@@ -27,6 +27,7 @@ def main(argv):
     """
     # TODO use more prints to make the user know whats going on during
     # execution (then see if it is better to use print, log messages or other)
+    # TODO printed messages must be checked and rewritten in the correct way
                      
     # Parse command-line arguments
     parser = argparse.ArgumentParser(description 
@@ -120,7 +121,26 @@ def main(argv):
     
     # TODO put some checks and alternatives if input_folder is already
     # patient_folder and if input_folder contains files and not only dir.
-    patient_folders = [folder for folder in os.listdir(input_folder_path)]
+    
+    # Check that input folder is not empty
+    if len(os.listdir(input_folder_path)) == 0:
+        sys.exit(f"{input_folder_path} is empty, aborting execution")
+    
+    # Check that input folder contains patient folders
+    patient_folders = [] # folder for folder in os.listdir(input_folder_path) if not os.path.isfile(os.path.join(input_folder_path,folder))
+    for folder in os.listdir(input_folder_path):
+        # Only patient folders are needed, other files are skipped
+        if not os.path.isfile(os.path.join(input_folder_path,folder)):
+            patient_folders.append(folder)
+    if len(patient_folders) == 0:
+        sys.exit(f"""{input_folder_path} does not contain folders.
+                 Be sure to provide as input the folder that contains the
+                 patients and not directly dcm files.
+                 Aborting execution
+                 """,
+                 )
+    
+    # Selecting one patient at the time and analyzing it
     for patient_folder in patient_folders:
         patient_folder_path = os.path.join(input_folder_path,
                                            patient_folder,
@@ -128,8 +148,6 @@ def main(argv):
         
         # TODO put some checks in case folders or incorrect files are present
         # and if folder structure is different.
-        # TODO if there are multiple CTs or CT and MR the iages should be
-        # put in differet folders and selected one at the time.
         # RTSTRUCT and DICOM series should be in different folders
         rtstruct_folder = "RTSTRUCT"
         rtstruct_folder_path = os.path.join(patient_folder_path,
