@@ -109,6 +109,8 @@ def main(argv):
     # List where final data will be stored.
     final_data = []
     
+    # If join_data is True, old data will be extracted from excel_path,
+    # otherwise the old excel file will be overwritten.
     if join_data:
         try:
             # loading existing data
@@ -116,18 +118,17 @@ def main(argv):
             print(f"Successfully loaded {excel_path}")
         except:
             # TODO check if it is correct to use print
-            print(f"Failed to load {excel_path}")
-    #TODO maybe put some descriptive message in the else case
-    
-    # TODO put some checks and alternatives if input_folder is already
-    # patient_folder and if input_folder contains files and not only dir.
+            print(f"Failed to load {excel_path}, a new file will be created")
+    else:
+        print(f"""Excel file at {excel_path} will be overwritten if already
+              present, otherwise it will be created.""")
     
     # Check that input folder is not empty
     if len(os.listdir(input_folder_path)) == 0:
         sys.exit(f"{input_folder_path} is empty, aborting execution")
     
     # Check that input folder contains patient folders
-    patient_folders = [] # folder for folder in os.listdir(input_folder_path) if not os.path.isfile(os.path.join(input_folder_path,folder))
+    patient_folders = []
     for folder in os.listdir(input_folder_path):
         # Only patient folders are needed, other files are skipped
         if not os.path.isfile(os.path.join(input_folder_path,folder)):
@@ -146,63 +147,79 @@ def main(argv):
                                            patient_folder,
                                            )
         
-        # TODO put some checks in case folders or incorrect files are present
-        # and if folder structure is different.
-        # RTSTRUCT and DICOM series should be in different folders
+        # Checking that patient folder is not empty
+        if len(os.listdir(patient_folder_path)) == 0:
+            sys.exit(f"{patient_folder_path} is empty, aborting execution")
+        
+        # RTSTRUCT and DICOM series should be in different folders.
+        # Creating RTSTRUCT folder if it is not already present, otherwise
+        # going on with execution.
         rtstruct_folder = "RTSTRUCT"
         rtstruct_folder_path = os.path.join(patient_folder_path,
                                             rtstruct_folder,
                                             )
-        
-        # TODO put some comments to describe
         try:
             os.mkdir(rtstruct_folder_path)
         except FileExistsError:
-            # TODO in this case execution must stop and print out the correct
-            # error message to let the user know what is wrong e what must be
-            # done to correct.
-            # TODO this is an example, modify it
-            # sys.exit("Patient folders must contain only .dcm files")
             pass
         
+        # Creating CT folder if it is not already present, otherwise
+        # going on with execution
         dicom_series_folder = "CT"
         dicom_series_folder_path = os.path.join(patient_folder_path,
                                                 dicom_series_folder,
                                                 )
-        
-        # TODO put some comments to describe
         try:
             os.mkdir(dicom_series_folder_path)
         except FileExistsError:
-            # TODO in this case execution must stop and print out the correct
-            # error message to let the user know what is wrong e what must be
-            # done to correct.
             pass
         
-        # TODO if CT and RTSTRUCT folders already have data inside there
-        # could be problems if there are other data otside (maybe exit from
-        # the execution and tell the user: There are dcm file both inside
-        # patient_folder and CT and RTSTRUCT folders and I don't want to mix
-        # your file. Clean up your data and try again).
-        # Moving dcm files in the new folders
-        for file in os.listdir(patient_folder_path):
-            file_path = os.path.join(patient_folder_path,
-                                     file,
-                                     )
-            # TODO should be more general (maybe looking at the metadata)
-            if os.path.isfile(file_path):
-                if file.startswith("CT"):
-                   shutil.move(file_path,
-                               dicom_series_folder_path,
-                               )
-                elif file.startswith("RS"):
-                   shutil.move(file_path,
-                               rtstruct_folder_path,
-                               )  
+        # Filling CT and RTSTRUCT folder if both empty
+        rtstruct_folder_is_empty = (len(os.listdir(rtstruct_folder_path))==0)
+        dicom_folder_is_empty = (len(os.listdir(dicom_series_folder_path))==0)
+        if (rtstruct_folder_is_empty and dicom_folder_is_empty):
+            print("""Moving CT.dcm files into CT folder and RS.dcm files into
+                  RTSTRUCT folder""")
+            for file in os.listdir(patient_folder_path):
+                file_path = os.path.join(patient_folder_path,
+                                         file,
+                                         )
+                # TODO should be more general (maybe looking at the metadata)
+                if os.path.isfile(file_path):
+                    if file.startswith("CT"):
+                        shutil.move(file_path,
+                                    dicom_series_folder_path,
+                                    )
+                    elif file.startswith("RS"):
+                        shutil.move(file_path,
+                                    rtstruct_folder_path,
+                                    )  
+                    else:
+                        pass
                 else:
                     pass
-            else:
-                pass
+        # Exit to not mix different data
+        elif rtstruct_folder_is_empty:
+            sys.exit("""Only RTSTRUCT folder is empty. Aborting execution
+                     to not mix different data. Check the data and try
+                     again""")
+        # Exit to not mix different data
+        elif dicom_folder_is_empty:
+            sys.exit("""Only CT folder is empty. Aborting execution to not
+                     mix different data. Check the data and try again""")
+        # Going on if both folders have already data inside, to not merge
+        # different data
+        else:
+            print("""Both RTSTRUCT and CT folders have already files in them.
+                  Thus, no files will be moved""")
+            pass
+        
+        # Check if RTSTRUCT or CT folders are still empty
+        rtstruct_folder_is_empty = (len(os.listdir(rtstruct_folder_path))==0)
+        dicom_folder_is_empty = (len(os.listdir(dicom_series_folder_path))==0)
+        if (rtstruct_folder_is_empty or dicom_folder_is_empty):
+            sys.exit("""CT.dcm and/or RS.dcm files not available. Aborting
+                     execution. Check the data and try again""")
         
         # Extracting rtstruct file path
         for file in os.listdir(rtstruct_folder_path):
