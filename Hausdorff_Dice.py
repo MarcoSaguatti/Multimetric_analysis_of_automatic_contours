@@ -54,9 +54,8 @@ def main(argv):
                              be automatically created
                              """,
                         )
-    # TODO maybe it is better to change the name otutput_folder
-    parser.add_argument("-o", "--output-folder",
-                        dest="output_folder_path",
+    parser.add_argument("-n", "--new-folder",
+                        dest="new_folder_path",
                         metavar="PATH",
                         default=False,
                         required=False,
@@ -80,7 +79,7 @@ def main(argv):
         logging.warning("Please specify input DICOM study folder!")
     if args.config_path == None:
         logging.warning("Please specify where is the configuration file!")
-    if args.config_path == None:
+    if args.excel_path == None:
         logging.warning("""Please specify the location of
                         .xlsx file where data will be stored
                         """,
@@ -88,11 +87,11 @@ def main(argv):
      
     # Convert to python path style
     input_folder_path = args.input_folder_path.replace("\\", "/")
-    output_folder_path = args.output_folder_path.replace("\\", "/")
+    new_folder_path = args.new_folder_path.replace("\\", "/")
     config_path = args.config_path.replace("\\", "/")
     excel_path = args.excel_path.replace("\\", "/")
     
-    # If true new data will be concatenated wit old ones
+    # If true new data will be concatenated with old ones
     join_data = args.join_data
     
     # Opening the json file where the lists of names are stored
@@ -130,7 +129,7 @@ def main(argv):
         # TODO put some checks in case folders or incorrect files are present
         # and if folder structure is different.
         # TODO if there are multiple CTs or CT and MR the iages should be
-        # put in differet folders and selected one at the tima.
+        # put in differet folders and selected one at the time.
         # RTSTRUCT and DICOM series should be in different folders
         rtstruct_folder = "RTSTRUCT"
         rtstruct_folder_path = os.path.join(patient_folder_path,
@@ -175,7 +174,9 @@ def main(argv):
         
         # TODO use better names. How do I have to manage folders of patient
         # already done? Is there a better way to write this?
-        # Handle the case in which the study is already in the dataframe
+        # If join_data is True we need to check if the current study is
+        # already in the dataframe and if it is to skip it. Otherwise no
+        # checks are needed and every study will be analyzed.
         if join_data:
             try:
                 for frame_of_reference in old_dataframe.loc[:,"Frame of reference"]:
@@ -327,12 +328,12 @@ def main(argv):
         # TODO check if this indentation can be acceptable
         # Moving patient folder to a different location, if the destination
         # folder does not exist it will be automatically created.
-        if output_folder_path:
+        if new_folder_path:
             shutil.move(patient_folder_path,
-                        os.path.join(output_folder_path, patient_folder),
+                        os.path.join(new_folder_path, patient_folder),
                         )
             #TODO this should not be a print and should be shorter
-            print(f"{patient_folder} successfully moved to {output_folder_path}")
+            print(f"{patient_folder} successfully moved to {new_folder_path}")
         else:
             pass
         
