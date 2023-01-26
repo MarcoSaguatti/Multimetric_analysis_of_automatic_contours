@@ -12,6 +12,27 @@ import pydicom
 from rt_utils import RTStructBuilder
 import surface_distance
 
+
+# TODO rewrite the docstring
+def is_empty(folder_path):
+    """Checks if the folder is empty or not.
+    
+    -------
+    Parameters: folder_path: 
+        
+        
+    -------
+    Return: 1 if the folder is empty, 0 otherwise 
+    
+    
+    """
+    
+    if len(os.listdir(folder_path)) == 0:
+        return 1
+    else:
+        return 0
+    
+
 def move_file_folder():
     return
 
@@ -124,7 +145,7 @@ def main(argv):
               present, otherwise it will be created.""")
     
     # Check that input folder is not empty
-    if len(os.listdir(input_folder_path)) == 0:
+    if is_empty(input_folder_path):
         sys.exit(f"{input_folder_path} is empty, aborting execution")
     
     # Check that input folder contains patient folders
@@ -148,7 +169,7 @@ def main(argv):
                                            )
         
         # Checking that patient folder is not empty
-        if len(os.listdir(patient_folder_path)) == 0:
+        if is_empty(patient_folder_path):
             sys.exit(f"{patient_folder_path} is empty, aborting execution")
         
         # RTSTRUCT and DICOM series should be in different folders.
@@ -165,19 +186,17 @@ def main(argv):
         
         # Creating CT folder if it is not already present, otherwise
         # going on with execution
-        dicom_series_folder = "CT"
-        dicom_series_folder_path = os.path.join(patient_folder_path,
-                                                dicom_series_folder,
+        ct_folder = "CT"
+        ct_folder_path = os.path.join(patient_folder_path,
+                                                ct_folder,
                                                 )
         try:
-            os.mkdir(dicom_series_folder_path)
+            os.mkdir(ct_folder_path)
         except FileExistsError:
             pass
         
         # Filling CT and RTSTRUCT folder if both empty
-        rtstruct_folder_is_empty = (len(os.listdir(rtstruct_folder_path))==0)
-        dicom_folder_is_empty = (len(os.listdir(dicom_series_folder_path))==0)
-        if (rtstruct_folder_is_empty and dicom_folder_is_empty):
+        if (is_empty(rtstruct_folder_path) and is_empty(ct_folder_path)):
             print("""Moving CT.dcm files into CT folder and RS.dcm files into
                   RTSTRUCT folder""")
             for file in os.listdir(patient_folder_path):
@@ -188,7 +207,7 @@ def main(argv):
                 if os.path.isfile(file_path):
                     if file.startswith("CT"):
                         shutil.move(file_path,
-                                    dicom_series_folder_path,
+                                    ct_folder_path,
                                     )
                     elif file.startswith("RS"):
                         shutil.move(file_path,
@@ -199,12 +218,12 @@ def main(argv):
                 else:
                     pass
         # Exit to not mix different data
-        elif rtstruct_folder_is_empty:
+        elif is_empty(rtstruct_folder_path):
             sys.exit("""Only RTSTRUCT folder is empty. Aborting execution
                      to not mix different data. Check the data and try
                      again""")
         # Exit to not mix different data
-        elif dicom_folder_is_empty:
+        elif is_empty(ct_folder_path):
             sys.exit("""Only CT folder is empty. Aborting execution to not
                      mix different data. Check the data and try again""")
         # Going on if both folders have already data inside, to not merge
@@ -215,9 +234,7 @@ def main(argv):
             pass
         
         # Check if RTSTRUCT or CT folders are still empty
-        rtstruct_folder_is_empty = (len(os.listdir(rtstruct_folder_path))==0)
-        dicom_folder_is_empty = (len(os.listdir(dicom_series_folder_path))==0)
-        if (rtstruct_folder_is_empty or dicom_folder_is_empty):
+        if (is_empty(rtstruct_folder_path) and is_empty(ct_folder_path)):
             sys.exit("""CT.dcm and/or RS.dcm files not available. Aborting
                      execution. Check the data and try again""")
         
@@ -259,8 +276,8 @@ def main(argv):
         # TODO check if the names are good or must be changed, put this in a
         # function, and check if it is ok to keep it here.
         # Extracting voxel spacing
-        ct_images = os.listdir(dicom_series_folder_path)
-        slices =[pydicom.read_file(dicom_series_folder_path+"/"+s, force=True) for s in ct_images]
+        ct_images = os.listdir(ct_folder_path)
+        slices =[pydicom.read_file(ct_folder_path+"/"+s, force=True) for s in ct_images]
         slices = sorted(slices, key=lambda x:x.ImagePositionPatient[2])
         pixel_spacing_mm = list(map(float, slices[0].PixelSpacing._list))
         slice_thickness_mm = float(slices[0].SliceThickness)
@@ -269,7 +286,7 @@ def main(argv):
         print("voxel spacing (mm):",voxel_spacing_mm)
             
         # Reading current patient files
-        patient_data = RTStructBuilder.create_from(dicom_series_folder_path, 
+        patient_data = RTStructBuilder.create_from(ct_folder_path, 
                                                rtstruct_file_path,
                                                )
         
