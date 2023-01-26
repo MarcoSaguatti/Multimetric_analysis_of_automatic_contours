@@ -15,22 +15,48 @@ import surface_distance
 
 # TODO rewrite the docstring
 def is_empty(folder_path):
-    """Checks if the folder is empty or not.
-    
-    -------
-    Parameters: folder_path: 
-        
-        
-    -------
-    Return: 1 if the folder is empty, 0 otherwise 
-    
-    
     """
+    Checks if the folder is empty or not.
     
+    #more detailed description (if needed)
+
+    Parameters
+    ----------
+    folder_path : TYPE
+        DESCRIPTION.
+
+    Returns
+    -------
+    int
+        DESCRIPTION.
+
+    """
     if len(os.listdir(folder_path)) == 0:
         return 1
     else:
         return 0
+    
+def patient_info(rtstruct_file_path, information):
+    """
+    Extracts patient informations from RTSTRUCT file.
+    
+    #more detailed description (if needed)
+
+    Parameters
+    ----------
+    rtstruct_file_path : TYPE
+        DESCRIPTION.
+    info_needed : TYPE
+        DESCRIPTION.
+
+    Returns
+    -------
+    None.
+
+    """
+    rtstruct_dataset = pydicom.dcmread(rtstruct_file_path)
+    info = rtstruct_dataset[information].value
+    return info
     
 
 def move_file_folder():
@@ -244,18 +270,19 @@ def main(argv):
                                                      file,
                                                      )
             
-        # TODO check if it is a good position and if it must be put in a
-        # function.
         # Extraction of patient ID and frame of reference UID
-        rtstruct_dataset = pydicom.dcmread(rtstruct_file_path)
-        patient_id = rtstruct_dataset["PatientID"].value
-        frame_of_reference_uid = rtstruct_dataset["FrameOfReferenceUID"].value
+        patient_id = patient_info(rtstruct_file_path,
+                                  "PatientID",
+                                  )
+        frame_of_reference_uid = patient_info(rtstruct_file_path,
+                                              "FrameOfReferenceUID",
+                                              )
         
         # TODO use better names. How do I have to manage folders of patient
         # already done? Is there a better way to write this?
         # If join_data is True we need to check if the current study is
         # already in the dataframe and if it is to skip it. Otherwise no
-        # checks are needed and every study will be analyzed.
+        # checks are needed and every study will be analyzed. 
         if join_data:
             try:
                 for frame_of_reference in old_dataframe.loc[:,"Frame of reference"]:
