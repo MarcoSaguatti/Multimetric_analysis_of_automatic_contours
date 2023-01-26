@@ -36,7 +36,9 @@ def is_empty(folder_path):
     else:
         return 0
     
-def patient_info(rtstruct_file_path, information):
+def patient_info(rtstruct_file_path,
+                 information,
+                 ):
     """
     Extracts patient informations from RTSTRUCT file.
     
@@ -83,6 +85,91 @@ def voxel_spacing(ct_folder_path):
     voxel_spacing_mm = pixel_spacing_mm.copy()
     voxel_spacing_mm.append(slice_thickness_mm)
     return voxel_spacing_mm
+
+def manual_segments_extraction(patient_data,
+                               alias_names,
+                               mbs_segments,
+                               dl_segments,
+                               config,
+                               ):
+    """
+    Creating the list of manual segments.
+    
+    #more detailed description (if needed)
+
+    Parameters
+    ----------
+    patient_data : TYPE
+        DESCRIPTION.
+    alias_names : TYPE
+        DESCRIPTION.
+    mbs_segments : TYPE
+        DESCRIPTION.
+    dl_segments : TYPE
+        DESCRIPTION.
+    config : TYPE
+        DESCRIPTION.
+     : TYPE
+        DESCRIPTION.
+
+    Returns
+    -------
+    None.
+
+    """
+    # TODO put some code to handle the case in which one or more of the
+    # OARs is not present.
+    # Creates the list of manual segments
+    all_segments = patient_data.get_roi_names()
+    manual_segments = [0 for i in range(len(alias_names))]
+    for name in all_segments:
+        if name in mbs_segments:
+            continue
+        elif name in dl_segments:
+            continue
+        elif name in config["Prostate names"]:
+            manual_segments[0] = name
+        elif name in config["Rectum names"]:
+            manual_segments[1] = name
+        elif name in config["Bladder names"]:
+            manual_segments[2] = name
+        elif name in config["Left femur names"]:
+            manual_segments[3] = name
+        elif name in config["Right femur names"]:
+            manual_segments[4] = name
+        else:
+            to_keep = input(f"Do you want to keep {name}? Enter Y (yes) or N (no) \n").upper()
+            # TODO put some code to handle the case in which the user
+            # provides the wrong input, and see if there is a better way
+            # to write the following if-else.
+            if to_keep == "Y":
+                # TODO check if it is correct to print on the standard
+                # output, if it correct how I wrote the code and put some
+                # check to the input provided by the user.
+                what_is = input(f"To which alias name is {name} associated? Enter P (Prostate), A (Anorectum), B (Bladder), L (Left femur) or R (Right femur) \n").upper()
+                if what_is == "P":
+                    manual_segments[0] = name
+                    config["Prostate names"].append(name)
+                    print(name,"added to Prostate names in config.json")
+                elif what_is == "A":
+                    manual_segments[1] = name
+                    config["Rectum names"].append(name)
+                    print(name,"added to Rectum names in config.json")
+                elif what_is == "B":
+                    manual_segments[2] = name
+                    config["Bladder names"].append(name)
+                    print(name,"added to Bladder names in config.json")
+                elif what_is == "L":
+                    manual_segments[3] = name
+                    config["Left femur names"].append(name)
+                    print(name,"added to Left femur names in config.json")
+                elif what_is == "R":
+                    manual_segments[4] = name
+                    config["Right femur names"].append(name)
+                    print(name,"added to Right femur names in config.json")
+            elif to_keep == "N":
+                continue
+    return manual_segments
     
 
 def move_file_folder():
@@ -340,63 +427,23 @@ def main(argv):
                                                rtstruct_file_path,
                                                )
         
-        # TODO put some code to handle the case in which one or more of the
-        # OARs is not present.
-        # Creates the list of manual segments
-        all_segments = patient_data.get_roi_names()
-        manual_segments = [0 for i in range(len(alias_names))]
-        for name in all_segments:
-            if name in mbs_segments:
-                continue
-            elif name in dl_segments:
-                continue
-            elif name in config["Prostate names"]:
-                manual_segments[0] = name
-            elif name in config["Rectum names"]:
-                manual_segments[1] = name
-            elif name in config["Bladder names"]:
-                manual_segments[2] = name
-            elif name in config["Left femur names"]:
-                manual_segments[3] = name
-            elif name in config["Right femur names"]:
-                manual_segments[4] = name
-            else:
-                to_keep = input(f"Do you want to keep {name}? Enter Y (yes) or N (no) \n").upper()
-                # TODO put some code to handle the case in which the user
-                # provides the wrong input, and see if there is a better way
-                # to write the following if-else.
-                if to_keep == "Y":
-                    # TODO check if it is correct to print on the standard
-                    # output, if it coorect how I wrote the code and put some
-                    # check to the input provided by the user.
-                    what_is = input(f"To which alias name is {name} associated? Enter P (Prostate), A (Anorectum), B (Bladder), L (Left femur) or R (Right femur) \n").upper()
-                    if what_is == "P":
-                        manual_segments[0] = name
-                        config["Prostate names"].append(name)
-                        print(name,"added to Prostate names in config.json")
-                    elif what_is == "A":
-                        manual_segments[1] = name
-                        config["Rectum names"].append(name)
-                        print(name,"added to Rectum names in config.json")
-                    elif what_is == "B":
-                        manual_segments[2] = name
-                        config["Bladder names"].append(name)
-                        print(name,"added to Bladder names in config.json")
-                    elif what_is == "L":
-                        manual_segments[3] = name
-                        config["Left femur names"].append(name)
-                        print(name,"added to Left femur names in config.json")
-                    elif what_is == "R":
-                        manual_segments[4] = name
-                        config["Right femur names"].append(name)
-                        print(name,"added to Right femur names in config.json")
-                elif to_keep == "N":
-                    continue
+        manual_segments = manual_segments_extraction(patient_data,
+                                                     alias_names,
+                                                     mbs_segments,
+                                                     dl_segments,
+                                                     config,
+                                                     )
         
         # With these lists it is possible to use a for loop to perform
         # manual-MBS, manual-DL and MBS-DL comparisons.
-        reference_segments = [manual_segments, manual_segments, mbs_segments]
-        to_compare_segments = [mbs_segments, dl_segments, dl_segments]
+        reference_segments = [manual_segments,
+                              manual_segments,
+                              mbs_segments,
+                              ]
+        to_compare_segments = [mbs_segments,
+                               dl_segments,
+                               dl_segments,
+                               ]
         
         # TODO should be subdivided into functions.
         # Computing HD, DSC and SDSC for every segment in manual and MBS lists.
