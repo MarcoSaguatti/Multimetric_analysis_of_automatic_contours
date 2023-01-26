@@ -57,6 +57,32 @@ def patient_info(rtstruct_file_path, information):
     rtstruct_dataset = pydicom.dcmread(rtstruct_file_path)
     info = rtstruct_dataset[information].value
     return info
+
+def voxel_spacing(ct_folder_path):
+    """
+    Computing voxel spacing.
+    
+    #more detailed description (if needed)
+
+    Parameters
+    ----------
+    ct_folder_path : TYPE
+        DESCRIPTION.
+
+    Returns
+    -------
+    voxel_spacing_mm : TYPE
+        DESCRIPTION.
+
+    """
+    ct_images = os.listdir(ct_folder_path)
+    slices =[pydicom.read_file(ct_folder_path+"/"+s, force=True) for s in ct_images]
+    slices = sorted(slices, key=lambda x:x.ImagePositionPatient[2])
+    pixel_spacing_mm = list(map(float, slices[0].PixelSpacing._list))
+    slice_thickness_mm = float(slices[0].SliceThickness)
+    voxel_spacing_mm = pixel_spacing_mm.copy()
+    voxel_spacing_mm.append(slice_thickness_mm)
+    return voxel_spacing_mm
     
 
 def move_file_folder():
@@ -161,11 +187,14 @@ def main(argv):
     if join_data:
         try:
             # loading existing data
-            old_dataframe = pd.read_excel(excel_path)
+            old_data = pd.read_excel(excel_path)
             print(f"Successfully loaded {excel_path}")
-        except:
+            excel_file_exist = 1
+        except: # TODO find the correct exception
             # TODO check if it is correct to use print
+            # There is not an existing excel file in excel path
             print(f"Failed to load {excel_path}, a new file will be created")
+            excel_file_exist = 0
     else:
         print(f"""Excel file at {excel_path} will be overwritten if already
               present, otherwise it will be created.""")
@@ -229,7 +258,6 @@ def main(argv):
                 file_path = os.path.join(patient_folder_path,
                                          file,
                                          )
-                # TODO should be more general (maybe looking at the metadata)
                 if os.path.isfile(file_path):
                     if file.startswith("CT"):
                         shutil.move(file_path,
@@ -278,14 +306,14 @@ def main(argv):
                                               "FrameOfReferenceUID",
                                               )
         
-        # TODO use better names. How do I have to manage folders of patient
-        # already done? Is there a better way to write this?
         # If join_data is True we need to check if the current study is
         # already in the dataframe and if it is to skip it. Otherwise no
         # checks are needed and every study will be analyzed. 
         if join_data:
-            try:
-                for frame_of_reference in old_dataframe.loc[:,"Frame of reference"]:
+            # If the excel file exists checks if the current frame of
+            # reference uid is already saved there.
+            if excel_file_exist:
+                for frame_of_reference in old_data.loc[:,"Frame of reference"]:
                     if frame_of_reference == frame_of_reference_uid:
                         print("""This study is alreday in the dataframe, going
                               to the next one
@@ -296,21 +324,16 @@ def main(argv):
                     else:
                         frame_uid_in_old_data = False
                 if frame_uid_in_old_data:
+                    # TODO move patient folder in patient_used
                     continue
-            except NameError:
+            else:
+                # There is not an old dataframe beacuse in excel_path there is
+                # not an existing excel file. We can go on with the current
+                # patient.
                 pass
                         
-        # TODO check if the names are good or must be changed, put this in a
-        # function, and check if it is ok to keep it here.
         # Extracting voxel spacing
-        ct_images = os.listdir(ct_folder_path)
-        slices =[pydicom.read_file(ct_folder_path+"/"+s, force=True) for s in ct_images]
-        slices = sorted(slices, key=lambda x:x.ImagePositionPatient[2])
-        pixel_spacing_mm = list(map(float, slices[0].PixelSpacing._list))
-        slice_thickness_mm = float(slices[0].SliceThickness)
-        voxel_spacing_mm = pixel_spacing_mm.copy()
-        voxel_spacing_mm.append(slice_thickness_mm)
-        print("voxel spacing (mm):",voxel_spacing_mm)
+        voxel_spacing_mm = voxel_spacing(ct_folder_path)
             
         # Reading current patient files
         patient_data = RTStructBuilder.create_from(ct_folder_path, 
@@ -459,14 +482,13 @@ def main(argv):
     
     if join_data:
         try:
-            # Concatenating old and new datagrames
-            frames = [old_dataframe, new_dataframe]
+            # Concatenating old and new dataframes
+            frames = [old_data, new_dataframe]
             new_dataframe = pd.concat(frames, ignore_index=True)
             print("Old and new dataframe concatenated")
         except NameError:
             print("""There is not an old dataframe, concatenation not
                   performed""")
-            # pass
         
     
     # Saving dataframe to excel
