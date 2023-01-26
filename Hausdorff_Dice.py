@@ -10,7 +10,7 @@ import json
 
 import pydicom
 from rt_utils import RTStructBuilder
-import surface_distance
+import surface_distance as sd
 
 
 # TODO rewrite the docstring
@@ -86,12 +86,12 @@ def voxel_spacing(ct_folder_path):
     voxel_spacing_mm.append(slice_thickness_mm)
     return voxel_spacing_mm
 
-def manual_segments_extraction(patient_data,
-                               alias_names,
-                               mbs_segments,
-                               dl_segments,
-                               config,
-                               ):
+def extract_manual_segments(patient_data,
+                            alias_names,
+                            mbs_segments,
+                            dl_segments,
+                            config,
+                            ):
     """
     Creating the list of manual segments.
     
@@ -170,6 +170,60 @@ def manual_segments_extraction(patient_data,
             elif to_keep == "N":
                 continue
     return manual_segments
+
+def compute_metrics(patient_data,
+                    reference_segment,
+                    segment_to_compare,
+                    voxel_spacing_mm):
+    """
+    Computing Hausdorff distance (hd), volumetric Dice similarity coefficient
+    (dsc) and surface Dice similarity coefficient (sdsc).
+    
+    #more detailed description (if needed)
+
+    Parameters
+    ----------
+    patient_data : TYPE
+        DESCRIPTION.
+    reference_segment : TYPE
+        DESCRIPTION.
+    segment_to_compare : TYPE
+        DESCRIPTION.
+    voxel_spacing_mm : TYPE
+        DESCRIPTION.
+
+    Returns
+    -------
+    surface_dice : TYPE
+        DESCRIPTION.
+    volume_dice : TYPE
+        DESCRIPTION.
+    hausdorff_distance : TYPE
+        DESCRIPTION.
+
+    """
+    # Binary labelmap creation
+    reference_labelmap = patient_data.get_roi_mask_by_name(reference_segment)
+    compared_labelmap = patient_data.get_roi_mask_by_name(segment_to_compare)
+    
+    # Metrics computation
+    surf_dists = sd.compute_surface_distances(reference_labelmap,
+                                              compared_labelmap,
+                                              voxel_spacing_mm,
+                                              )
+    
+    surface_dice = sd.compute_surface_dice_at_tolerance(surf_dists,
+                                                        tolerance_mm=3,
+                                                        )
+    
+    volume_dice = sd.compute_dice_coefficient(reference_labelmap,
+                                              compared_labelmap,
+                                              )
+    
+    hausdorff_distance = sd.compute_robust_hausdorff(surf_dists,
+                                                     percent=95,
+                                                     )
+    return surface_dice, volume_dice, hausdorff_distance
     
 
 def move_file_folder():
@@ -419,7 +473,9 @@ def main(argv):
                 # patient.
                 pass
                         
-        # Extracting voxel spacing
+        # Extracting voxel spacing (here and and not in compute_metrics
+        # because it is always the same for one patient and it does not make
+        # sense to compute it more than once)
         voxel_spacing_mm = voxel_spacing(ct_folder_path)
             
         # Reading current patient files
@@ -427,75 +483,52 @@ def main(argv):
                                                rtstruct_file_path,
                                                )
         
-        manual_segments = manual_segments_extraction(patient_data,
-                                                     alias_names,
-                                                     mbs_segments,
-                                                     dl_segments,
-                                                     config,
-                                                     )
+        manual_segments = extract_manual_segments(patient_data,
+                                                  alias_names,
+                                                  mbs_segments,
+                                                  dl_segments,
+                                                  config,
+                                                  )
         
+        # Reference and compared segments lists.
         # With these lists it is possible to use a for loop to perform
         # manual-MBS, manual-DL and MBS-DL comparisons.
-        reference_segments = [manual_segments,
-                              manual_segments,
-                              mbs_segments,
-                              ]
-        to_compare_segments = [mbs_segments,
-                               dl_segments,
-                               dl_segments,
-                               ]
+        ref_segs = [manual_segments,
+                    manual_segments,
+                    mbs_segments,
+                    ]
+        comp_segs = [mbs_segments,
+                     dl_segments,
+                     dl_segments,
+                     ]
         
-        # TODO should be subdivided into functions.
         # Computing HD, DSC and SDSC for every segment in manual and MBS lists.
-        for compared_methods_index in range(len(compared_methods)):
+        for methods in range(len(compared_methods)):
             # TODO maybe print some message to let the user know what's going
             # on and extract here values to store that are not segment
             # dependent, and clean the code.
             
             
-            for segment_index in range(len(alias_names)):
-                # TODO all this part must be rewritten with correct rows
-                # length.
-                
-                # TODO automatic extraction of the contour is needed
-                # Binary labelmap creation
-                reference_segment_labelmap = patient_data.get_roi_mask_by_name(reference_segments[compared_methods_index][segment_index])
-                segment_to_compare_labelmap = patient_data.get_roi_mask_by_name(to_compare_segments[compared_methods_index][segment_index])
-                
-                # TODO shorten names
-                # Metrics computation
-                surf_dists = surface_distance.compute_surface_distances(reference_segment_labelmap,
-                                                                        segment_to_compare_labelmap,
-                                                                        voxel_spacing_mm,
-                                                                        )
-                
-                surface_dice = surface_distance.compute_surface_dice_at_tolerance(surf_dists,
-                                                                                  tolerance_mm=3,
-                                                                                  )
-                #print(patient_folder,alias_names[segment_index],compared_methods[compared_methods_index],"surface Dice:",surface_dice)
-                
-                volume_dice = surface_distance.compute_dice_coefficient(reference_segment_labelmap,
-                                                                        segment_to_compare_labelmap,
-                                                                        )
-                #print(patient_folder,alias_names[segment_index],compared_methods[compared_methods_index],"volumetric Dice:",volume_dice)
-                
-                
-                hausdorff_distance = surface_distance.compute_robust_hausdorff(surf_dists,
-                                                                               percent=95,
-                                                                               )
-                #print(patient_folder,alias_names[segment_index],compared_methods[compared_methods_index],"95% Hausdorff distance:",hausdorff_distance,"mm")
+            for segment in range(len(alias_names)):
+                # Computing surface Dice similarity coefficient (sdsc), Dice
+                # similarity coefficient (dsc) and Hausdorff distance (hd)
+                sdsc, dsc, hd = compute_metrics(patient_data,
+                                                ref_segs[methods][segment],
+                                                comp_segs[methods][segment],
+                                                voxel_spacing_mm,
+                                                )
                 
                 # Creating a temporary list to store the current row of the
                 # final dataframe.
                 row_data = [patient_id,
                             frame_of_reference_uid,
-                            compared_methods[compared_methods_index],
-                            reference_segments[compared_methods_index][segment_index],
-                            to_compare_segments[compared_methods_index][segment_index],
-                            alias_names[segment_index],
-                            hausdorff_distance,
-                            volume_dice,
-                            surface_dice,
+                            compared_methods[methods],
+                            ref_segs[methods][segment],
+                            comp_segs[methods][segment],
+                            alias_names[segment],
+                            hd,
+                            dsc,
+                            sdsc,
                             ]
                 
                 # Adding the constructed raw to final_data
