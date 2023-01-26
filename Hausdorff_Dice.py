@@ -1,12 +1,10 @@
-# from __future__ import absolute_import, division, print_function
-
 import argparse
 import sys
-import logging
 import pandas as pd
 import os
 import shutil
 import json
+import logging
 
 import pydicom
 from rt_utils import RTStructBuilder
@@ -83,15 +81,24 @@ def voxel_spacing(ct_folder_path):
     
     # Reading each ct image using pydicom and storing the results in a list
     for ct_image in ct_images:
-        ct_file_path = os.path.join(ct_folder_path, ct_image)
-        single_slice = pydicom.read_file(ct_file_path, force=True)
+        ct_file_path = os.path.join(ct_folder_path,
+                                    ct_image,
+                                    )
+        single_slice = pydicom.read_file(ct_file_path,
+                                         force=True,
+                                         )
         slices.append(single_slice)
         
     # Sorting every image in the list
-    slices = sorted(slices, key=lambda x:x.ImagePositionPatient[2])
+    slices = sorted(slices,
+                    key=lambda x:x.ImagePositionPatient[2],
+                    )
     
     # Computing pixel spacing
-    pixel_spacing_mm = list(map(float, slices[0].PixelSpacing._list))
+    pixel_spacing_mm = list(map(float,
+                                slices[0].PixelSpacing._list,
+                                ),
+                            )
     
     # Computing slice thickness
     slice_thickness_mm = float(slices[0].SliceThickness)
@@ -289,8 +296,8 @@ def main(argv):
                         metavar="PATH",
                         default=None,
                         required=True,
-                        help=("Path to the .xlsx file (if not present it will",
-                              "be automatically created",
+                        help=("""Path to the .xlsx file (if not present
+                              it will be automatically created)"""
                               )
                         )
     parser.add_argument("-n", "--new-folder",
@@ -298,8 +305,8 @@ def main(argv):
                         metavar="PATH",
                         default=False,
                         required=False,
-                        help=("Path where patient folders will be moved after",
-                              "execution (optional)",
+                        help=("""Path where patient folders will be moved
+                              after execution"""
                               )
                         )
     parser.add_argument("-j", "--join-data",
@@ -355,7 +362,6 @@ def main(argv):
             print(f"Successfully loaded {excel_path}")
             excel_file_exist = 1
         except: # TODO find the correct exception
-            # TODO check if it is correct to use print
             # There is not an existing excel file in excel path
             print(f"Failed to load {excel_path}, a new file will be created")
             excel_file_exist = 0
@@ -537,9 +543,7 @@ def main(argv):
         # Computing HD, DSC and SDSC for every segment in manual and MBS lists.
         for methods in range(len(compared_methods)):
             # TODO maybe print some message to let the user know what's going
-            # on and extract here values to store that are not segment
-            # dependent, and clean the code.
-            
+            # on.
             
             for segment in range(len(alias_names)):
                 # Computing surface Dice similarity coefficient (sdsc), Dice
@@ -566,12 +570,13 @@ def main(argv):
                 # Adding the constructed raw to final_data
                 final_data.append(row_data)
       
-        # TODO check if this indentation can be acceptable
         # Moving patient folder to a different location, if the destination
         # folder does not exist it will be automatically created.
         if new_folder_path:
             shutil.move(patient_folder_path,
-                        os.path.join(new_folder_path, patient_folder),
+                        os.path.join(new_folder_path,
+                                     patient_folder,
+                                     ),
                         )
             print(f"{patient_folder} successfully moved to {new_folder_path}")
         else:
@@ -594,26 +599,31 @@ def main(argv):
     if join_data:
         try:
             # Concatenating old and new dataframes
-            frames = [old_data, new_dataframe]
-            new_dataframe = pd.concat(frames, ignore_index=True)
+            frames = [old_data,
+                      new_dataframe,
+                      ]
+            new_dataframe = pd.concat(frames,
+                                      ignore_index=True,
+                                      )
             print("Old and new dataframe concatenated")
         except NameError:
             print("There is not an old dataframe, concatenation not performed")
         
     
     # Saving dataframe to excel
-    new_dataframe.to_excel(excel_path, sheet_name="Data", index=False)
+    new_dataframe.to_excel(excel_path,
+                           sheet_name="Data",
+                           index=False,
+                           )
      
     # TODO check if it is better to change names
     # Updating config.json
-    json_object = json.dumps(config, indent=4)
+    json_object = json.dumps(config,
+                             indent=4,
+                             )
     with open(config_path, "w") as outfile:
         outfile.write(json_object)
-    
-    # with open(r"C:\Users\Marco\Documents\tirocinio\scripting_3DSlicer\config.json", "w") as outfile:
-    #     outfile.write(json_object)
-        
-                     
+                             
 
 if __name__ == "__main__":
     main(sys.argv[1:])
