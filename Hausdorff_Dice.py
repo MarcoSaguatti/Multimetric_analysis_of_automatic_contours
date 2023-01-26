@@ -58,6 +58,7 @@ def patient_info(rtstruct_file_path,
     """
     rtstruct_dataset = pydicom.dcmread(rtstruct_file_path)
     info = rtstruct_dataset[information].value
+    
     return info
 
 def voxel_spacing(ct_folder_path):
@@ -78,12 +79,27 @@ def voxel_spacing(ct_folder_path):
 
     """
     ct_images = os.listdir(ct_folder_path)
-    slices =[pydicom.read_file(ct_folder_path+"/"+s, force=True) for s in ct_images]
+    slices = []
+    
+    # Reading each ct image using pydicom and storing the results in a list
+    for ct_image in ct_images:
+        ct_file_path = os.path.join(ct_folder_path, ct_image)
+        single_slice = pydicom.read_file(ct_file_path, force=True)
+        slices.append(single_slice)
+        
+    # Sorting every image in the list
     slices = sorted(slices, key=lambda x:x.ImagePositionPatient[2])
+    
+    # Computing pixel spacing
     pixel_spacing_mm = list(map(float, slices[0].PixelSpacing._list))
+    
+    # Computing slice thickness
     slice_thickness_mm = float(slices[0].SliceThickness)
+    
+    # Computing voxel spacing
     voxel_spacing_mm = pixel_spacing_mm.copy()
     voxel_spacing_mm.append(slice_thickness_mm)
+    
     return voxel_spacing_mm
 
 def extract_manual_segments(patient_data,
@@ -169,6 +185,7 @@ def extract_manual_segments(patient_data,
                     print(name,"added to Right femur names in config.json")
             elif to_keep == "N":
                 continue
+            
     return manual_segments
 
 def compute_metrics(patient_data,
@@ -223,6 +240,7 @@ def compute_metrics(patient_data,
     hausdorff_distance = sd.compute_robust_hausdorff(surf_dists,
                                                      percent=95,
                                                      )
+    
     return surface_dice, volume_dice, hausdorff_distance
     
 
