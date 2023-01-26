@@ -154,7 +154,9 @@ def extract_manual_segments(patient_data,
         elif name in config["Right femur names"]:
             manual_segments[4] = name
         else:
-            to_keep = input(f"Do you want to keep {name}? Enter Y (yes) or N (no) \n").upper()
+            to_keep = input(f"Do you want to keep {name}?",
+                            "Enter Y (yes) or N (no) \n",
+                            ).upper()
             # TODO put some code to handle the case in which the user
             # provides the wrong input, and see if there is a better way
             # to write the following if-else.
@@ -162,7 +164,11 @@ def extract_manual_segments(patient_data,
                 # TODO check if it is correct to print on the standard
                 # output, if it correct how I wrote the code and put some
                 # check to the input provided by the user.
-                what_is = input(f"To which alias name is {name} associated? Enter P (Prostate), A (Anorectum), B (Bladder), L (Left femur) or R (Right femur) \n").upper()
+                what_is = input(f"To which alias name is {name} associated?",
+                                "Enter P (Prostate), A (Anorectum),",
+                                " B (Bladder), L (Left femur) or",
+                                " R (Right femur) \n",
+                                ).upper()
                 if what_is == "P":
                     manual_segments[0] = name
                     config["Prostate names"].append(name)
@@ -283,18 +289,18 @@ def main(argv):
                         metavar="PATH",
                         default=None,
                         required=True,
-                        help="""Path to the .xlsx file (if not present it will
-                             be automatically created
-                             """,
+                        help=("Path to the .xlsx file (if not present it will",
+                              "be automatically created",
+                              )
                         )
     parser.add_argument("-n", "--new-folder",
                         dest="new_folder_path",
                         metavar="PATH",
                         default=False,
                         required=False,
-                        help="""Path where patient folders will be moved after
-                             execution (optional)
-                             """,
+                        help=("Path where patient folders will be moved after",
+                              "execution (optional)",
+                              )
                         )
     parser.add_argument("-j", "--join-data",
                         dest="join_data",
@@ -313,9 +319,8 @@ def main(argv):
     if args.config_path == None:
         logging.warning("Please specify where is the configuration file!")
     if args.excel_path == None:
-        logging.warning("""Please specify the location of
-                        .xlsx file where data will be stored
-                        """,
+        logging.warning("Please specify the location of",
+                        ".xlsx file where data will be stored",
                         )
      
     # Convert to python path style
@@ -355,8 +360,9 @@ def main(argv):
             print(f"Failed to load {excel_path}, a new file will be created")
             excel_file_exist = 0
     else:
-        print(f"""Excel file at {excel_path} will be overwritten if already
-              present, otherwise it will be created.""")
+        print(f"Excel file at {excel_path} will be overwritten if already",
+              "present, otherwise it will be created.",
+              )
     
     # Check that input folder is not empty
     if is_empty(input_folder_path):
@@ -369,11 +375,11 @@ def main(argv):
         if not os.path.isfile(os.path.join(input_folder_path,folder)):
             patient_folders.append(folder)
     if len(patient_folders) == 0:
-        sys.exit(f"""{input_folder_path} does not contain folders.
-                 Be sure to provide as input the folder that contains the
-                 patients and not directly dcm files.
-                 Aborting execution
-                 """,
+        sys.exit(print(f"{input_folder_path} does not contain folders.",
+                  "Be sure to provide as input the folder that contains the",
+                  "patients and not directly dcm files.",
+                  "Aborting execution",
+                  )
                  )
     
     # Selecting one patient at the time and analyzing it
@@ -411,8 +417,9 @@ def main(argv):
         
         # Filling CT and RTSTRUCT folder if both empty
         if (is_empty(rtstruct_folder_path) and is_empty(ct_folder_path)):
-            print("""Moving CT.dcm files into CT folder and RS.dcm files into
-                  RTSTRUCT folder""")
+            print("Moving CT.dcm files into CT folder and RS.dcm files into",
+                  "RTSTRUCT folder",
+                  )
             for file in os.listdir(patient_folder_path):
                 file_path = os.path.join(patient_folder_path,
                                          file,
@@ -432,24 +439,32 @@ def main(argv):
                     pass
         # Exit to not mix different data
         elif is_empty(rtstruct_folder_path):
-            sys.exit("""Only RTSTRUCT folder is empty. Aborting execution
-                     to not mix different data. Check the data and try
-                     again""")
+            sys.exit(print("Only RTSTRUCT folder is empty. Aborting execution",
+                           "to not mix different data. Check the data and try",
+                           "again",
+                           )
+                     )
         # Exit to not mix different data
         elif is_empty(ct_folder_path):
-            sys.exit("""Only CT folder is empty. Aborting execution to not
-                     mix different data. Check the data and try again""")
+            sys.exit(print("Only CT folder is empty. Aborting execution to",
+                           "not mix different data. Check the data and try",
+                           " again",
+                           )
+                     )
         # Going on if both folders have already data inside, to not merge
         # different data
         else:
-            print("""Both RTSTRUCT and CT folders have already files in them.
-                  Thus, no files will be moved""")
+            print("Both RTSTRUCT and CT folders have already files in them.",
+                  "Thus, no files will be moved",
+                  )
             pass
         
         # Check if RTSTRUCT or CT folders are still empty
         if (is_empty(rtstruct_folder_path) and is_empty(ct_folder_path)):
-            sys.exit("""CT.dcm and/or RS.dcm files not available. Aborting
-                     execution. Check the data and try again""")
+            sys.exit(print("CT.dcm and/or RS.dcm files not available.", # TODO find another word
+                           "Aborting execution. Check the data and try again",
+                           )
+                     )
         
         # Extracting rtstruct file path
         for file in os.listdir(rtstruct_folder_path):
@@ -474,9 +489,8 @@ def main(argv):
             if excel_file_exist:
                 for frame_of_reference in old_data.loc[:,"Frame of reference"]:
                     if frame_of_reference == frame_of_reference_uid:
-                        print("""This study is alreday in the dataframe, going
-                              to the next one
-                              """,
+                        print(f"Study {frame_of_reference} is alreday in the",
+                              "dataframe, going to the next one",
                               )
                         frame_uid_in_old_data = True
                         break
@@ -559,7 +573,6 @@ def main(argv):
             shutil.move(patient_folder_path,
                         os.path.join(new_folder_path, patient_folder),
                         )
-            #TODO this should not be a print and should be shorter
             print(f"{patient_folder} successfully moved to {new_folder_path}")
         else:
             pass
@@ -585,8 +598,7 @@ def main(argv):
             new_dataframe = pd.concat(frames, ignore_index=True)
             print("Old and new dataframe concatenated")
         except NameError:
-            print("""There is not an old dataframe, concatenation not
-                  performed""")
+            print("There is not an old dataframe, concatenation not performed")
         
     
     # Saving dataframe to excel
