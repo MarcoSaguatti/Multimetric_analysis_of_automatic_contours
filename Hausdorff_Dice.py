@@ -20,14 +20,14 @@ def is_empty(folder_path):
     Parameters
     ----------
     folder_path : str
-        Path to the folder that you want to check ("path/to/folder").
+        Path to the folder that you want to check (Ex: "path/to/folder").
 
     Returns
     -------
     1 :
-        If the folder is empty the methods returns the value 1
+        If the folder is empty the methods returns the value 1.
     0 :
-        If the folder is not empty the methods returns the value 0
+        If the folder is not empty the methods returns the value 0.
 
     """
     if len(os.listdir(folder_path)) == 0:
@@ -39,20 +39,22 @@ def patient_info(rtstruct_file_path,
                  information,
                  ):
     """
-    Extracts patient informations from RTSTRUCT file.
-    
-    #more detailed description (if needed)
+    This method extracts patient informations from RTSTRUCT file.
 
     Parameters
     ----------
-    rtstruct_file_path : TYPE
-        DESCRIPTION.
-    info_needed : TYPE
-        DESCRIPTION.
+    rtstruct_file_path : str
+        Path to the RTSTRUCT.dcm file (Ex: "path/to/RTSTRUCT.dcm").
+    information : str
+        Name of the information that you want to extract from the RTSTRUCT.dcm
+        file (Ex: "PatientID").
 
     Returns
     -------
-    None.
+    info:
+        Value of the information required. The type of the value depends on
+        the information extracted (Ex: str for PatientID; uid.UID for
+        FrameOfReferenceUID).
 
     """
     rtstruct_dataset = pydicom.dcmread(rtstruct_file_path)
