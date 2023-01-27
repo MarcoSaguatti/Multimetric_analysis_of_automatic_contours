@@ -12,23 +12,22 @@ import surface_distance as sd
 
 
 # TODO rewrite the docstring
-# TODO check if I need to create more functions
 # TODO create a do_main function for tests
 def is_empty(folder_path):
     """
-    Checks if the folder is empty or not.
-    
-    #more detailed description (if needed)
+    This method checks if a folder is empty or not.
 
     Parameters
     ----------
-    folder_path : TYPE
-        DESCRIPTION.
+    folder_path : str
+        Path to the folder that you want to check ("path/to/folder").
 
     Returns
     -------
-    int
-        DESCRIPTION.
+    1 :
+        If the folder is empty the methods returns the value 1
+    0 :
+        If the folder is not empty the methods returns the value 0
 
     """
     if len(os.listdir(folder_path)) == 0:
@@ -436,14 +435,14 @@ def main(argv):
                     pass
         # Exit to not mix different data.
         elif is_empty(rtstruct_folder_path):
-            sys.exit(print("RTSTRUCT folder is empty. execution halted to not",
+            sys.exit(print("RTSTRUCT folder is empty. Execution halted to not",
                            "mix different data. Check the data and try",
                            "again",
                            )
                      )
         # Exit to not mix different data.
         elif is_empty(ct_folder_path):
-            sys.exit(print("CT folder is empty. execution halted to",
+            sys.exit(print("CT folder is empty. Execution halted to",
                            "not mix different data. Check the data and try",
                            " again",
                            )
