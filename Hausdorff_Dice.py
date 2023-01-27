@@ -1,10 +1,10 @@
 import argparse
 import sys
-import pandas as pd
 import os
 import shutil
 import json
-import logging
+
+import pandas as pd
 
 import pydicom
 from rt_utils import RTStructBuilder
@@ -12,6 +12,8 @@ import surface_distance as sd
 
 
 # TODO rewrite the docstring
+# TODO check if I need to create more functions
+# TODO create a do_main function for tests
 def is_empty(folder_path):
     """
     Checks if the folder is empty or not.
@@ -79,7 +81,7 @@ def voxel_spacing(ct_folder_path):
     ct_images = os.listdir(ct_folder_path)
     slices = []
     
-    # Reading each ct image using pydicom and storing the results in a list
+    # Reading each ct image using pydicom and storing the results in a list.
     for ct_image in ct_images:
         ct_file_path = os.path.join(ct_folder_path,
                                     ct_image,
@@ -89,21 +91,21 @@ def voxel_spacing(ct_folder_path):
                                          )
         slices.append(single_slice)
         
-    # Sorting every image in the list
+    # Sorting every image in the list.
     slices = sorted(slices,
                     key=lambda x:x.ImagePositionPatient[2],
                     )
     
-    # Computing pixel spacing
+    # Computing pixel spacing.
     pixel_spacing_mm = list(map(float,
                                 slices[0].PixelSpacing._list,
                                 ),
                             )
     
-    # Computing slice thickness
+    # Computing slice thickness.
     slice_thickness_mm = float(slices[0].SliceThickness)
     
-    # Computing voxel spacing
+    # Computing voxel spacing.
     voxel_spacing_mm = pixel_spacing_mm.copy()
     voxel_spacing_mm.append(slice_thickness_mm)
     
@@ -141,10 +143,11 @@ def extract_manual_segments(patient_data,
 
     """
     # TODO put some code to handle the case in which one or more of the
-    # OARs is not present.
+    # OARs is not present (maybe).
     # Creates the list of manual segments
     all_segments = patient_data.get_roi_names()
     manual_segments = [0 for i in range(len(alias_names))]
+    # Puts every manual segment in the correct place of the list
     for name in all_segments:
         if name in mbs_segments:
             continue
@@ -161,15 +164,14 @@ def extract_manual_segments(patient_data,
         elif name in config["Right femur names"]:
             manual_segments[4] = name
         else:
+            # Handle the cases in which some segments names are not recognized
+            # by asking to the user.
             line = f"Do you want to keep {name}? Enter Y (yes) or N (no) \n"
             to_keep = input(line).upper()
             # TODO put some code to handle the case in which the user
             # provides the wrong input, and see if there is a better way
             # to write the following if-else.
             if to_keep == "Y":
-                # TODO check if it is correct to print on the standard
-                # output, if it correct how I wrote the code and put some
-                # check to the input provided by the user.
                 line1 = (f"To which alias name is {name} associated? Enter P")
                 line2 = ("(Prostate), A (Anorectum), B (Bladder), L (Left")
                 line3 = ("femur) R (Right femur) \n")
@@ -258,33 +260,38 @@ def compute_metrics(patient_data,
 def move_file_folder():
     return
 
-# TODO Check if it is correct to put a docstring after main and if I have to
-# add Parameters and other stuff (initially this was in logging.info).
-# TODO check if it is better to use logging messages or not (and how to 
-# visualize them)
+# TODO write a good docstring also for main
 def main(argv):
-    """Computation of Hausdorff distance (HD), volumetric Dice similarity 
+    """
+    Computation of Hausdorff distance (HD), volumetric Dice similarity 
     coefficient (volDSC) and surface Dice similarity coefficient (surfDSC) 
     between manual and automatic segmentations for pelvic structures.
     
-    """
-    # TODO use more prints to make the user know whats going on during
-    # execution (then see if it is better to use print, log messages or other)
-    # TODO printed messages must be checked and rewritten in the correct way
-                     
-    # Parse command-line arguments
+    #more detailed description (if needed)
+
+    Parameters
+    ----------
+    argv : TYPE
+        DESCRIPTION.
+
+    Returns
+    -------
+    None.
+
+    """                     
+    # Parse command-line arguments.
     parser = argparse.ArgumentParser(description 
                                      = "HD, volDSC and surfDSC computation")
     parser.add_argument(dest="input_folder_path",
                         metavar="input_path",
                         default=None,
                         help="Path to the folder where patients are stored",
-                        ) #"-i", "--input-folder",
+                        )
     parser.add_argument(dest="config_path",
                         metavar="config_path",
                         default=None,
                         help="Path to the configuration json file",
-                        ) #"-c", "--config-path",
+                        )
     parser.add_argument(dest="excel_path",
                         metavar="excel_path",
                         default=None,
@@ -292,7 +299,7 @@ def main(argv):
                               stored (if it is not already there it will be
                               automatically created)"""
                               )
-                        ) #"-e", "--excel-path",
+                        ) 
     parser.add_argument("-n", "--new-folder",
                         dest="new_folder_path",
                         metavar="PATH",
@@ -314,27 +321,16 @@ def main(argv):
     
     args = parser.parse_args(argv)
         
-    # TODO check if keep this or not
-    # Check required arguments
-    if args.input_folder_path == None:
-        logging.warning("Please specify input DICOM study folder!")
-    if args.config_path == None:
-        logging.warning("Please specify where is the configuration file!")
-    if args.excel_path == None:
-        logging.warning("Please specify the location of",
-                        ".xlsx file where data will be stored",
-                        )
-     
-    # Convert to python path style
+    # Convert to python path style.
     input_folder_path = args.input_folder_path.replace("\\", "/")
     new_folder_path = args.new_folder_path.replace("\\", "/")
     config_path = args.config_path.replace("\\", "/")
     excel_path = args.excel_path.replace("\\", "/")
     
-    # If true new data will be concatenated with old ones
+    # If true new data will be concatenated with old ones.
     join_data = args.join_data
     
-    # Opening the json file where the lists of names are stored
+    # Opening the json file where the lists of names are stored.
     fd = open(config_path)
     config = json.load(fd)
     
@@ -352,50 +348,50 @@ def main(argv):
     # otherwise the old excel file will be overwritten.
     if join_data:
         try:
-            # loading existing data
+            # loading existing data.
             old_data = pd.read_excel(excel_path)
-            print(f"Successfully loaded {excel_path}")
+            print(f"\nSuccessfully loaded {excel_path}")
             excel_file_exist = 1
-        except: # TODO find the correct exception
-            # There is not an existing excel file in excel path
-            print(f"Failed to load {excel_path}, a new file will be created")
+        except FileNotFoundError:
+            # There is not an existing excel file in excel path.
+            print(f"\nFailed to load {excel_path}, a new file will be created")
             excel_file_exist = 0
     else:
-        print(f"Excel file at {excel_path} will be overwritten if already",
+        print(f"\nExcel file at {excel_path} will be overwritten if already",
               "present, otherwise it will be created.",
               )
     
-    # Check that input folder is not empty
+    # Input folder can not be empty.
     if is_empty(input_folder_path):
-        sys.exit(f"{input_folder_path} is empty, aborting execution")
+        sys.exit(f"{input_folder_path} is empty, execution halted")
     
-    # Check that input folder contains patient folders
+    # Input folder must contain patient folders, not directly .dcm files.
     patient_folders = []
     for folder in os.listdir(input_folder_path):
-        # Only patient folders are needed, other files are skipped
+        # Only patient folders are needed, so, files are skipped.
         if not os.path.isfile(os.path.join(input_folder_path,folder)):
             patient_folders.append(folder)
     if len(patient_folders) == 0:
         sys.exit(print(f"{input_folder_path} does not contain folders.",
                   "Be sure to provide as input the folder that contains the",
-                  "patients and not directly dcm files.",
-                  "Aborting execution",
+                  "patients and not directly .dcm files.",
+                  "Execution halted",
                   )
                  )
     
-    # Selecting one patient at the time and analyzing it
+    # Selecting one patient at the time and analyzing it.
     for patient_folder in patient_folders:
         patient_folder_path = os.path.join(input_folder_path,
                                            patient_folder,
                                            )
         
-        # Checking that patient folder is not empty
+        # Patient folder can not be empty.
         if is_empty(patient_folder_path):
-            sys.exit(f"{patient_folder_path} is empty, aborting execution")
+            sys.exit(f"{patient_folder_path} is empty, execution halted")
         
-        # RTSTRUCT and DICOM series should be in different folders.
+        # RTSTRUCT and CT series should be in different folders.
         # Creating RTSTRUCT folder if it is not already present, otherwise
-        # going on with execution.
+        # going on with the execution.
         rtstruct_folder = "RTSTRUCT"
         rtstruct_folder_path = os.path.join(patient_folder_path,
                                             rtstruct_folder,
@@ -406,7 +402,7 @@ def main(argv):
             pass
         
         # Creating CT folder if it is not already present, otherwise
-        # going on with execution
+        # going on with the execution.
         ct_folder = "CT"
         ct_folder_path = os.path.join(patient_folder_path,
                                                 ct_folder,
@@ -416,7 +412,7 @@ def main(argv):
         except FileExistsError:
             pass
         
-        # Filling CT and RTSTRUCT folder if both empty
+        # Filling CT and RTSTRUCT folder if both empty.
         if (is_empty(rtstruct_folder_path) and is_empty(ct_folder_path)):
             print("Moving CT.dcm files into CT folder and RS.dcm files into",
                   "RTSTRUCT folder",
@@ -438,42 +434,42 @@ def main(argv):
                         pass
                 else:
                     pass
-        # Exit to not mix different data
+        # Exit to not mix different data.
         elif is_empty(rtstruct_folder_path):
-            sys.exit(print("Only RTSTRUCT folder is empty. Aborting execution",
-                           "to not mix different data. Check the data and try",
+            sys.exit(print("RTSTRUCT folder is empty. execution halted to not",
+                           "mix different data. Check the data and try",
                            "again",
                            )
                      )
-        # Exit to not mix different data
+        # Exit to not mix different data.
         elif is_empty(ct_folder_path):
-            sys.exit(print("Only CT folder is empty. Aborting execution to",
+            sys.exit(print("CT folder is empty. execution halted to",
                            "not mix different data. Check the data and try",
                            " again",
                            )
                      )
-        # Going on if both folders have already data inside, to not merge
-        # different data
+        # Going on if both folders have already data inside, to not mix
+        # different data.
         else:
             print("Both RTSTRUCT and CT folders have already files in them.",
                   "Thus, no files will be moved",
                   )
             pass
         
-        # Check if RTSTRUCT or CT folders are still empty
-        if (is_empty(rtstruct_folder_path) and is_empty(ct_folder_path)):
-            sys.exit(print("CT.dcm and/or RS.dcm files not available.", # TODO find another word
-                           "Aborting execution. Check the data and try again",
+        # If RTSTRUCT or CT folders are still empty there are no data.
+        if (is_empty(rtstruct_folder_path) or is_empty(ct_folder_path)):
+            sys.exit(print("CT.dcm and/or RS.dcm files not available.",
+                           "Execution halted. Check the data and try again",
                            )
                      )
         
-        # Extracting rtstruct file path
+        # Extracting rtstruct file path.
         for file in os.listdir(rtstruct_folder_path):
             rtstruct_file_path = os.path.join(rtstruct_folder_path,
                                                      file,
                                                      )
             
-        # Extraction of patient ID and frame of reference UID
+        # Extraction of patient ID and frame of reference UID.
         patient_id = patient_info(rtstruct_file_path,
                                   "PatientID",
                                   )
@@ -481,41 +477,54 @@ def main(argv):
                                               "FrameOfReferenceUID",
                                               )
         
-        # If join_data is True we need to check if the current study is
-        # already in the dataframe and if it is to skip it. Otherwise no
-        # checks are needed and every study will be analyzed. 
+        print(f"Starting patient {patient_id} analysis")
+        
+        # If the current study is already in the dataframe skip it, otherwise
+        # every study will be analyzed. 
         if join_data:
-            # If the excel file exists checks if the current frame of
-            # reference uid is already saved there.
+            # If the current frame of reference is already in the excel file
+            # we can move to the next one.
             if excel_file_exist:
                 for frame_of_reference in old_data.loc[:,"Frame of reference"]:
                     if frame_of_reference == frame_of_reference_uid:
-                        print(f"Study {frame_of_reference} is alreday in the",
-                              "dataframe, going to the next one",
+                        print(f"Study {frame_of_reference} of patient",
+                              f"{patient_id} is alreday in the dataframe,",
+                              "going to the next one",
                               )
                         frame_uid_in_old_data = True
                         break
                     else:
                         frame_uid_in_old_data = False
                 if frame_uid_in_old_data:
-                    # TODO move patient folder in patient_used
+                    # Moving patient folder to a different location if the
+                    # destination folder does not exist it will be
+                    # automatically created.
+                    if new_folder_path:
+                        shutil.move(patient_folder_path,
+                                    os.path.join(new_folder_path,
+                                                 patient_folder,
+                                                 ),
+                                    )
+                        print(f"{patient_folder} successfully moved",
+                              f"to {new_folder_path}",
+                              )
+                    else:
+                        pass
                     continue
             else:
-                # There is not an old dataframe beacuse in excel_path there is
-                # not an existing excel file. We can go on with the current
-                # patient.
+                # Without an old dataframe every patient will be analyzed.
                 pass
                         
-        # Extracting voxel spacing (here and and not in compute_metrics
-        # because it is always the same for one patient and it does not make
-        # sense to compute it more than once)
+        # Extracting voxel spacing.
         voxel_spacing_mm = voxel_spacing(ct_folder_path)
             
-        # Reading current patient files
+        # Reading current patient files.
         patient_data = RTStructBuilder.create_from(ct_folder_path, 
                                                rtstruct_file_path,
                                                )
         
+        # Creating manual segments list.
+        print("Creating the list of manual segments")
         manual_segments = extract_manual_segments(patient_data,
                                                   alias_names,
                                                   mbs_segments,
@@ -524,8 +533,6 @@ def main(argv):
                                                   )
         
         # Reference and compared segments lists.
-        # With these lists it is possible to use a for loop to perform
-        # manual-MBS, manual-DL and MBS-DL comparisons.
         ref_segs = [manual_segments,
                     manual_segments,
                     mbs_segments,
@@ -537,20 +544,22 @@ def main(argv):
         
         # Computing HD, DSC and SDSC for every segment in manual and MBS lists.
         for methods in range(len(compared_methods)):
-            # TODO maybe print some message to let the user know what's going
-            # on.
+            print("Computing 95 percentile Hausdorff distance, Dice",
+                  "similarity coefficient and surface Dice similarity",
+                  f"coefficient between {compared_methods[methods]} segments",
+                  )
             
             for segment in range(len(alias_names)):
                 # Computing surface Dice similarity coefficient (sdsc), Dice
-                # similarity coefficient (dsc) and Hausdorff distance (hd)
+                # similarity coefficient (dsc) and Hausdorff distance (hd).
                 sdsc, dsc, hd = compute_metrics(patient_data,
                                                 ref_segs[methods][segment],
                                                 comp_segs[methods][segment],
                                                 voxel_spacing_mm,
                                                 )
                 
-                # Creating a temporary list to store the current row of the
-                # final dataframe.
+                # Temporary list to store the current row of the final
+                # dataframe.
                 row_data = [patient_id,
                             frame_of_reference_uid,
                             compared_methods[methods],
@@ -562,7 +571,7 @@ def main(argv):
                             sdsc,
                             ]
                 
-                # Adding the constructed raw to final_data
+                # Adding the constructed row to final_data.
                 final_data.append(row_data)
       
         # Moving patient folder to a different location, if the destination
@@ -578,46 +587,48 @@ def main(argv):
             pass
         
     # Creating the dataframe
-    new_dataframe = pd.DataFrame(final_data,
-                             columns=["Patient ID",
-                                      "Frame of reference",
-                                      "Compared methods",
-                                      "Reference segment name",
-                                      "Compared segment name",
-                                      "Alias name",
-                                      "95% Hausdorff distance (mm)",
-                                      "Volumetric Dice similarity coefficient",
-                                      "Surface Dice similarity coefficient",
-                                      ],
-                             )
+    new_data = pd.DataFrame(final_data,
+                            columns=["Patient ID",
+                                     "Frame of reference",
+                                     "Compared methods",
+                                     "Reference segment name",
+                                     "Compared segment name",
+                                     "Alias name",
+                                     "95% Hausdorff distance (mm)",
+                                     "Volumetric Dice similarity coefficient",
+                                     "Surface Dice similarity coefficient",
+                                     ],
+                            )
     
     if join_data:
         try:
-            # Concatenating old and new dataframes
+            # Concatenating old and new dataframes.
             frames = [old_data,
-                      new_dataframe,
+                      new_data,
                       ]
-            new_dataframe = pd.concat(frames,
-                                      ignore_index=True,
-                                      )
+            new_data = pd.concat(frames,
+                                 ignore_index=True,
+                                 )
             print("Old and new dataframe concatenated")
         except NameError:
             print("There is not an old dataframe, concatenation not performed")
         
     
-    # Saving dataframe to excel
-    new_dataframe.to_excel(excel_path,
-                           sheet_name="Data",
-                           index=False,
-                           )
+    # Saving dataframe to excel.
+    print("Saving data")
+    new_data.to_excel(excel_path,
+                      sheet_name="Data",
+                      index=False,
+                      )
      
-    # TODO check if it is better to change names
-    # Updating config.json
+    # Updating config.json.
     json_object = json.dumps(config,
                              indent=4,
                              )
     with open(config_path, "w") as outfile:
         outfile.write(json_object)
+        
+    print("Execution successfully ended")
                              
 
 if __name__ == "__main__":
