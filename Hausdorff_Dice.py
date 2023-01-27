@@ -161,9 +161,8 @@ def extract_manual_segments(patient_data,
         elif name in config["Right femur names"]:
             manual_segments[4] = name
         else:
-            to_keep = input(f"Do you want to keep {name}?",
-                            "Enter Y (yes) or N (no) \n",
-                            ).upper()
+            line = f"Do you want to keep {name}? Enter Y (yes) or N (no) \n"
+            to_keep = input(line).upper()
             # TODO put some code to handle the case in which the user
             # provides the wrong input, and see if there is a better way
             # to write the following if-else.
@@ -171,11 +170,10 @@ def extract_manual_segments(patient_data,
                 # TODO check if it is correct to print on the standard
                 # output, if it correct how I wrote the code and put some
                 # check to the input provided by the user.
-                what_is = input(f"To which alias name is {name} associated?",
-                                "Enter P (Prostate), A (Anorectum),",
-                                " B (Bladder), L (Left femur) or",
-                                " R (Right femur) \n",
-                                ).upper()
+                line1 = (f"To which alias name is {name} associated? Enter P")
+                line2 = ("(Prostate), A (Anorectum), B (Bladder), L (Left")
+                line3 = ("femur) R (Right femur) \n")
+                what_is = input(line1+line2+line3).upper()
                 if what_is == "P":
                     manual_segments[0] = name
                     config["Prostate names"].append(name)
@@ -277,29 +275,24 @@ def main(argv):
     # Parse command-line arguments
     parser = argparse.ArgumentParser(description 
                                      = "HD, volDSC and surfDSC computation")
-    parser.add_argument("-i", "--input-folder",
-                        dest="input_folder_path",
-                        metavar="PATH",
+    parser.add_argument(dest="input_folder_path",
+                        metavar="input_path",
                         default=None,
-                        required=True,
-                        help="Path to the folder of input DICOM study/ies",
-                        )
-    parser.add_argument("-c", "--config-path",
-                        dest="config_path",
-                        metavar="PATH",
+                        help="Path to the folder where patients are stored",
+                        ) #"-i", "--input-folder",
+    parser.add_argument(dest="config_path",
+                        metavar="config_path",
                         default=None,
-                        required=True,
                         help="Path to the configuration json file",
-                        )
-    parser.add_argument("-e", "--excel-path",
-                        dest="excel_path",
-                        metavar="PATH",
+                        ) #"-c", "--config-path",
+    parser.add_argument(dest="excel_path",
+                        metavar="excel_path",
                         default=None,
-                        required=True,
-                        help=("""Path to the .xlsx file (if not present
-                              it will be automatically created)"""
+                        help=("""Path to the .xlsx file where data will be 
+                              stored (if it is not already there it will be
+                              automatically created)"""
                               )
-                        )
+                        ) #"-e", "--excel-path",
     parser.add_argument("-n", "--new-folder",
                         dest="new_folder_path",
                         metavar="PATH",
@@ -311,10 +304,12 @@ def main(argv):
                         )
     parser.add_argument("-j", "--join-data",
                         dest="join_data",
-                        metavar=bool,
+                        metavar="BOOL",
                         default=False,
                         required=False,
-                        help="Join previously extracted data with new ones",
+                        help=(""" If true: join previously extracted data with
+                              the new ones"""
+                              )
                         )
     
     args = parser.parse_args(argv)
