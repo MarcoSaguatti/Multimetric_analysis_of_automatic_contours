@@ -64,14 +64,19 @@ def patient_info(rtstruct_file_path,
 
 def voxel_spacing(ct_folder_path):
     """
-    Computing voxel spacing.
+    Computing voxel spacing of the loaded DICOM series.
     
-    #more detailed description (if needed)
+    Using the library pydicom every file in the DICOM series (slice) is read
+    and stored in a list.
+    Then, after sorting every slice in the list, pixel spacing and slice
+    thickness are computed.
+    Finally, combining pixel spacing and slice thickness in one list, voxel
+    spacing is obtained.
 
     Parameters
     ----------
-    ct_folder_path : TYPE
-        DESCRIPTION.
+    ct_folder_path : str
+        Path to the folder containing DICOM series files (Ex: path/to/CTfolder)
 
     Returns
     -------
@@ -257,10 +262,6 @@ def compute_metrics(patient_data,
     
     return surface_dice, volume_dice, hausdorff_distance
     
-
-def move_file_folder():
-    return
-
 # TODO write a good docstring also for main
 def main(argv):
     """
