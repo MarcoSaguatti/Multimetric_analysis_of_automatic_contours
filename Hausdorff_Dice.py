@@ -277,19 +277,17 @@ def compute_metrics(patient_data,
     
     return surface_dice, volume_dice, hausdorff_distance
     
-# TODO write a good docstring also for main
 def main(argv):
     """
-    Computation of Hausdorff distance (HD), volumetric Dice similarity 
-    coefficient (volDSC) and surface Dice similarity coefficient (surfDSC) 
+    Computation of Hausdorff distance (hd), volumetric Dice similarity 
+    coefficient (dsc) and surface Dice similarity coefficient (sdsc) 
     between manual and automatic segmentations for pelvic structures.
-    
-    #more detailed description (if needed)
 
     Parameters
     ----------
-    argv : TYPE
-        DESCRIPTION.
+    argv : char **
+        Pointer to the pointer to the array where command line arguments are
+        stored in the memory.
 
     Returns
     -------
