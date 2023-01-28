@@ -126,26 +126,32 @@ def extract_manual_segments(patient_data,
     """
     Creating the list of manual segments.
     
-    #more detailed description (if needed)
+    The list of all segments in the image is extracted from patient data.
+    Then, the manual_segments list is created starting from the alias_names
+    list and is initially filled with zeros.
+    Every element of all_segments is compared with the lists of names in the 
+    config.json file and inserted in the correct place of the manual_segments
+    list.
+    If the element is not in any list it will be asked to the user if it must
+    be kept or no.    
 
     Parameters
     ----------
-    patient_data : TYPE
-        DESCRIPTION.
-    alias_names : TYPE
-        DESCRIPTION.
-    mbs_segments : TYPE
-        DESCRIPTION.
-    dl_segments : TYPE
-        DESCRIPTION.
-    config : TYPE
-        DESCRIPTION.
-     : TYPE
-        DESCRIPTION.
+    patient_data : rtstruct.RTStruct
+        RTStruct object containing all patient data.
+    alias_names : list
+        list of the reference names of evry organ at risk that must e compared.
+    mbs_segments : list
+        list of model basesed segmentation segments names.
+    dl_segments : list
+        List of deep learning segmentation segments names.
+    config : dict
+        dictionary containing lists of possible manual segments names.
 
     Returns
     -------
-    None.
+    manual_segments: list
+        list containing current patient manual segments names.
 
     """
     # TODO put some code to handle the case in which one or more of the
