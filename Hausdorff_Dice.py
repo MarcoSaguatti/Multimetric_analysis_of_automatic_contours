@@ -4,6 +4,7 @@ import os
 import shutil
 import json
 
+import numpy as np
 import pandas as pd
 
 import pydicom
@@ -221,27 +222,33 @@ def compute_metrics(patient_data,
     Computing Hausdorff distance (hd), volumetric Dice similarity coefficient
     (dsc) and surface Dice similarity coefficient (sdsc).
     
-    #more detailed description (if needed)
+    Starting from the binary labelmaps of the two segments the three metrics
+    are computed.
+    Surface Dice tolerance is set equal to the greatest voxel dimension.
+    Percent value of Hausdorff distance is set to 95.
+    
 
     Parameters
     ----------
-    patient_data : TYPE
-        DESCRIPTION.
-    reference_segment : TYPE
-        DESCRIPTION.
-    segment_to_compare : TYPE
-        DESCRIPTION.
-    voxel_spacing_mm : TYPE
-        DESCRIPTION.
+    patient_data : rtstruct.RTStruct
+        RTStruct object containing all patient data.
+    reference_segment : str
+        Name of one of the segments to compare (Ex. Prostate)
+    segment_to_compare : str
+        Name of the other segment to compare (Ex. Prostate_MBS)
+    voxel_spacing_mm : list
+        Voxel dimensions (Ex. [1, 1, 3])
 
     Returns
     -------
-    surface_dice : TYPE
-        DESCRIPTION.
-    volume_dice : TYPE
-        DESCRIPTION.
-    hausdorff_distance : TYPE
-        DESCRIPTION.
+    surface_dice : float
+        Value of the surface Dice similarity coefficient between the two
+        compared segments.
+    volume_dice : float
+        Value of the Dice similarity coefficient between the two compared
+        segments.
+    hausdorff_distance : float
+        Value of the Hausdorff distance between the two compared segments.
 
     """
     # Binary labelmap creation
@@ -254,8 +261,10 @@ def compute_metrics(patient_data,
                                               voxel_spacing_mm,
                                               )
     
+    voxel_array = np.array(voxel_spacing_mm)
+    tolerance = voxel_array.max()
     surface_dice = sd.compute_surface_dice_at_tolerance(surf_dists,
-                                                        tolerance_mm=3,
+                                                        tolerance_mm=tolerance,
                                                         )
     
     volume_dice = sd.compute_dice_coefficient(reference_labelmap,
