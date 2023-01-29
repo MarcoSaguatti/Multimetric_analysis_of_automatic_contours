@@ -24,6 +24,7 @@ import Hausdorff_Dice
 #TODO trova un modo migliore
 empty_folder = r"C:\Users\Marco\Desktop\università\Magistrale\software_and_computing\tests\test_is_empty\empty_folder"
 non_empty_folder = r"C:\Users\Marco\Desktop\università\Magistrale\software_and_computing\tests\test_is_empty\non_empty_folder"
+rtstruct_file_path = r"C:\Users\Marco\Desktop\università\Magistrale\software_and_computing\tests\test_patient_info\RTSTRUCT\RS1.2.752.243.1.1.20230123144246076.4000.75633.dcm"
 
 def test_is_empty_with_empty_folder():
     """
@@ -48,3 +49,33 @@ def test_is_empty_with_non_empty_folder():
 
     """
     assert Hausdorff_Dice.is_empty(non_empty_folder) == 0
+    
+def test_patient_info_with_patient_id():
+    """
+    This methods checks that the function patient_info returns a string when
+    information is equal to PatientID.
+    Returns
+    -------
+    None.
+
+    """
+    info = Hausdorff_Dice.patient_info(rtstruct_file_path,
+                                       "PatientID",
+                                       )
+    assert type(info) == str
+    
+def test_patient_info_with_frame_of_reference_uid():
+    """
+    This methods checks that the function patient_info returns a uid object
+    when information is equal to FrameOfReferenceUID.
+
+    Returns
+    -------
+    None.
+
+    """
+    info = Hausdorff_Dice.patient_info(rtstruct_file_path,
+                                       "FrameOfReferenceUID",
+                                       )
+    assert type(info) == pydicom.uid.UID
+    

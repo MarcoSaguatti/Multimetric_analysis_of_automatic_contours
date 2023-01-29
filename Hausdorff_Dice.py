@@ -54,14 +54,16 @@ def patient_info(rtstruct_file_path,
     -------
     info:
         Value of the information required. The type of the value depends on
-        the information extracted (Ex: str for PatientID; uid.UID for
+        the information extracted (Ex: str for PatientID; pydicom.uid.UID for
         FrameOfReferenceUID).
 
     """
-    rtstruct_dataset = pydicom.dcmread(rtstruct_file_path)
-    info = rtstruct_dataset[information].value
-    
-    return info
+    try:
+        rtstruct_dataset = pydicom.dcmread(rtstruct_file_path)
+        info = rtstruct_dataset[information].value
+        return info
+    except KeyError:
+        sys.exit(f"There is no {information} in the RTSTRUCT file provided.")
 
 def voxel_spacing(ct_folder_path):
     """
