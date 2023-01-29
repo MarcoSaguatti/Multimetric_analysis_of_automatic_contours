@@ -26,7 +26,25 @@ empty_folder = r"C:\Users\Marco\Desktop\università\Magistrale\software_and_comp
 non_empty_folder = r"C:\Users\Marco\Desktop\università\Magistrale\software_and_computing\tests\test_is_empty\non_empty_folder"
 
 def test_is_empty_with_empty_folder():
+    """
+    This method checks if the function is_empty returns 1 when an empty folder
+    is given as parameter.
+
+    Returns
+    -------
+    None.
+
+    """
     assert Hausdorff_Dice.is_empty(empty_folder) == 1
     
 def test_is_empty_with_non_empty_folder():
+    """
+    This method checks if the function is_empty returns 0 when a non empty
+    folder is given as parameter.
+
+    Returns
+    -------
+    None.
+
+    """
     assert Hausdorff_Dice.is_empty(non_empty_folder) == 0
