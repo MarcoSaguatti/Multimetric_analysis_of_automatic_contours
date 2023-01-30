@@ -12,8 +12,6 @@ from rt_utils import RTStructBuilder
 import surface_distance as sd
 
 
-# TODO rewrite the docstring
-# TODO create a do_main function for tests
 def is_empty(folder_path):
     """
     This function checks if a folder is empty or not.

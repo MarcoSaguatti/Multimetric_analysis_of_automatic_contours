@@ -26,6 +26,10 @@ empty_folder = r"C:\Users\Marco\Desktop\università\Magistrale\software_and_comp
 non_empty_folder = r"C:\Users\Marco\Desktop\università\Magistrale\software_and_computing\tests\test_is_empty\non_empty_folder"
 rtstruct_file_path = r"C:\Users\Marco\Desktop\università\Magistrale\software_and_computing\tests\test_patient_info\RTSTRUCT\RS1.2.752.243.1.1.20230123144246076.4000.75633.dcm"
 ct_folder_path = r"C:\Users\Marco\Desktop\università\Magistrale\software_and_computing\tests\test_voxel_spacing\CT"
+config_path = r"C:\Users\Marco\Desktop\università\Magistrale\software_and_computing\project\config.json"
+input_folder = r"C:\Users\Marco\Desktop\università\Magistrale\software_and_computing\tests\test_hausdorff_dice\input_folder"
+excel_path = r"C:\Users\Marco\Desktop\università\Magistrale\software_and_computing\tests\test_hausdorff_dice\test.xlsx"
+new_folder_path = r"C:\Users\Marco\Desktop\università\Magistrale\software_and_computing\tests\test_hausdorff_dice\new_folder"
 
 def test_is_empty_with_empty_folder():
     """
@@ -123,7 +127,6 @@ def test_extract_manual_segments_has_five_elements():
                    "Femur_Head_L_DL",
                    "Femur_Head_R_DL",
                    ]
-    config_path = r"C:\Users\Marco\Desktop\università\Magistrale\software_and_computing\project\config.json"
     fd = open(config_path)
     config = json.load(fd)
     
@@ -159,3 +162,23 @@ def test_compute_metrics_returns_float():
     assert type(sdsc) == np.float64
     assert type(dsc) == np.float64
     assert type(sdsc) == np.float64
+    
+def test_hausdorff_dice():
+    """
+    This function checks if the length of the dataframe after running the
+    function hausdorff_dice for one patient is 15 as expected.
+
+    Returns
+    -------
+    None.
+
+    """
+    Hausdorff_Dice.hausdorff_dice(input_folder,
+                                  config_path,
+                                  excel_path,
+                                  new_folder_path,
+                                  join_data = False,
+                                  )
+    dataframe = pd.read_excel(excel_path)
+    assert len(dataframe) == 15
+    
