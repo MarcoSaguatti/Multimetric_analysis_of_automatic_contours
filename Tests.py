@@ -91,4 +91,47 @@ def test_voxel_spacing_has_three_elements():
 
     """
     assert len(Hausdorff_Dice.voxel_spacing(ct_folder_path)) == 3
+
+def test_extract_manual_segments_has_five_elements():
+    """
+    This test checks that the function voxel_spacing returns a list of five
+    elements.
+
+    Returns
+    -------
+    None.
+
+    """
+    patient_data = RTStructBuilder.create_from(ct_folder_path, 
+                                               rtstruct_file_path,
+                                               )
+    alias_names = ["Prostate",
+                   "Rectum",
+                   "Bladder",
+                   "Femoral head (left)",
+                   "Femoral head right",
+                   ]
+    mbs_segments = ["Prostate_MBS",
+                    "Rectum_MBS",
+                    "Bladder_MBS",
+                    "FemoralHead (Left)_MBS",
+                    "FemoralHead (Right)_MBS",
+                    ]
+    dl_segments = ["Prostate_DL",
+                   "Anorectum_DL",
+                   "Bladder_DL",
+                   "Femur_Head_L_DL",
+                   "Femur_Head_R_DL",
+                   ]
+    config_path = r"C:\Users\Marco\Desktop\università\Magistrale\software_and_computing\project\config.json"
+    fd = open(config_path)
+    config = json.load(fd)
+    
+    manual_segments = Hausdorff_Dice.extract_manual_segments(patient_data,
+                                                             alias_names,
+                                                             mbs_segments,
+                                                             dl_segments,
+                                                             config,
+                                                             )
+    assert len(manual_segments) == 5
     

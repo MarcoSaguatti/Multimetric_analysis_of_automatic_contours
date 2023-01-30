@@ -168,6 +168,8 @@ def extract_manual_segments(patient_data,
             continue
         elif name in dl_segments:
             continue
+        elif name in config["External names"]:
+            continue
         elif name in config["Prostate names"]:
             manual_segments[0] = name
         elif name in config["Rectum names"]:
