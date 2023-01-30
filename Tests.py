@@ -14,22 +14,23 @@ import surface_distance as sd
 
 import Hausdorff_Dice
 
-# FIXME non va
-# config_path = r"C:\Users\Marco\Desktop\università\Magistrale\software_and_computing\tests.json"
-# # Opening the json file where the lists of names are stored.
-# fd = open(config_path)
-# config = json.load(fd)
 
-
-#TODO trova un modo migliore
-empty_folder = r"C:\Users\Marco\Desktop\università\Magistrale\software_and_computing\tests\test_is_empty\empty_folder"
-non_empty_folder = r"C:\Users\Marco\Desktop\università\Magistrale\software_and_computing\tests\test_is_empty\non_empty_folder"
-rtstruct_file_path = r"C:\Users\Marco\Desktop\università\Magistrale\software_and_computing\tests\test_patient_info\RTSTRUCT\RS1.2.752.243.1.1.20230123144246076.4000.75633.dcm"
-ct_folder_path = r"C:\Users\Marco\Desktop\università\Magistrale\software_and_computing\tests\test_voxel_spacing\CT"
-config_path = r"C:\Users\Marco\Desktop\università\Magistrale\software_and_computing\project\config.json"
-input_folder = r"C:\Users\Marco\Desktop\università\Magistrale\software_and_computing\tests\test_hausdorff_dice\input_folder"
-excel_path = r"C:\Users\Marco\Desktop\università\Magistrale\software_and_computing\tests\test_hausdorff_dice\test.xlsx"
-new_folder_path = r"C:\Users\Marco\Desktop\università\Magistrale\software_and_computing\tests\test_hausdorff_dice\new_folder"
+# Path to tests\test_is_empty\empty_folder
+empty_folder = r"Path\to\tests\test_is_empty\empty_folder"
+# Path to tests\test_is_empty\non_empty_folder
+non_empty_folder = r"Path\to\tests\test_is_empty\non_empty_folder"
+# Path to tests\test_patient_info\RTSTRUCT\RS1.2.752.243.1.1.20230123144246076.4000.75633.dcm
+rtstruct_file_path = r"Path\to\tests\test_patient_info\RTSTRUCT\RS1.2.752.243.1.1.20230123144246076.4000.75633.dcm"
+# Path to tests\test_voxel_spacing\CT
+ct_folder_path = r"Path\to\tests\test_voxel_spacing\CT"
+# Path to configuration file
+config_path = r"Path\to\config.json"
+# Path to tests\test_hausdorff_dice\input_folder
+input_folder = r"Path\to\tests\test_hausdorff_dice\input_folder"
+# Path to test.xlsx (if not there it will be created)
+excel_path = r"Path\to\tests\test_hausdorff_dice\test.xlsx"
+# Path to tests\test_hausdorff_dice\new_folder
+new_folder_path = r"Path\to\tests\test_hausdorff_dice\new_folder"
 
 def test_is_empty_with_empty_folder():
     """
