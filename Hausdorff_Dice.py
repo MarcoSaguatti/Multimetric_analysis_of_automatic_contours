@@ -275,8 +275,13 @@ def compute_metrics(patient_data,
                                                      )
     
     return surface_dice, volume_dice, hausdorff_distance
-    
-def main(argv):
+
+def hausdorff_dice(input_folder_path,
+                   config_path,
+                   excel_path,
+                   new_folder_path,
+                   join_data,
+                   ):
     """
     Computation of Hausdorff distance (hd), volumetric Dice similarity 
     coefficient (dsc) and surface Dice similarity coefficient (sdsc) 
@@ -284,66 +289,23 @@ def main(argv):
 
     Parameters
     ----------
-    argv : char **
-        Pointer to the pointer to the array where command line arguments are
-        stored in the memory.
+    input_folder_path : str
+        Path to the folder where patients are stored.
+    config_path : str
+        Path to the configuration json file.
+    excel_path : str
+        Path to the .xlsx file where data will be stored (if it is not already
+        there it will be automatically created).
+    new_folder_path : str
+        Path where patient folders will be moved after execution.
+    join_data : bool
+        If true: join previously extracted data with the new ones.
 
     Returns
     -------
     None.
 
-    """                     
-    # Parse command-line arguments.
-    parser = argparse.ArgumentParser(description 
-                                     = "HD, volDSC and surfDSC computation")
-    parser.add_argument(dest="input_folder_path",
-                        metavar="input_path",
-                        default=None,
-                        help="Path to the folder where patients are stored",
-                        )
-    parser.add_argument(dest="config_path",
-                        metavar="config_path",
-                        default=None,
-                        help="Path to the configuration json file",
-                        )
-    parser.add_argument(dest="excel_path",
-                        metavar="excel_path",
-                        default=None,
-                        help=("""Path to the .xlsx file where data will be 
-                              stored (if it is not already there it will be
-                              automatically created)"""
-                              )
-                        ) 
-    parser.add_argument("-n", "--new-folder",
-                        dest="new_folder_path",
-                        metavar="PATH",
-                        default=False,
-                        required=False,
-                        help=("""Path where patient folders will be moved
-                              after execution"""
-                              )
-                        )
-    parser.add_argument("-j", "--join-data",
-                        dest="join_data",
-                        metavar="BOOL",
-                        default=False,
-                        required=False,
-                        help=(""" If true: join previously extracted data with
-                              the new ones"""
-                              )
-                        )
-    
-    args = parser.parse_args(argv)
-        
-    # Convert to python path style.
-    input_folder_path = args.input_folder_path.replace("\\", "/")
-    new_folder_path = args.new_folder_path.replace("\\", "/")
-    config_path = args.config_path.replace("\\", "/")
-    excel_path = args.excel_path.replace("\\", "/")
-    
-    # If true new data will be concatenated with old ones.
-    join_data = args.join_data
-    
+    """
     # Opening the json file where the lists of names are stored.
     fd = open(config_path)
     config = json.load(fd)
@@ -643,7 +605,83 @@ def main(argv):
         outfile.write(json_object)
         
     print("Execution successfully ended")
-                             
+       
+def main(argv):
+    """
+    Computation of Hausdorff distance (hd), volumetric Dice similarity 
+    coefficient (dsc) and surface Dice similarity coefficient (sdsc) 
+    between manual and automatic segmentations for pelvic structures.
 
+    Parameters
+    ----------
+    argv : char **
+        Pointer to the pointer to the array where command line arguments are
+        stored in the memory.
+
+    Returns
+    -------
+    None.
+
+    """                     
+    # Parse command-line arguments.
+    parser = argparse.ArgumentParser(description 
+                                     = "HD, volDSC and surfDSC computation")
+    parser.add_argument(dest="input_folder_path",
+                        metavar="input_path",
+                        default=None,
+                        help="Path to the folder where patients are stored",
+                        )
+    parser.add_argument(dest="config_path",
+                        metavar="config_path",
+                        default=None,
+                        help="Path to the configuration json file",
+                        )
+    parser.add_argument(dest="excel_path",
+                        metavar="excel_path",
+                        default=None,
+                        help=("""Path to the .xlsx file where data will be 
+                              stored (if it is not already there it will be
+                              automatically created)"""
+                              )
+                        ) 
+    parser.add_argument("-n", "--new-folder",
+                        dest="new_folder_path",
+                        metavar="PATH",
+                        default=False,
+                        required=False,
+                        help=("""Path where patient folders will be moved
+                              after execution"""
+                              )
+                        )
+    parser.add_argument("-j", "--join-data",
+                        dest="join_data",
+                        metavar="BOOL",
+                        default=False,
+                        required=False,
+                        help=("""If true: join previously extracted data with
+                              the new ones"""
+                              )
+                        )
+    
+    args = parser.parse_args(argv)
+        
+    # Convert to python path style.
+    input_folder_path = args.input_folder_path.replace("\\", "/")
+    new_folder_path = args.new_folder_path.replace("\\", "/")
+    config_path = args.config_path.replace("\\", "/")
+    excel_path = args.excel_path.replace("\\", "/")
+    
+    # If true new data will be concatenated with old ones.
+    join_data = args.join_data
+    
+    # Run hausdorff_dice
+    hausdorff_dice(input_folder_path,
+                   config_path,
+                   excel_path,
+                   new_folder_path,
+                   join_data,
+                   )
+    
+    
 if __name__ == "__main__":
     main(sys.argv[1:])
