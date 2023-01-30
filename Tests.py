@@ -135,3 +135,27 @@ def test_extract_manual_segments_has_five_elements():
                                                              )
     assert len(manual_segments) == 5
     
+def test_compute_metrics_returns_float():
+    """
+    This funtion checks that the three values returned by compute_metrics are
+    all of type float.
+
+    Returns
+    -------
+    None.
+
+    """
+    patient_data = RTStructBuilder.create_from(ct_folder_path, 
+                                               rtstruct_file_path,
+                                               )
+    reference_segment = "Bladder_MBS"
+    segment_to_compare = "Bladder_DL"
+    voxel_spacing_mm = [1, 1, 3]
+    sdsc, dsc, hd = Hausdorff_Dice.compute_metrics(patient_data,
+                                                   reference_segment,
+                                                   segment_to_compare,
+                                                   voxel_spacing_mm,
+                                                   )
+    assert type(sdsc) == np.float64
+    assert type(dsc) == np.float64
+    assert type(sdsc) == np.float64

@@ -157,8 +157,6 @@ def extract_manual_segments(patient_data,
         list containing current patient manual segments names.
 
     """
-    # TODO put some code to handle the case in which one or more of the
-    # OARs is not present (maybe).
     # Creates the list of manual segments
     all_segments = patient_data.get_roi_names()
     manual_segments = [0 for i in range(len(alias_names))]
@@ -185,9 +183,6 @@ def extract_manual_segments(patient_data,
             # by asking to the user.
             line = f"Do you want to keep {name}? Enter Y (yes) or N (no) \n"
             to_keep = input(line).upper()
-            # TODO put some code to handle the case in which the user
-            # provides the wrong input, and see if there is a better way
-            # to write the following if-else.
             if to_keep == "Y":
                 line1 = (f"To which alias name is {name} associated? Enter P")
                 line2 = ("(Prostate), A (Anorectum), B (Bladder), L (Left")
