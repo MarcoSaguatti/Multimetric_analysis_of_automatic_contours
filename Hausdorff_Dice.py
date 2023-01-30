@@ -16,7 +16,7 @@ import surface_distance as sd
 # TODO create a do_main function for tests
 def is_empty(folder_path):
     """
-    This method checks if a folder is empty or not.
+    This function checks if a folder is empty or not.
 
     Parameters
     ----------
@@ -40,7 +40,7 @@ def patient_info(rtstruct_file_path,
                  information,
                  ):
     """
-    This method extracts patient informations from RTSTRUCT file.
+    This function extracts patient informations from RTSTRUCT file.
 
     Parameters
     ----------
