@@ -84,7 +84,7 @@ def voxel_spacing(ct_folder_path):
     Returns
     -------
     voxel_spacing_mm : list
-        voxel dimensions in millimeters.
+        Voxel dimensions in millimeters.
 
     """
     ct_images = os.listdir(ct_folder_path)

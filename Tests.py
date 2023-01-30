@@ -25,10 +25,11 @@ import Hausdorff_Dice
 empty_folder = r"C:\Users\Marco\Desktop\università\Magistrale\software_and_computing\tests\test_is_empty\empty_folder"
 non_empty_folder = r"C:\Users\Marco\Desktop\università\Magistrale\software_and_computing\tests\test_is_empty\non_empty_folder"
 rtstruct_file_path = r"C:\Users\Marco\Desktop\università\Magistrale\software_and_computing\tests\test_patient_info\RTSTRUCT\RS1.2.752.243.1.1.20230123144246076.4000.75633.dcm"
+ct_folder_path = r"C:\Users\Marco\Desktop\università\Magistrale\software_and_computing\tests\test_voxel_spacing\CT"
 
 def test_is_empty_with_empty_folder():
     """
-    This method checks if the function is_empty returns 1 when an empty folder
+    This test checks if the function is_empty returns 1 when an empty folder
     is given as parameter.
 
     Returns
@@ -40,7 +41,7 @@ def test_is_empty_with_empty_folder():
     
 def test_is_empty_with_non_empty_folder():
     """
-    This method checks if the function is_empty returns 0 when a non empty
+    This test checks if the function is_empty returns 0 when a non empty
     folder is given as parameter.
 
     Returns
@@ -52,7 +53,7 @@ def test_is_empty_with_non_empty_folder():
     
 def test_patient_info_with_patient_id():
     """
-    This methods checks that the function patient_info returns a string when
+    This test checks that the function patient_info returns a string when
     information is equal to PatientID.
     Returns
     -------
@@ -66,7 +67,7 @@ def test_patient_info_with_patient_id():
     
 def test_patient_info_with_frame_of_reference_uid():
     """
-    This methods checks that the function patient_info returns a uid object
+    This test checks that the function patient_info returns a uid object
     when information is equal to FrameOfReferenceUID.
 
     Returns
@@ -78,4 +79,16 @@ def test_patient_info_with_frame_of_reference_uid():
                                        "FrameOfReferenceUID",
                                        )
     assert type(info) == pydicom.uid.UID
+    
+def test_voxel_spacing_has_three_elements():
+    """
+    This test checks that the function voxel_spacing returns a list of three
+    elements.
+
+    Returns
+    -------
+    None.
+
+    """
+    assert len(Hausdorff_Dice.voxel_spacing(ct_folder_path)) == 3
     
