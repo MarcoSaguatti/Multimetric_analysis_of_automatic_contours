@@ -11,6 +11,9 @@ Let X and Y be two non-empty subsets of a metric space (M,d). We define their Ha
 
 ## Prerequisites
 The entire program is written in [python](https://www.python.org/downloads/), thus, it must be installed to execute it (python versions previous to 3.9.1 were not tested).
+
 To open and read dicom files the libraries [pydicom](https://pypi.org/project/pydicom/) and [rt-utils](https://pypi.org/project/rt-utils/) must be installed.
+
 To compute HD, DSC and SDCS the library [surface-distance](https://github.com/deepmind/surface-distance) must be installed.
+
 Other libraries required are [numpy](https://numpy.org/install/) and [pandas](https://pandas.pydata.org/docs/getting_started/install.html).
