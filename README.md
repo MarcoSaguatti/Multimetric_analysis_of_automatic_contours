@@ -1,4 +1,4 @@
-# Hausdorff_Dice_Computation
+# Hausdorff Dice Computation
 This program calculates 95 percentile Hausdorff distance (HD), volumetric Dice similarity coefficient (DSC) and surface Dice similarity coefficient (SDSC) between manually contoured and automatically contoured pelvic structures.
 Particularly, it computes these metrics for five organs at risk (i.e. prostate, rectum, bladder, left femur and right femur) contoured in three different ways: manually, using a deep learning segmentation algorithm and using a model based segmentation algorithm.
 The final output is stored in a .xlsx file.
@@ -14,6 +14,10 @@ The entire program is written in [python](https://www.python.org/downloads/), th
 
 To open and read dicom files the libraries [pydicom](https://pypi.org/project/pydicom/) and [rt-utils](https://pypi.org/project/rt-utils/) must be installed.
 
-To compute HD, DSC and SDCS the library [surface-distance](https://github.com/deepmind/surface-distance) must be installed.
+To compute HD, DSC and SDCS the library [surface-distance](https://github.com/deepmind/surface-distance) must be installed. Also [git](https://git-scm.com/downloads) must be downloaded in order to clone the repository from github.
+
+To save data into .xlsx files [openpyxl](https://pypi.org/project/openpyxl/) is needed.
 
 Other libraries required are [numpy](https://numpy.org/install/) and [pandas](https://pandas.pydata.org/docs/getting_started/install.html).
+
+## How to run
