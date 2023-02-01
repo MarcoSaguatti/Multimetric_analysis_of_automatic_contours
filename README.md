@@ -30,4 +30,9 @@ python path/to/Hausdorff_Dice.py path/to/patients/folder path/to/config.json pat
 
 The first three arguments are required:
 * *path/to/patient/folder*: Is the path to the folder where patients folders are stored. **Do not put here directly the path to the folder containing .dcm files!**
-* *path/to/config.json*:
+* *path/to/config.json*: Is the path to [config.json](https://github.com/MarcoSaguatti/Hausdorff_Dice_Computation/blob/master/config.json), a file that stores some important parameters like segment names.
+* *path/to/excel_file.sxlsx*: Is the path to the file where the data will be saved after execution. If the file does not exist in the specified path it will be automatically created.
+
+The last two argument are optional:
+* *--new-folder path/to/the/folder/where/patients/will/be/moved*: Is the path where patient folders will be moved after execution. If not specified patient folders will remain in *path/to/input/folder*
+* *--join-data True*: If *True*, the new data extracted will be appended to ones already present in the excel file. if *False* (default), the data already in the excel file will be overwritten by the new ones.
