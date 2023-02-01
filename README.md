@@ -5,7 +5,8 @@ The final output is stored in a .xlsx file.
 
 ### Hausdorff distance
 HD is the greatest of all distances from a point in one contour surface to the closest point in the other contour surface.
-Let X and Y be two non-empty subsets of a metric space (M,d). We define their Hausdorff distance dH(X,Y) by
+
+![alt text](https://www.google.com/search?q=hausdorff+distance&client=firefox-b-d&sxsrf=AJOqlzWqAZCHI1uQhiNNdw06601pB4wCQQ:1675247651752&source=lnms&tbm=isch&sa=X&ved=2ahUKEwj13cXpj_T8AhUWR_EDHUB3Cu0Q_AUoAXoECAEQAw&biw=1536&bih=703&dpr=1.25#imgrc=i1Efrsbhd6sktM)
 
 ### Dice similarity coefficient
 
