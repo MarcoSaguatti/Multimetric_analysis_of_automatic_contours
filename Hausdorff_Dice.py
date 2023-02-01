@@ -324,14 +324,14 @@ def hausdorff_dice(input_folder_path,
         try:
             # loading existing data.
             old_data = pd.read_excel(excel_path)
-            print(f"\nSuccessfully loaded {excel_path}")
+            print(f"Successfully loaded {excel_path}")
             excel_file_exist = 1
         except FileNotFoundError:
             # There is not an existing excel file in excel path.
-            print(f"\nFailed to load {excel_path}, a new file will be created")
+            print(f"Failed to load {excel_path}, a new file will be created")
             excel_file_exist = 0
     else:
-        print(f"\nExcel file at {excel_path} will be overwritten if already",
+        print(f"Excel file at {excel_path} will be overwritten if already",
               "present, otherwise it will be created.",
               )
     
@@ -645,7 +645,7 @@ def main(argv):
     parser.add_argument("-n", "--new-folder",
                         dest="new_folder_path",
                         metavar="PATH",
-                        default=False,
+                        default=".",
                         required=False,
                         help=("""Path where patient folders will be moved
                               after execution"""
@@ -662,10 +662,22 @@ def main(argv):
                         )
     
     args = parser.parse_args(argv)
+    
+    # To better separate input from output messages
+    print("\n")
+    
+    # Check if the user provided new_folder
+    if args.new_folder_path == ".":
+        print("New folder path has not been provided. Patient folders won't",
+              "be moved after execution.",
+              )
+        new_folder_path = False
+    else:
+        # Convert to python path style.
+        new_folder_path = args.new_folder_path.replace("\\", "/")
         
     # Convert to python path style.
     input_folder_path = args.input_folder_path.replace("\\", "/")
-    new_folder_path = args.new_folder_path.replace("\\", "/")
     config_path = args.config_path.replace("\\", "/")
     excel_path = args.excel_path.replace("\\", "/")
     

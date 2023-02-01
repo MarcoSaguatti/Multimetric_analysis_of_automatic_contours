@@ -10,7 +10,7 @@ Let X and Y be two non-empty subsets of a metric space (M,d). We define their Ha
 ### Dice similarity coefficient
 
 ## Prerequisites
-The entire program is written in [python](https://www.python.org/downloads/), thus, it must be installed to execute it (python versions previous to 3.9.1 were not tested).
+The entire program is written in [python](https://www.python.org/downloads/), thus, it must be installed to execute it (python versions previous to 3.9.1 and next to 3.9.16 were not tested).
 
 To open and read dicom files the libraries [pydicom](https://pypi.org/project/pydicom/) and [rt-utils](https://pypi.org/project/rt-utils/) must be installed.
 
