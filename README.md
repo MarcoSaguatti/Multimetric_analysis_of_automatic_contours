@@ -9,6 +9,17 @@ Let X and Y be two non-empty subsets of a metric space (M,d). We define their Ha
 
 ### Dice similarity coefficient
 
+## General informations
+All the code needed to run the program is stored in the [Hausdorff_Dice.py](https://github.com/MarcoSaguatti/Hausdorff_Dice_Computation/blob/master/Hausdorff_Dice.py) script.
+
+[patients](https://github.com/MarcoSaguatti/Hausdorff_Dice_Computation/tree/master/patients) folder contains three patients where the organ at risk were contoured manually and using a deep learning and a model based segmentation algorithms.
+
+[tests](https://github.com/MarcoSaguatti/Hausdorff_Dice_Computation/tree/master/tests) folder contains the data required to run [Tests.py](https://github.com/MarcoSaguatti/Hausdorff_Dice_Computation/blob/master/Tests.py).
+
+[Tests.py](https://github.com/MarcoSaguatti/Hausdorff_Dice_Computation/blob/master/Tests.py) is the python script containing used for testing [Hausdorff_Dice.py](https://github.com/MarcoSaguatti/Hausdorff_Dice_Computation/blob/master/Hausdorff_Dice.py).
+
+[config.json](https://github.com/MarcoSaguatti/Hausdorff_Dice_Computation/blob/master/config.json) is a file containing the lists of manual segments names. If running the script new names for the five organs at risk are met they will be saved in this file.
+
 ## Prerequisites
 The entire program is written in [python](https://www.python.org/downloads/), thus, it must be installed to execute it (python versions previous to 3.9.1 and next to 3.9.16 were not tested).
 
@@ -21,15 +32,13 @@ To save data into .xlsx files [openpyxl](https://pypi.org/project/openpyxl/) is 
 Other libraries required are [numpy](https://numpy.org/install/) and [pandas](https://pandas.pydata.org/docs/getting_started/install.html).
 
 ## How to run
-All the code needed to run the program is stored in the [Hausdorff_Dice.py](https://github.com/MarcoSaguatti/Hausdorff_Dice_Computation/blob/master/Hausdorff_Dice.py) script.
-
-To run it, the user has firstly to download the whole repository Hausdorff_Dice_Computation.
+To run the program, the user has firstly to download the whole repository Hausdorff_Dice_Computation.
 Then, the script Hausdorff_Dice.py can be run from command line by typing:
 
 python path/to/Hausdorff_Dice.py path/to/patients/folder path/to/config.json path/to/excel_file.xlsx --new-folder path/to/the/folder/where/patients/will/be/moved --join-data True
 
 The first three arguments are required:
-* *path/to/patient/folder*: Is the path to the folder where patients folders are stored. **Do not put here directly the path to the folder containing .dcm files!**
+* *path/to/patients/folder*: Is the path to the folder where patients folders are stored. **Do not put here directly the path to the folder containing .dcm files!**
 * *path/to/config.json*: Is the path to [config.json](https://github.com/MarcoSaguatti/Hausdorff_Dice_Computation/blob/master/config.json), a file that stores some important parameters like segment names.
 * *path/to/excel_file.sxlsx*: Is the path to the file where the data will be saved after execution. If the file does not exist in the specified path it will be automatically created.
 
