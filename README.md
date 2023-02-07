@@ -17,17 +17,6 @@ SDSC is exactly the same with the difference that the overlap is measured betwee
 
 ![Dice](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSrnfpehrVZMJLjRDVUWxEZ9_pW0RYUlkdhlw&usqp=CAU)
 
-## General informations
-All the code needed to run the program is stored in the [Hausdorff_Dice.py](https://github.com/MarcoSaguatti/Hausdorff_Dice_Computation/blob/master/Hausdorff_Dice.py) script.
-
-[patients](https://github.com/MarcoSaguatti/Hausdorff_Dice_Computation/tree/master/patients) folder contains three patients where the organs at risk were contoured manually and using a deep learning and a model based segmentation algorithms.
-
-[tests](https://github.com/MarcoSaguatti/Hausdorff_Dice_Computation/tree/master/tests) folder contains the data required to run [Tests.py](https://github.com/MarcoSaguatti/Hausdorff_Dice_Computation/blob/master/Tests.py).
-
-[Tests.py](https://github.com/MarcoSaguatti/Hausdorff_Dice_Computation/blob/master/Tests.py) is the python script used for testing [Hausdorff_Dice.py](https://github.com/MarcoSaguatti/Hausdorff_Dice_Computation/blob/master/Hausdorff_Dice.py).
-
-[config.json](https://github.com/MarcoSaguatti/Hausdorff_Dice_Computation/blob/master/config.json) is a file containing the lists of manual segments names. If, running the script, new names for the five organs at risk are met they will be saved in this file.
-
 ## Prerequisites
 The entire program is written in [python](https://www.python.org/downloads/), thus, it must be installed to execute it (python versions previous to 3.9.1 and next to 3.9.16 were not tested).
 
@@ -38,6 +27,17 @@ To compute HD, DSC and SDSC the library [surface-distance](https://github.com/de
 To save data into .xlsx files [openpyxl](https://pypi.org/project/openpyxl/) is needed.
 
 Other libraries required are [numpy](https://numpy.org/install/) and [pandas](https://pandas.pydata.org/docs/getting_started/install.html).
+
+## General informations
+All the code needed to run the program is stored in the [Hausdorff_Dice.py](https://github.com/MarcoSaguatti/Hausdorff_Dice_Computation/blob/master/Hausdorff_Dice.py) script.
+
+[patients](https://github.com/MarcoSaguatti/Hausdorff_Dice_Computation/tree/master/patients) folder contains three patients where the organs at risk were contoured manually and using a deep learning and a model based segmentation algorithms.
+
+[tests](https://github.com/MarcoSaguatti/Hausdorff_Dice_Computation/tree/master/tests) folder contains the data required to run [Tests.py](https://github.com/MarcoSaguatti/Hausdorff_Dice_Computation/blob/master/Tests.py).
+
+[Tests.py](https://github.com/MarcoSaguatti/Hausdorff_Dice_Computation/blob/master/Tests.py) is the python script used for testing [Hausdorff_Dice.py](https://github.com/MarcoSaguatti/Hausdorff_Dice_Computation/blob/master/Hausdorff_Dice.py).
+
+[config.json](https://github.com/MarcoSaguatti/Hausdorff_Dice_Computation/blob/master/config.json) is a file containing the lists of manual segments names. If, running the script, new names for the five organs at risk are met they will be saved in this file.
 
 ## How to run
 To run the program, the user has firstly to download the whole repository Hausdorff_Dice_Computation.
