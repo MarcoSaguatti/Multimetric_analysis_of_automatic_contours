@@ -45,7 +45,7 @@ All the code needed to run the program is stored in the [Hausdorff_Dice.py](http
 To run the program, the user has firstly to download the whole repository Hausdorff_Dice_Computation.
 Then, the script Hausdorff_Dice.py can be run from command line by typing:
 
-python path\to\Hausdorff_Dice.py path\to\patients\folder path\to\config.json path\to\excel_file.xlsx --new-folder path\to\the\folder\where\patients\will\be\moved --join-data True
+*python path\to\Hausdorff_Dice.py path\to\patients\folder path\to\config.json path\to\excel_file.xlsx --new-folder path\to\the\folder\where\patients\will\be\moved --join-data True*
 
 The first three arguments are required:
 * *path\to\patients\folder*: Is the path to the folder where patients folders are stored. **Do not put here directly the path to the folder containing .dcm files!**;
