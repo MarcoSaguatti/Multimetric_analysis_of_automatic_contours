@@ -18,15 +18,17 @@ SDSC is exactly the same with the difference that the overlap is measured betwee
 ![Dice](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSrnfpehrVZMJLjRDVUWxEZ9_pW0RYUlkdhlw&usqp=CAU)
 
 ## Prerequisites
-The entire program is written in [python](https://www.python.org/downloads/), thus, it must be installed to execute it (python versions previous to 3.9.1 and next to 3.9.16 were not tested).
+[python](https://www.python.org/downloads/): The entire program is written in python, thus, it must be installed to execute it (python versions previous to 3.9.1 and next to 3.9.16 were not tested).
 
-To open and read dicom files the libraries [pydicom](https://pypi.org/project/pydicom/) and [rt-utils](https://pypi.org/project/rt-utils/) must be installed.
+[pydicom](https://pypi.org/project/pydicom/), [rt-utils](https://pypi.org/project/rt-utils/): To open and read dicom files the libraries pydicom and rt-utils must be installed.
 
-To compute HD, DSC and SDSC the library [surface-distance](https://github.com/deepmind/surface-distance) must be installed. Also [git](https://git-scm.com/downloads) must be downloaded in order to clone the repository from github.
+[surface-distance](https://github.com/deepmind/surface-distance): To compute HD, DSC and SDSC the library surface-distance must be installed.
 
-To save data into .xlsx files [openpyxl](https://pypi.org/project/openpyxl/) is needed.
+[git](https://git-scm.com/downloads): must be downloaded in order to clone the surface-distance repository from github.
 
-Other libraries required are [numpy](https://numpy.org/install/) and [pandas](https://pandas.pydata.org/docs/getting_started/install.html).
+[openpyxl](https://pypi.org/project/openpyxl/): To save data into .xlsx files openpyxl is needed.
+
+[numpy](https://numpy.org/install/) and [pandas](https://pandas.pydata.org/docs/getting_started/install.html) are other required libraries.
 
 ## General informations
 All the code needed to run the program is stored in the [Hausdorff_Dice.py](https://github.com/MarcoSaguatti/Hausdorff_Dice_Computation/blob/master/Hausdorff_Dice.py) script.
