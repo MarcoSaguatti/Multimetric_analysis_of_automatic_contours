@@ -62,27 +62,21 @@ def patient_info(rtstruct_file_path,
         return info
     except KeyError:
         sys.exit(f"There is no {information} in the RTSTRUCT file provided.")
-
-def voxel_spacing(ct_folder_path):
+        
+def create_ct_volume(ct_folder_path):
     """
-    Computing voxel spacing of the loaded DICOM series.
-    
-    Using the library pydicom every file in the DICOM series (slice) is read
-    and stored in a list.
-    Then, after sorting every slice in the list, pixel spacing and slice
-    thickness are computed.
-    Finally, combining pixel spacing and slice thickness in one list, voxel
-    spacing is obtained.
+    This function creates the CT volume from the DICOM series.
 
     Parameters
     ----------
     ct_folder_path : str
-        Path to the folder containing DICOM series files (Ex: path/to/CTfolder)
+        Path to the folder containing DICOM series files
+        (Ex: path/to/CTfolder).
 
     Returns
     -------
-    voxel_spacing_mm : list
-        Voxel dimensions in millimeters.
+    slices : list
+        Ordered list of the slices that compose the CT volume.
 
     """
     ct_images = os.listdir(ct_folder_path)
@@ -102,6 +96,26 @@ def voxel_spacing(ct_folder_path):
     slices = sorted(slices,
                     key=lambda x:x.ImagePositionPatient[2],
                     )
+    return slices
+
+def compute_voxel_spacing(ct_folder_path):
+    """
+    Computing voxel spacing of the loaded DICOM series.
+
+    Parameters
+    ----------
+    ct_folder_path : str
+        Path to the folder containing DICOM series files
+        (Ex: path/to/CTfolder).
+
+    Returns
+    -------
+    voxel_spacing_mm : list
+        Voxel dimensions in millimeters.
+
+    """
+    # Creating CT volume
+    slices = create_ct_volume(ct_folder_path)
     
     # Computing pixel spacing.
     pixel_spacing_mm = list(map(float,
@@ -490,7 +504,7 @@ def hausdorff_dice(input_folder_path,
                 pass
                         
         # Extracting voxel spacing.
-        voxel_spacing_mm = voxel_spacing(ct_folder_path)
+        voxel_spacing_mm = compute_voxel_spacing(ct_folder_path)
             
         # Reading current patient files.
         patient_data = RTStructBuilder.create_from(ct_folder_path, 
