@@ -16,8 +16,6 @@ import surface_distance as sd
 import Hausdorff_Dice
 
 
-# # Path to tests\test_is_empty\non_empty_folder
-non_empty_folder = r".\tests\test_is_empty\non_empty_folder"
 # # Path to tests\test_patient_info\RTSTRUCT\RS1.2.752.243.1.1.20230123144246076.4000.75633.dcm
 # rtstruct_file_path = r"Path\to\tests\test_patient_info\RTSTRUCT\RS1.2.752.243.1.1.20230123144246076.4000.75633.dcm"
 # # Path to tests\test_voxel_spacing\CT
@@ -59,6 +57,9 @@ def test_is_empty_with_non_empty_folder():
     THEN: return False
 
     """
+    # Path to a non empty folder
+    non_empty_folder = r".\tests\test_is_empty\non_empty_folder"
+    
     expected = False
     observed = Hausdorff_Dice.is_empty(non_empty_folder)
     assert expected == observed
