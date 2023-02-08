@@ -16,8 +16,8 @@ import Hausdorff_Dice
 
 
 # Path to tests\test_is_empty\empty_folder
-empty_folder = r"Path\to\tests\test_is_empty\empty_folder"
-# Path to tests\test_is_empty\non_empty_folder
+empty_folder = r".\tests\test_is_empty\empty_folder"
+# # Path to tests\test_is_empty\non_empty_folder
 non_empty_folder = r"Path\to\tests\test_is_empty\non_empty_folder"
 # Path to tests\test_patient_info\RTSTRUCT\RS1.2.752.243.1.1.20230123144246076.4000.75633.dcm
 rtstruct_file_path = r"Path\to\tests\test_patient_info\RTSTRUCT\RS1.2.752.243.1.1.20230123144246076.4000.75633.dcm"
@@ -33,16 +33,17 @@ excel_path = r"Path\to\tests\test_hausdorff_dice\test.xlsx"
 new_folder_path = r"Path\to\tests\test_hausdorff_dice\new_folder"
 
 def test_is_empty_with_empty_folder():
+    """    
+    GIVEN: an empty folder
+    
+    WHEN: running the function is_empty
+    
+    THEN: return True
+    
     """
-    This test checks if the function is_empty returns 1 when an empty folder
-    is given as parameter.
-
-    Returns
-    -------
-    None.
-
-    """
-    assert Hausdorff_Dice.is_empty(empty_folder) == 1
+    expected = True
+    observed = Hausdorff_Dice.is_empty(empty_folder)
+    assert expected == observed
     
 def test_is_empty_with_non_empty_folder():
     """
@@ -66,8 +67,8 @@ def test_patient_info_with_patient_id():
 
     """
     info = Hausdorff_Dice.patient_info(rtstruct_file_path,
-                                       "PatientID",
-                                       )
+                                        "PatientID",
+                                        )
     assert type(info) == str
     
 def test_patient_info_with_frame_of_reference_uid():
@@ -81,8 +82,8 @@ def test_patient_info_with_frame_of_reference_uid():
 
     """
     info = Hausdorff_Dice.patient_info(rtstruct_file_path,
-                                       "FrameOfReferenceUID",
-                                       )
+                                        "FrameOfReferenceUID",
+                                        )
     assert type(info) == pydicom.uid.UID
     
 def test_voxel_spacing_has_three_elements():
@@ -108,14 +109,14 @@ def test_extract_manual_segments_has_five_elements():
 
     """
     patient_data = RTStructBuilder.create_from(ct_folder_path, 
-                                               rtstruct_file_path,
-                                               )
+                                                rtstruct_file_path,
+                                                )
     alias_names = ["Prostate",
-                   "Rectum",
-                   "Bladder",
-                   "Femoral head (left)",
-                   "Femoral head right",
-                   ]
+                    "Rectum",
+                    "Bladder",
+                    "Femoral head (left)",
+                    "Femoral head right",
+                    ]
     mbs_segments = ["Prostate_MBS",
                     "Rectum_MBS",
                     "Bladder_MBS",
@@ -123,20 +124,20 @@ def test_extract_manual_segments_has_five_elements():
                     "FemoralHead (Right)_MBS",
                     ]
     dl_segments = ["Prostate_DL",
-                   "Anorectum_DL",
-                   "Bladder_DL",
-                   "Femur_Head_L_DL",
-                   "Femur_Head_R_DL",
-                   ]
+                    "Anorectum_DL",
+                    "Bladder_DL",
+                    "Femur_Head_L_DL",
+                    "Femur_Head_R_DL",
+                    ]
     fd = open(config_path)
     config = json.load(fd)
     
     manual_segments = Hausdorff_Dice.extract_manual_segments(patient_data,
-                                                             alias_names,
-                                                             mbs_segments,
-                                                             dl_segments,
-                                                             config,
-                                                             )
+                                                              alias_names,
+                                                              mbs_segments,
+                                                              dl_segments,
+                                                              config,
+                                                              )
     assert len(manual_segments) == 5
     
 def test_compute_metrics_returns_float():
@@ -150,16 +151,16 @@ def test_compute_metrics_returns_float():
 
     """
     patient_data = RTStructBuilder.create_from(ct_folder_path, 
-                                               rtstruct_file_path,
-                                               )
+                                                rtstruct_file_path,
+                                                )
     reference_segment = "Bladder_MBS"
     segment_to_compare = "Bladder_DL"
     voxel_spacing_mm = [1, 1, 3]
     sdsc, dsc, hd = Hausdorff_Dice.compute_metrics(patient_data,
-                                                   reference_segment,
-                                                   segment_to_compare,
-                                                   voxel_spacing_mm,
-                                                   )
+                                                    reference_segment,
+                                                    segment_to_compare,
+                                                    voxel_spacing_mm,
+                                                    )
     assert type(sdsc) == np.float64
     assert type(dsc) == np.float64
     assert type(sdsc) == np.float64
