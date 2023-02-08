@@ -3,6 +3,7 @@ import sys
 import os
 import shutil
 import json
+import tempfile
 
 import numpy as np
 import pandas as pd
@@ -15,8 +16,6 @@ import surface_distance as sd
 import Hausdorff_Dice
 
 
-# Path to tests\test_is_empty\empty_folder
-empty_folder = r".\tests\test_is_empty\empty_folder"
 # # Path to tests\test_is_empty\non_empty_folder
 non_empty_folder = r".\tests\test_is_empty\non_empty_folder"
 # # Path to tests\test_patient_info\RTSTRUCT\RS1.2.752.243.1.1.20230123144246076.4000.75633.dcm
@@ -41,9 +40,15 @@ def test_is_empty_with_empty_folder():
     THEN: return True
     
     """
+    # Create a temporary empty folder
+    temp_empty_folder = tempfile.TemporaryDirectory()
+    
     expected = True
-    observed = Hausdorff_Dice.is_empty(empty_folder)
+    observed = Hausdorff_Dice.is_empty(temp_empty_folder.name)
     assert expected == observed
+    
+    # Remove the folder
+    temp_empty_folder.cleanup()
     
 def test_is_empty_with_non_empty_folder():
     """
