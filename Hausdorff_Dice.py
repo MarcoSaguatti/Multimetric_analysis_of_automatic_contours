@@ -23,16 +23,16 @@ def is_empty(folder_path):
 
     Returns
     -------
-    1 :
-        If the folder is empty the methods returns the value 1.
-    0 :
-        If the folder is not empty the methods returns the value 0.
+    True :
+        If the folder is empty the methods returns True.
+    False :
+        If the folder is not empty the methods returns False.
 
     """
     if len(os.listdir(folder_path)) == 0:
-        return 1
+        return True
     else:
-        return 0
+        return False
     
 def patient_info(rtstruct_file_path,
                  information,
