@@ -80,20 +80,23 @@ def test_patient_info_with_patient_id():
                                            )
     assert expected == observed
     
-# def test_patient_info_with_frame_of_reference_uid():
-#     """
-#     This test checks that the function patient_info returns a uid object
-#     when information is equal to FrameOfReferenceUID.
+def test_patient_info_with_frame_of_reference_uid():
+    """
+    GIVEN: an RTSTRUCT file
+    
+    WHEN: running the function patient_info asking for FrameOfReferenceUID
+    
+    THEN: return the correct frame of reference UID
 
-#     Returns
-#     -------
-#     None.
-
-#     """
-#     info = Hausdorff_Dice.patient_info(rtstruct_file_path,
-#                                         "FrameOfReferenceUID",
-#                                         )
-#     assert type(info) == pydicom.uid.UID
+    """
+    # Path to the RTSTRUCT file
+    rtstruct_file_path = r".\tests\test_patient_info\RTSTRUCT\RS_002.dcm"
+    
+    expected = "1.3.6.1.4.1.14519.5.2.1.7085.2036.235949374640197733305184528698"
+    observed = Hausdorff_Dice.patient_info(rtstruct_file_path,
+                                           "FrameOfReferenceUID",
+                                           )
+    assert expected == observed
     
 # def test_voxel_spacing_has_three_elements():
 #     """
