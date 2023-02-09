@@ -72,7 +72,7 @@ def test_patient_info_with_patient_id():
 
     """
     # Path to the RTSTRUCT file
-    rtstruct_file_path = r".\tests\test_patient_info\RTSTRUCT\RS1.2.752.243.1.1.20230123144246076.4000.75633.dcm"
+    rtstruct_file_path = r".\tests\test_patient_info\RTSTRUCT\RS_002.dcm"
     
     expected = "Pelvic-Ref-002"
     observed = Hausdorff_Dice.patient_info(rtstruct_file_path,
