@@ -98,6 +98,22 @@ def test_patient_info_with_frame_of_reference_uid():
                                            )
     assert expected == observed
     
+def test_compute_voxel_spacing():
+    """
+    GIVEN: the path to the folder containing a CT serie
+        
+    WHEN: running the function compute_voxel_spacing
+        
+    THEN: return the correct voxel spacing
+
+    """
+    # Path to CT serie folder
+    ct_folder_path = r".\tests\test_compute_voxel_spacing\CT"
+    
+    expected = [1.0, 1.0, 3.0]
+    observed = Hausdorff_Dice.compute_voxel_spacing(ct_folder_path)
+    assert expected == observed  
+    
 # def test_voxel_spacing_has_three_elements():
 #     """
 #     This test checks that the function voxel_spacing returns a list of three
