@@ -16,8 +16,6 @@ import surface_distance as sd
 import Hausdorff_Dice
 
 
-# # Path to tests\test_patient_info\RTSTRUCT\RS1.2.752.243.1.1.20230123144246076.4000.75633.dcm
-# rtstruct_file_path = r"Path\to\tests\test_patient_info\RTSTRUCT\RS1.2.752.243.1.1.20230123144246076.4000.75633.dcm"
 # # Path to tests\test_voxel_spacing\CT
 # ct_folder_path = r"Path\to\tests\test_voxel_spacing\CT"
 # # Path to configuration file
@@ -64,19 +62,23 @@ def test_is_empty_with_non_empty_folder():
     observed = Hausdorff_Dice.is_empty(non_empty_folder)
     assert expected == observed
     
-# def test_patient_info_with_patient_id():
-#     """
-#     This test checks that the function patient_info returns a string when
-#     information is equal to PatientID.
-#     Returns
-#     -------
-#     None.
+def test_patient_info_with_patient_id():
+    """
+    GIVEN: an RTSTRUCT file
+    
+    WHEN: running the function patient_info asking for PatientID
+    
+    THEN: return the correct patient ID
 
-#     """
-#     info = Hausdorff_Dice.patient_info(rtstruct_file_path,
-#                                         "PatientID",
-#                                         )
-#     assert type(info) == str
+    """
+    # Path to the RTSTRUCT file
+    rtstruct_file_path = r".\tests\test_patient_info\RTSTRUCT\RS1.2.752.243.1.1.20230123144246076.4000.75633.dcm"
+    
+    expected = "Pelvic-Ref-002"
+    observed = Hausdorff_Dice.patient_info(rtstruct_file_path,
+                                           "PatientID",
+                                           )
+    assert expected == observed
     
 # def test_patient_info_with_frame_of_reference_uid():
 #     """
