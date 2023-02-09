@@ -16,8 +16,6 @@ import surface_distance as sd
 import Hausdorff_Dice
 
 
-# # Path to tests\test_voxel_spacing\CT
-# ct_folder_path = r"Path\to\tests\test_voxel_spacing\CT"
 # # Path to configuration file
 # config_path = r"Path\to\config.json"
 # # Path to tests\test_hausdorff_dice\input_folder
@@ -113,18 +111,6 @@ def test_compute_voxel_spacing():
     expected = [1.0, 1.0, 3.0]
     observed = Hausdorff_Dice.compute_voxel_spacing(ct_folder_path)
     assert expected == observed  
-    
-# def test_voxel_spacing_has_three_elements():
-#     """
-#     This test checks that the function voxel_spacing returns a list of three
-#     elements.
-
-#     Returns
-#     -------
-#     None.
-
-#     """
-#     assert len(Hausdorff_Dice.voxel_spacing(ct_folder_path)) == 3
 
 # def test_extract_manual_segments_has_five_elements():
 #     """
