@@ -90,7 +90,8 @@ def test_patient_info_with_frame_of_reference_uid():
     # Path to the RTSTRUCT file
     rtstruct_file_path = r".\tests\test_patient_info\RTSTRUCT\RS_002.dcm"
     
-    expected = "1.3.6.1.4.1.14519.5.2.1.7085.2036.235949374640197733305184528698"
+    UID = "1.3.6.1.4.1.14519.5.2.1.7085.2036.235949374640197733305184528698"
+    expected = UID
     observed = Hausdorff_Dice.patient_info(rtstruct_file_path,
                                            "FrameOfReferenceUID",
                                            )
