@@ -96,16 +96,16 @@ def test_patient_info_with_frame_of_reference_uid():
                                            )
     assert expected == observed
     
-def test_read_ct_slices_with_frame_of_reference_UID():
+def test_read_ct_slices_with_frame_of_reference_uid():
     """
-    GIVEN:
+    GIVEN: the path to the folder containing a CT series
         
-    WHEN:
+    WHEN: running the function read_ct_slices
         
-    THEN:
+    THEN: all the slices should have the same frame of reference UID
 
     """
-    # Path to CT serie folder
+    # Path to CT series folder
     ct_folder_path = r".\tests\test_read_ct_slices\CT"
     
     # Expected behavior
@@ -120,14 +120,14 @@ def test_read_ct_slices_with_frame_of_reference_UID():
     
 def test_compute_voxel_spacing():
     """
-    GIVEN: the path to the folder containing a CT serie
+    GIVEN: the path to the folder containing a CT series
         
     WHEN: running the function compute_voxel_spacing
         
     THEN: return the correct voxel spacing
 
     """
-    # Path to CT serie folder
+    # Path to CT series folder
     ct_folder_path = r".\tests\test_compute_voxel_spacing\CT"
     
     expected = [1.0, 1.0, 3.0]
