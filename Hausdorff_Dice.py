@@ -228,11 +228,10 @@ def user_selection(unknown_segments,
                 print(name,"added to Right femur names in config.json")
         elif to_keep == "N":
             continue
-    
-
+        
 def extract_manual_segments(patient_data,
-                            config,
-                            ):
+                           config,
+                           ):
     """
     Creating the list of manual segments.
     
@@ -242,8 +241,6 @@ def extract_manual_segments(patient_data,
     Every element of all_segments is compared with the lists of names in the 
     config.json file and inserted in the correct place of the manual_segments
     list.
-    If the element is not in any list it will be asked to the user if it must
-    be kept or no.    
 
     Parameters
     ----------
@@ -280,39 +277,93 @@ def extract_manual_segments(patient_data,
         elif name in config["Right femur names"]:
             manual_segments[4] = name
         else:
-            # Handle the cases in which some segments names are not recognized
-            # by asking to the user.
-            line = f"Do you want to keep {name}? Enter Y (yes) or N (no) \n"
-            to_keep = input(line).upper()
-            if to_keep == "Y":
-                line1 = (f"To which alias name is {name} associated? Enter P")
-                line2 = ("(Prostate), A (Anorectum), B (Bladder), L (Left")
-                line3 = ("femur) R (Right femur) \n")
-                what_is = input(line1+line2+line3).upper()
-                if what_is == "P":
-                    manual_segments[0] = name
-                    config["Prostate names"].append(name)
-                    print(name,"added to Prostate names in config.json")
-                elif what_is == "A":
-                    manual_segments[1] = name
-                    config["Rectum names"].append(name)
-                    print(name,"added to Rectum names in config.json")
-                elif what_is == "B":
-                    manual_segments[2] = name
-                    config["Bladder names"].append(name)
-                    print(name,"added to Bladder names in config.json")
-                elif what_is == "L":
-                    manual_segments[3] = name
-                    config["Left femur names"].append(name)
-                    print(name,"added to Left femur names in config.json")
-                elif what_is == "R":
-                    manual_segments[4] = name
-                    config["Right femur names"].append(name)
-                    print(name,"added to Right femur names in config.json")
-            elif to_keep == "N":
-                continue
-            
+            continue
+        
     return manual_segments
+
+# def extract_manual_segments(patient_data,
+#                             config,
+#                             ):
+#     """
+#     Creating the list of manual segments.
+    
+#     The list of all segments in the image is extracted from patient data.
+#     Then, the manual_segments list is created starting from the list of alias
+#     names and is initially filled with zeros.
+#     Every element of all_segments is compared with the lists of names in the 
+#     config.json file and inserted in the correct place of the manual_segments
+#     list.
+#     If the element is not in any list it will be asked to the user if it must
+#     be kept or no.    
+
+#     Parameters
+#     ----------
+#     patient_data : rtstruct.RTStruct
+#         RTStruct object containing all patient data.
+#     config : dict
+#         dictionary containing lists of possible manual segments names.
+
+#     Returns
+#     -------
+#     manual_segments: list
+#         list containing current patient manual segments names.
+
+#     """
+#     # Creates the list of manual segments
+#     all_segments = patient_data.get_roi_names()
+#     manual_segments = [0 for i in range(len(config["Alias names"]))]
+#     # Puts every manual segment in the correct place of the list
+#     for name in all_segments:
+#         if name in config["MBS segments"]:
+#             continue
+#         elif name in config["DL segments"]:
+#             continue
+#         elif name in config["External names"]:
+#             continue
+#         elif name in config["Prostate names"]:
+#             manual_segments[0] = name
+#         elif name in config["Rectum names"]:
+#             manual_segments[1] = name
+#         elif name in config["Bladder names"]:
+#             manual_segments[2] = name
+#         elif name in config["Left femur names"]:
+#             manual_segments[3] = name
+#         elif name in config["Right femur names"]:
+#             manual_segments[4] = name
+#         else:
+#             # Handle the cases in which some segments names are not recognized
+#             # by asking to the user.
+#             line = f"Do you want to keep {name}? Enter Y (yes) or N (no) \n"
+#             to_keep = input(line).upper()
+#             if to_keep == "Y":
+#                 line1 = (f"To which alias name is {name} associated? Enter P")
+#                 line2 = ("(Prostate), A (Anorectum), B (Bladder), L (Left")
+#                 line3 = ("femur) R (Right femur) \n")
+#                 what_is = input(line1+line2+line3).upper()
+#                 if what_is == "P":
+#                     manual_segments[0] = name
+#                     config["Prostate names"].append(name)
+#                     print(name,"added to Prostate names in config.json")
+#                 elif what_is == "A":
+#                     manual_segments[1] = name
+#                     config["Rectum names"].append(name)
+#                     print(name,"added to Rectum names in config.json")
+#                 elif what_is == "B":
+#                     manual_segments[2] = name
+#                     config["Bladder names"].append(name)
+#                     print(name,"added to Bladder names in config.json")
+#                 elif what_is == "L":
+#                     manual_segments[3] = name
+#                     config["Left femur names"].append(name)
+#                     print(name,"added to Left femur names in config.json")
+#                 elif what_is == "R":
+#                     manual_segments[4] = name
+#                     config["Right femur names"].append(name)
+#                     print(name,"added to Right femur names in config.json")
+#             elif to_keep == "N":
+#                 continue
+            
+#     return manual_segments
 
 def compute_metrics(patient_data,
                     reference_segment,
@@ -595,6 +646,12 @@ def hausdorff_dice(input_folder_path,
         
         # Creating manual segments list.
         print("Creating the list of manual segments")
+        unknown_segments = find_unknown_segments(patient_data,
+                                                 config,
+                                                 )
+        user_selection(unknown_segments,
+                       config,
+                       )
         manual_segments = extract_manual_segments(patient_data,
                                                   config,
                                                   )
