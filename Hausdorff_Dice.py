@@ -63,7 +63,7 @@ def patient_info(rtstruct_file_path,
     except KeyError:
         sys.exit(f"There is no {information} in the RTSTRUCT file provided.")
         
-def create_ct_volume(ct_folder_path):
+def read_ct_slices(ct_folder_path):
     """
     This function creates the CT volume from the DICOM series.
 
