@@ -136,20 +136,20 @@ def find_unknown_segments(patient_data,
                           config,
                           ):
     """
-    
+    Creates a list of current patient's segments that are not in the
+    configuration file.
 
     Parameters
     ----------
-    patient_data : TYPE
-        DESCRIPTION.
-    config : TYPE
-        DESCRIPTION.
-     : TYPE
-        DESCRIPTION.
+    patient_data : rtstruct.RTStruct
+        RTStruct object containing all patient data.
+    config : dict
+        Dictionary containing lists of possible manual segments names.
 
     Returns
     -------
-    None.
+    unknown_segments : list
+        List of segments names that are not in the configuration file.
 
     """
     # Creating the list of all segments
