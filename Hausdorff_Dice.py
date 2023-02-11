@@ -133,15 +133,14 @@ def compute_voxel_spacing(ct_folder_path):
     return voxel_spacing_mm
 
 def extract_manual_segments(patient_data,
-                            alias_names,
                             config,
                             ):
     """
     Creating the list of manual segments.
     
     The list of all segments in the image is extracted from patient data.
-    Then, the manual_segments list is created starting from the alias_names
-    list and is initially filled with zeros.
+    Then, the manual_segments list is created starting from the list of alias
+    names and is initially filled with zeros.
     Every element of all_segments is compared with the lists of names in the 
     config.json file and inserted in the correct place of the manual_segments
     list.
@@ -152,8 +151,6 @@ def extract_manual_segments(patient_data,
     ----------
     patient_data : rtstruct.RTStruct
         RTStruct object containing all patient data.
-    alias_names : list
-        list of the reference names of evry organ at risk that must e compared.
     config : dict
         dictionary containing lists of possible manual segments names.
 
@@ -165,7 +162,7 @@ def extract_manual_segments(patient_data,
     """
     # Creates the list of manual segments
     all_segments = patient_data.get_roi_names()
-    manual_segments = [0 for i in range(len(alias_names))]
+    manual_segments = [0 for i in range(len(config["Alias names"]))]
     # Puts every manual segment in the correct place of the list
     for name in all_segments:
         if name in config["MBS segments"]:
@@ -315,10 +312,6 @@ def hausdorff_dice(input_folder_path,
     # Opening the json file where the lists of names are stored.
     fd = open(config_path)
     config = json.load(fd)
-    
-    # Extracting compared segmentation methods, mbs, dl and alias segments
-    # names.
-    alias_names = config["Alias names"]
     
     # List where final data will be stored.
     final_data = []
@@ -505,7 +498,6 @@ def hausdorff_dice(input_folder_path,
         # Creating manual segments list.
         print("Creating the list of manual segments")
         manual_segments = extract_manual_segments(patient_data,
-                                                  alias_names,
                                                   config,
                                                   )
         
@@ -527,7 +519,7 @@ def hausdorff_dice(input_folder_path,
                   "segments",
                   )
             
-            for segment in range(len(alias_names)):
+            for segment in range(len(config["Alias names"])):
                 # Computing surface Dice similarity coefficient (sdsc), Dice
                 # similarity coefficient (dsc) and Hausdorff distance (hd).
                 sdsc, dsc, hd = compute_metrics(patient_data,
@@ -543,7 +535,7 @@ def hausdorff_dice(input_folder_path,
                             config["Compared methods"][methods],
                             ref_segs[methods][segment],
                             comp_segs[methods][segment],
-                            alias_names[segment],
+                            config["Alias names"][segment],
                             hd,
                             dsc,
                             sdsc,
