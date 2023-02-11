@@ -132,6 +132,56 @@ def compute_voxel_spacing(ct_folder_path):
     
     return voxel_spacing_mm
 
+def find_unknown_segments(patient_data,
+                          config,
+                          ):
+    """
+    
+
+    Parameters
+    ----------
+    patient_data : TYPE
+        DESCRIPTION.
+    config : TYPE
+        DESCRIPTION.
+     : TYPE
+        DESCRIPTION.
+
+    Returns
+    -------
+    None.
+
+    """
+    # Creating the list of all segments
+    all_segments = patient_data.get_roi_names()
+    
+    # Creating the list that will contain the unkown segments
+    unknown_segments = []
+    
+    # Finding the unkown segments and storing them in a list 
+    for name in all_segments:
+        if name in config["MBS segments"]:
+            continue
+        elif name in config["DL segments"]:
+            continue
+        elif name in config["External names"]:
+            continue
+        elif name in config["Prostate names"]:
+            continue
+        elif name in config["Rectum names"]:
+            continue
+        elif name in config["Bladder names"]:
+            continue
+        elif name in config["Left femur names"]:
+            continue
+        elif name in config["Right femur names"]:
+            continue
+        else:
+            unknown_segments.append[name]
+            
+    return unknown_segments
+    
+
 def extract_manual_segments(patient_data,
                             config,
                             ):
