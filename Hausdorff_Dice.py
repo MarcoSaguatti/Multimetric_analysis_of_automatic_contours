@@ -180,6 +180,54 @@ def find_unknown_segments(patient_data,
             unknown_segments.append[name]
             
     return unknown_segments
+
+def user_selection(unknown_segments,
+                   config,
+                   ):
+    """
+    
+
+    Parameters
+    ----------
+    unknown_segments : TYPE
+        DESCRIPTION.
+    config : TYPE
+        DESCRIPTION.
+     : TYPE
+        DESCRIPTION.
+
+    Returns
+    -------
+    None.
+
+    """
+    # Asking to the user if the unknown segments must be kept or not, if yes
+    # asking in which list of names they should be put.
+    for name in unknown_segments:
+        line = f"Do you want to keep {name}? Enter Y (yes) or N (no) \n"
+        to_keep = input(line).upper()
+        if to_keep == "Y":
+            line1 = (f"To which alias name is {name} associated? Enter P")
+            line2 = ("(Prostate), A (Anorectum), B (Bladder), L (Left")
+            line3 = ("femur) R (Right femur) \n")
+            what_is = input(line1+line2+line3).upper()
+            if what_is == "P":
+                config["Prostate names"].append(name)
+                print(name,"added to Prostate names in config.json")
+            elif what_is == "A":
+                config["Rectum names"].append(name)
+                print(name,"added to Rectum names in config.json")
+            elif what_is == "B":
+                config["Bladder names"].append(name)
+                print(name,"added to Bladder names in config.json")
+            elif what_is == "L":
+                config["Left femur names"].append(name)
+                print(name,"added to Left femur names in config.json")
+            elif what_is == "R":
+                config["Right femur names"].append(name)
+                print(name,"added to Right femur names in config.json")
+        elif to_keep == "N":
+            continue
     
 
 def extract_manual_segments(patient_data,
