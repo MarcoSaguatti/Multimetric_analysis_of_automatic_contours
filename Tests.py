@@ -96,6 +96,28 @@ def test_patient_info_with_frame_of_reference_uid():
                                            )
     assert expected == observed
     
+def test_read_ct_slices_with_frame_of_reference_UID():
+    """
+    GIVEN:
+        
+    WHEN:
+        
+    THEN:
+
+    """
+    # Path to CT serie folder
+    ct_folder_path = r".\tests\test_read_ct_slices\CT"
+    
+    # Expected behavior
+    UID = "1.3.6.1.4.1.14519.5.2.1.7085.2036.235949374640197733305184528698"
+    expected = [UID for i in range(163)]
+    
+    # Observed behavior
+    slices = Hausdorff_Dice.read_ct_slices(ct_folder_path)
+    observed = [slices[i].FrameOfReferenceUID for i in range(len(slices))]
+    
+    assert expected == observed
+    
 def test_compute_voxel_spacing():
     """
     GIVEN: the path to the folder containing a CT serie

@@ -115,7 +115,7 @@ def compute_voxel_spacing(ct_folder_path):
 
     """
     # Creating CT volume
-    slices = create_ct_volume(ct_folder_path)
+    slices = read_ct_slices(ct_folder_path)
     
     # Computing pixel spacing.
     pixel_spacing_mm = list(map(float,
