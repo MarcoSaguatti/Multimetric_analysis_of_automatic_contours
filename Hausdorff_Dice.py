@@ -185,16 +185,20 @@ def user_selection(unknown_segments,
                    config,
                    ):
     """
+    Asking the user if uknown segments must be kept or not.
     
+    Segments that are not in any list of the configuration file are shown to
+    the user.
+    If the user chooses to keep the segments he needs also to choose in which
+    list of the configuration file they must be saved.
+    Otherwise they will be discarded.
 
     Parameters
     ----------
-    unknown_segments : TYPE
-        DESCRIPTION.
-    config : TYPE
-        DESCRIPTION.
-     : TYPE
-        DESCRIPTION.
+    unknown_segments : list
+        List of segments names that are not in the configuration file.
+    config : dict
+        Dictionary containing lists of possible manual segments names.
 
     Returns
     -------
@@ -247,12 +251,12 @@ def extract_manual_segments(patient_data,
     patient_data : rtstruct.RTStruct
         RTStruct object containing all patient data.
     config : dict
-        dictionary containing lists of possible manual segments names.
+        Dictionary containing lists of possible manual segments names.
 
     Returns
     -------
     manual_segments: list
-        list containing current patient manual segments names.
+        List containing current patient manual segments names.
 
     """
     # Creates the list of manual segments
