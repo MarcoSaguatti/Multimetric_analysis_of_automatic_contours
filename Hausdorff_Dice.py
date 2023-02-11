@@ -134,7 +134,6 @@ def compute_voxel_spacing(ct_folder_path):
 
 def extract_manual_segments(patient_data,
                             alias_names,
-                            mbs_segments,
                             dl_segments,
                             config,
                             ):
@@ -156,8 +155,6 @@ def extract_manual_segments(patient_data,
         RTStruct object containing all patient data.
     alias_names : list
         list of the reference names of evry organ at risk that must e compared.
-    mbs_segments : list
-        list of model basesed segmentation segments names.
     dl_segments : list
         List of deep learning segmentation segments names.
     config : dict
@@ -174,7 +171,7 @@ def extract_manual_segments(patient_data,
     manual_segments = [0 for i in range(len(alias_names))]
     # Puts every manual segment in the correct place of the list
     for name in all_segments:
-        if name in mbs_segments:
+        if name in config["MBS segments"]:
             continue
         elif name in dl_segments:
             continue
@@ -324,7 +321,6 @@ def hausdorff_dice(input_folder_path,
     
     # Extracting compared segmentation methods, mbs, dl and alias segments
     # names.
-    mbs_segments = config["MBS segments"]
     dl_segments = config["DL segments"]
     alias_names = config["Alias names"]
     
@@ -514,7 +510,6 @@ def hausdorff_dice(input_folder_path,
         print("Creating the list of manual segments")
         manual_segments = extract_manual_segments(patient_data,
                                                   alias_names,
-                                                  mbs_segments,
                                                   dl_segments,
                                                   config,
                                                   )
@@ -522,9 +517,9 @@ def hausdorff_dice(input_folder_path,
         # Reference and compared segments lists.
         ref_segs = [manual_segments,
                     manual_segments,
-                    mbs_segments,
+                    config["MBS segments"],
                     ]
-        comp_segs = [mbs_segments,
+        comp_segs = [config["MBS segments"],
                      dl_segments,
                      dl_segments,
                      ]
