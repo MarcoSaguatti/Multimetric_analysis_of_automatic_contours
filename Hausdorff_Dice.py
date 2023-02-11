@@ -324,7 +324,6 @@ def hausdorff_dice(input_folder_path,
     
     # Extracting compared segmentation methods, mbs, dl and alias segments
     # names.
-    compared_methods = config["Compared methods"]
     mbs_segments = config["MBS segments"]
     dl_segments = config["DL segments"]
     alias_names = config["Alias names"]
@@ -531,10 +530,11 @@ def hausdorff_dice(input_folder_path,
                      ]
         
         # Computing HD, DSC and SDSC for every segment in manual and MBS lists.
-        for methods in range(len(compared_methods)):
+        for methods in range(len(config["Compared methods"])):
             print("Computing 95 percentile Hausdorff distance, Dice",
                   "similarity coefficient and surface Dice similarity",
-                  f"coefficient between {compared_methods[methods]} segments",
+                  f"coefficient between {config['Compared methods'][methods]}",
+                  "segments",
                   )
             
             for segment in range(len(alias_names)):
@@ -550,7 +550,7 @@ def hausdorff_dice(input_folder_path,
                 # dataframe.
                 row_data = [patient_id,
                             frame_of_reference_uid,
-                            compared_methods[methods],
+                            config["Compared methods"][methods],
                             ref_segs[methods][segment],
                             comp_segs[methods][segment],
                             alias_names[segment],
