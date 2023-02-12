@@ -171,6 +171,38 @@ def test_extract_all_segment_with_patient_ref002():
                                                    rtstruct_file_path,
                                                    )
     assert expected == observed
+    
+def test_find_unknown_segments_with_example_list():
+    """
+    GIVEN: a list of segments names and the configuration file path
+        
+    WHEN: running the function find_unknown_segments
+        
+    THEN: obtain a list with only those segments that are not in the
+          configuration file
+
+    """
+    # Example list to test the function
+    all_segments = ["Prostata",
+                    "Vescica",
+                    "DestroFemore",
+                    "SinistroFemore",
+                    "Retto",
+                    ]
+    
+    # Configuration file
+    config_path = r".\tests\test_find_unknown_segments\config.json"
+    fd = open(config_path)
+    config = json.load(fd)
+    
+    expected = ["DestroFemore",
+                "SinistroFemore",
+                ]
+    observed = Hausdorff_Dice.find_unknown_segments(all_segments,
+                                                    config,
+                                                    )
+    
+    assert expected == observed
 
 # def test_extract_manual_segments_has_five_elements():
 #     """
