@@ -351,7 +351,8 @@ def create_binary_labelmap(ct_folder_path,
     
     return labelmap
 
-def compute_metrics(patient_data,
+def compute_metrics(reference_labelmap,
+                    compared_labelmap,
                     reference_segment,
                     segment_to_compare,
                     voxel_spacing_mm):
@@ -367,8 +368,10 @@ def compute_metrics(patient_data,
 
     Parameters
     ----------
-    patient_data : rtstruct.RTStruct
-        RTStruct object containing all patient data.
+    reference_labelmap: numpy.array
+        3D binary array of the reference segment.
+    compared_labelmap: numpy.array
+        3D binary array of the segment to compare.
     reference_segment : str
         Name of one of the segments to compare (Ex. Prostate)
     segment_to_compare : str
@@ -388,10 +391,6 @@ def compute_metrics(patient_data,
         Value of the Hausdorff distance between the two compared segments.
 
     """
-    # Binary labelmap creation
-    reference_labelmap = patient_data.get_roi_mask_by_name(reference_segment)
-    compared_labelmap = patient_data.get_roi_mask_by_name(segment_to_compare)
-    
     # Metrics computation
     surf_dists = sd.compute_surface_distances(reference_labelmap,
                                               compared_labelmap,
@@ -661,9 +660,20 @@ def hausdorff_dice(input_folder_path,
                   )
             
             for segment in range(len(config["Alias names"])):
+                #Create binary labelmaps for reference and to compare segments.
+                reference_labelmap = create_binary_labelmap(ct_folder_path,
+                                                            rtstruct_file_path,
+                                                            ref_segs[methods][segment],
+                                                            )
+                compared_labelmap = create_binary_labelmap(ct_folder_path,
+                                                           rtstruct_file_path,
+                                                           comp_segs[methods][segment],
+                                                           )
+                
                 # Computing surface Dice similarity coefficient (sdsc), Dice
                 # similarity coefficient (dsc) and Hausdorff distance (hd).
-                sdsc, dsc, hd = compute_metrics(patient_data,
+                sdsc, dsc, hd = compute_metrics(reference_labelmap,
+                                                compared_labelmap,
                                                 ref_segs[methods][segment],
                                                 comp_segs[methods][segment],
                                                 voxel_spacing_mm,
