@@ -164,7 +164,8 @@ def extract_all_segments(ct_folder_path,
     return all_segments
     
 
-def find_unknown_segments(patient_data,
+def find_unknown_segments(ct_folder_path,
+                          rtstruct_folder_path,
                           config,
                           ):
     """
@@ -173,8 +174,11 @@ def find_unknown_segments(patient_data,
 
     Parameters
     ----------
-    patient_data : rtstruct.RTStruct
-        RTStruct object containing all patient data.
+    ct_folder_path : str
+        Path to the folder containing DICOM series files
+        (Ex: path/to/CTfolder).
+    rtstruct_file_path : str
+        Path to the RTSTRUCT.dcm file (Ex: "path/to/RTSTRUCT.dcm").
     config : dict
         Dictionary containing lists of possible manual segments names.
 
@@ -182,10 +186,13 @@ def find_unknown_segments(patient_data,
     -------
     unknown_segments : list
         List of segments names that are not in the configuration file.
+        (Ex. Spinal cord, Brainstem)
 
     """
     # Creating the list of all segments
-    all_segments = patient_data.get_roi_names()
+    all_segments = extract_all_segments(ct_folder_path,
+                                        rtstruct_folder_path,
+                                        )
     
     # Creating the list that will contain the unkown segments
     unknown_segments = []
