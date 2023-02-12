@@ -132,6 +132,38 @@ def compute_voxel_spacing(ct_folder_path):
     
     return voxel_spacing_mm
 
+def extract_all_segments(ct_folder_path,
+                         rtstruct_file_path,
+                         ):
+    """
+    Creates a list with the names of all segments in the current patient file.
+
+    Parameters
+    ----------
+    ct_folder_path : str
+        Path to the folder containing DICOM series files
+        (Ex: path/to/CTfolder).
+    rtstruct_file_path : str
+        Path to the RTSTRUCT.dcm file (Ex: "path/to/RTSTRUCT.dcm").
+
+    Returns
+    -------
+    all_segments : list
+        List of all the segments in the current CT series
+        (Ex. [Prostate, Bladder, Rectum])
+
+    """
+    # Reading current patient files.
+    patient_data = RTStructBuilder.create_from(ct_folder_path, 
+                                               rtstruct_file_path,
+                                               )
+    
+    # Creating the list of all segments
+    all_segments = patient_data.get_roi_names()
+    
+    return all_segments
+    
+
 def find_unknown_segments(patient_data,
                           config,
                           ):
@@ -561,8 +593,8 @@ def hausdorff_dice(input_folder_path,
             
         # Reading current patient files.
         patient_data = RTStructBuilder.create_from(ct_folder_path, 
-                                               rtstruct_file_path,
-                                               )
+                                                   rtstruct_file_path,
+                                                   )
         
         # Creating manual segments list.
         print("Creating the list of manual segments")
