@@ -336,7 +336,7 @@ def create_labelmap(ct_folder_path,
      
     Returns
     -------
-    labelmap : numpy.array
+    labelmap : numpy.ndarray
         3D binary array of the selected segment (0 out of the segment,
         1 inside).
 
@@ -368,9 +368,9 @@ def compute_metrics(reference_labelmap,
 
     Parameters
     ----------
-    reference_labelmap: numpy.array
+    reference_labelmap: numpy.ndarray
         3D binary array of the reference segment.
-    compared_labelmap: numpy.array
+    compared_labelmap: numpy.ndarray
         3D binary array of the segment to compare.
     reference_segment : str
         Name of one of the segments to compare (Ex. Prostate)
