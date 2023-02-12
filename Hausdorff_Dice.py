@@ -591,19 +591,19 @@ def hausdorff_dice(input_folder_path,
         voxel_spacing_mm = compute_voxel_spacing(ct_folder_path)
             
         # Reading current patient files.
-        patient_data = RTStructBuilder.create_from(ct_folder_path, 
-                                                   rtstruct_file_path,
-                                                   )
+        all_segments = extract_all_segments(ct_folder_path,
+                                            rtstruct_file_path,
+                                            )
         
         # Creating manual segments list.
         print("Creating the list of manual segments")
-        unknown_segments = find_unknown_segments(patient_data,
+        unknown_segments = find_unknown_segments(all_segments,
                                                  config,
                                                  )
         user_selection(unknown_segments,
                        config,
                        )
-        manual_segments = extract_manual_segments(patient_data,
+        manual_segments = extract_manual_segments(all_segments,
                                                   config,
                                                   )
         
