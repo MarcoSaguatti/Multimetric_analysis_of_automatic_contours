@@ -98,7 +98,7 @@ def read_ct_slices(ct_folder_path):
                     )
     return slices
 
-def compute_voxel_spacing(ct_folder_path):
+def voxel_spacing_and_tolerance(ct_folder_path):
     """
     Computing voxel spacing of the loaded DICOM series.
 
@@ -112,6 +112,8 @@ def compute_voxel_spacing(ct_folder_path):
     -------
     voxel_spacing_mm : list
         Voxel dimensions in millimeters.
+    tolerance: float
+        Greatest voxel dimension in millimeters.
 
     """
     # Creating CT volume
@@ -130,7 +132,11 @@ def compute_voxel_spacing(ct_folder_path):
     voxel_spacing_mm = pixel_spacing_mm.copy()
     voxel_spacing_mm.append(slice_thickness_mm)
     
-    return voxel_spacing_mm
+    # Computing tolerance
+    voxel_array = np.array(voxel_spacing_mm)
+    tolerance = voxel_array.max()
+    
+    return voxel_spacing_mm, tolerance
 
 def extract_all_segments(ct_folder_path,
                          rtstruct_file_path,
@@ -353,7 +359,8 @@ def create_labelmap(ct_folder_path,
 
 def compute_metrics(reference_labelmap,
                     compared_labelmap,
-                    voxel_spacing_mm):
+                    ct_folder_path,
+                    ):
     """
     Computing Hausdorff distance (hd), volumetric Dice similarity coefficient
     (dsc) and surface Dice similarity coefficient (sdsc).
@@ -385,14 +392,16 @@ def compute_metrics(reference_labelmap,
         Value of the Hausdorff distance between the two compared segments.
 
     """
+    # Computing voxel spacing and tolerance
+    voxel_spacing_mm, tolerance = voxel_spacing_and_tolerance(ct_folder_path)
+    
     # Metrics computation
     surf_dists = sd.compute_surface_distances(reference_labelmap,
                                               compared_labelmap,
                                               voxel_spacing_mm,
                                               )
     
-    voxel_array = np.array(voxel_spacing_mm)
-    tolerance = voxel_array.max()
+   
     surface_dice = sd.compute_surface_dice_at_tolerance(surf_dists,
                                                         tolerance_mm=tolerance,
                                                         )
@@ -614,9 +623,6 @@ def hausdorff_dice(input_folder_path,
             else:
                 # Without an old dataframe every patient will be analyzed.
                 pass
-                        
-        # Extracting voxel spacing.
-        voxel_spacing_mm = compute_voxel_spacing(ct_folder_path)
             
         # Creating the list of all segments of current patient.
         all_segments = extract_all_segments(ct_folder_path,
@@ -668,7 +674,7 @@ def hausdorff_dice(input_folder_path,
                 # similarity coefficient (dsc) and Hausdorff distance (hd).
                 sdsc, dsc, hd = compute_metrics(ref_labelmap,
                                                 comp_labelmap,
-                                                voxel_spacing_mm,
+                                                ct_folder_path,
                                                 )
                 
                 # Temporary list to store the current row of the final
