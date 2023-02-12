@@ -316,6 +316,41 @@ def extract_manual_segments(all_segments,
         
     return manual_segments
 
+def create_binary_labelmap(ct_folder_path,
+                           rtstruct_file_path,
+                           segment_name,
+                           ):
+    """
+    Creating the binary labelmap for the current segment.
+
+    Parameters
+    ----------
+    ct_folder_path : str
+        Path to the folder containing DICOM series files
+        (Ex: path/to/CTfolder).
+    rtstruct_file_path : str
+        Path to the RTSTRUCT.dcm file (Ex: "path/to/RTSTRUCT.dcm").
+    segment_name : str
+        Name of the segment
+        (Ex. "Prostate")
+     
+    Returns
+    -------
+    labelmap : numpy.array
+        3D binary array of the selected segment (0 out of the segment,
+        1 inside).
+
+    """
+    # Reading current patient files.
+    patient_data = RTStructBuilder.create_from(ct_folder_path, 
+                                               rtstruct_file_path,
+                                               )
+    
+    # Binary labelmap creation
+    labelmap = patient_data.get_roi_mask_by_name(segment_name)
+    
+    return labelmap
+
 def compute_metrics(patient_data,
                     reference_segment,
                     segment_to_compare,
@@ -590,7 +625,7 @@ def hausdorff_dice(input_folder_path,
         # Extracting voxel spacing.
         voxel_spacing_mm = compute_voxel_spacing(ct_folder_path)
             
-        # Reading current patient files.
+        # Creating the list of all segments of current patient.
         all_segments = extract_all_segments(ct_folder_path,
                                             rtstruct_file_path,
                                             )
