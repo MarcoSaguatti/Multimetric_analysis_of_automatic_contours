@@ -119,21 +119,24 @@ def test_read_ct_slices_with_frame_of_reference_uid():
     
     assert expected == observed
     
-def test_compute_voxel_spacing():
+def test_voxel_spacing_and_tolerance():
     """
     GIVEN: the path to the folder containing a CT series
         
-    WHEN: running the function compute_voxel_spacing
+    WHEN: running the function voxel_spacing_and_tolerance
         
-    THEN: return the correct voxel spacing
+    THEN: return the correct voxel spacing and tolerance
 
     """
     # Path to CT series folder
-    ct_folder_path = r".\tests\test_compute_voxel_spacing\CT"
+    ct_folder_path = r".\tests\test_voxel_spacing_and_tolerance\CT"
     
-    expected = [1.0, 1.0, 3.0]
-    observed = Hausdorff_Dice.compute_voxel_spacing(ct_folder_path)
-    assert expected == observed
+    expected_spacing = [1.0, 1.0, 3.0]
+    expected_tolerance = 3.0
+    spacing, tolerance = Hausdorff_Dice.voxel_spacing_and_tolerance(ct_folder_path)
+    
+    assert expected_spacing == spacing
+    assert expected_tolerance == tolerance
     
 def test_extract_all_segment_with_patient_ref002():
     """
