@@ -133,7 +133,44 @@ def test_compute_voxel_spacing():
     
     expected = [1.0, 1.0, 3.0]
     observed = Hausdorff_Dice.compute_voxel_spacing(ct_folder_path)
-    assert expected == observed  
+    assert expected == observed
+    
+def test_extract_all_segment_with_patient_ref002():
+    """
+    GIVEN: a CT series and its RTSTRUCT file
+        
+    WHEN: running the function extract_all_segments
+        
+    THEN: the segments names are the expected ones
+        
+    """
+    # Path to CT series folder
+    ct_folder_path = r".\tests\test_extract_all_segments\CT"
+    
+    # Path to RTSTRUCT file
+    rtstruct_file_path = r".\tests\test_extract_all_segments\RS_002.dcm"
+    
+    expected = ["Bladder_MBS",
+                "FemoralHead (Left)_MBS",
+                "FemoralHead (Right)_MBS",
+                "Prostate_MBS",
+                "Rectum_MBS",
+                "Prostata",
+                "Retto",
+                "Vescica",
+                "FemoreSinistro",
+                "FemoreDestro",
+                "External",
+                "Prostate_DL",
+                "Anorectum_DL",
+                "Bladder_DL",
+                "Femur_Head_L_DL",
+                "Femur_Head_R_DL",
+                ]
+    observed = Hausdorff_Dice.extract_all_segments(ct_folder_path,
+                                                   rtstruct_file_path,
+                                                   )
+    assert expected == observed
 
 # def test_extract_manual_segments_has_five_elements():
 #     """
