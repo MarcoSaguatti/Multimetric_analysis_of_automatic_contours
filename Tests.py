@@ -119,7 +119,7 @@ def test_read_ct_slices_with_frame_of_reference_uid():
     
     assert expected == observed
     
-def test_voxel_spacing_and_tolerance():
+def test_spacing_and_tolerance():
     """
     GIVEN: the path to the folder containing a CT series
         
@@ -133,7 +133,7 @@ def test_voxel_spacing_and_tolerance():
     
     expected_spacing = [1.0, 1.0, 3.0]
     expected_tolerance = 3.0
-    spacing, tolerance = Hausdorff_Dice.voxel_spacing_and_tolerance(ct_folder_path)
+    spacing, tolerance = Hausdorff_Dice.spacing_and_tolerance(ct_folder_path)
     
     assert expected_spacing == spacing
     assert expected_tolerance == tolerance

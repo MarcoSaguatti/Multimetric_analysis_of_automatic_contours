@@ -98,7 +98,7 @@ def read_ct_slices(ct_folder_path):
                     )
     return slices
 
-def voxel_spacing_and_tolerance(ct_folder_path):
+def spacing_and_tolerance(ct_folder_path):
     """
     Computing voxel spacing of the loaded DICOM series.
 
@@ -393,7 +393,7 @@ def compute_metrics(reference_labelmap,
 
     """
     # Computing voxel spacing and tolerance
-    voxel_spacing_mm, tolerance = voxel_spacing_and_tolerance(ct_folder_path)
+    voxel_spacing_mm, tolerance = spacing_and_tolerance(ct_folder_path)
     
     # Metrics computation
     surf_dists = sd.compute_surface_distances(reference_labelmap,
