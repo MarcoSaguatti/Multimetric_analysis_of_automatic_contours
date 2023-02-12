@@ -353,8 +353,6 @@ def create_labelmap(ct_folder_path,
 
 def compute_metrics(reference_labelmap,
                     compared_labelmap,
-                    reference_segment,
-                    segment_to_compare,
                     voxel_spacing_mm):
     """
     Computing Hausdorff distance (hd), volumetric Dice similarity coefficient
@@ -372,10 +370,6 @@ def compute_metrics(reference_labelmap,
         3D binary array of the reference segment.
     compared_labelmap: numpy.ndarray
         3D binary array of the segment to compare.
-    reference_segment : str
-        Name of one of the segments to compare (Ex. Prostate)
-    segment_to_compare : str
-        Name of the other segment to compare (Ex. Prostate_MBS)
     voxel_spacing_mm : list
         Voxel dimensions (Ex. [1, 1, 3])
 
@@ -674,8 +668,6 @@ def hausdorff_dice(input_folder_path,
                 # similarity coefficient (dsc) and Hausdorff distance (hd).
                 sdsc, dsc, hd = compute_metrics(ref_labelmap,
                                                 comp_labelmap,
-                                                ref_segs[methods][segment],
-                                                comp_segs[methods][segment],
                                                 voxel_spacing_mm,
                                                 )
                 
