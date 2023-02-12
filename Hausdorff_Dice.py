@@ -264,9 +264,9 @@ def user_selection(unknown_segments,
         elif to_keep == "N":
             continue
         
-def extract_manual_segments(patient_data,
-                           config,
-                           ):
+def extract_manual_segments(all_segments,
+                            config,
+                            ):
     """
     Creating the list of manual segments.
     
@@ -279,8 +279,9 @@ def extract_manual_segments(patient_data,
 
     Parameters
     ----------
-    patient_data : rtstruct.RTStruct
-        RTStruct object containing all patient data.
+    all_segments: list
+        List of all the segments in the current CT series
+        (Ex. [Prostate, Bladder, Rectum]).
     config : dict
         Dictionary containing lists of possible manual segments names.
 
@@ -291,7 +292,6 @@ def extract_manual_segments(patient_data,
 
     """
     # Creates the list of manual segments
-    all_segments = patient_data.get_roi_names()
     manual_segments = [0 for i in range(len(config["Alias names"]))]
     # Puts every manual segment in the correct place of the list
     for name in all_segments:
