@@ -4,6 +4,7 @@ import os
 import shutil
 import json
 import tempfile
+import math
 
 import numpy as np
 import pandas as pd
@@ -243,6 +244,49 @@ def test_extract_manual_segments_with_example_list():
                                                       )
     
     assert expected == observed
+    
+def test_compute_metrics():
+    """
+    GIVEN: The CT series folder, the RTSTRUCT file and two segments names
+        
+    WHEN: running the function compute_metrics
+        
+    THEN: obtain the correct surface Dice similarity coefficient, the
+          correct Dice similarity coefficient and the correct Hausdorff
+          distance
+
+    """
+    # Path to CT series folder and RTSTRUCT file
+    ct_folder_path = r".\tests\test_compute_metrics\CT"
+    rtstruct_file_path = r".\tests\test_compute_metrics\RS_002.dcm"
+    
+    # Extracting reference segment and segment to compare labelmaps
+    ref_labelmap = Hausdorff_Dice.create_labelmap(ct_folder_path,
+                                                  rtstruct_file_path,
+                                                  "Vescica",
+                                                  )
+    comp_labelmap = Hausdorff_Dice.create_labelmap(ct_folder_path,
+                                                   rtstruct_file_path,
+                                                   "Bladder_MBS",
+                                                   )
+    
+    expected_surface_dice = 0.9049208597597801
+    expected_dice = 0.8680934291194945
+    expected_hausdorff = 4.242640687119285
+    sdsc, dsc, hd = Hausdorff_Dice.compute_metrics(ref_labelmap,
+                                                   comp_labelmap,
+                                                   ct_folder_path,
+                                                   )
+    
+    assert math.isclose(expected_surface_dice,
+                        sdsc,
+                        )
+    assert math.isclose(expected_dice,
+                        dsc,
+                        )
+    assert math.isclose(expected_hausdorff,
+                        hd,
+                        )
 
 # def test_extract_manual_segments_has_five_elements():
 #     """
