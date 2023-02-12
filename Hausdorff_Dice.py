@@ -316,10 +316,10 @@ def extract_manual_segments(all_segments,
         
     return manual_segments
 
-def create_binary_labelmap(ct_folder_path,
-                           rtstruct_file_path,
-                           segment_name,
-                           ):
+def create_labelmap(ct_folder_path,
+                    rtstruct_file_path,
+                    segment_name,
+                    ):
     """
     Creating the binary labelmap for the current segment.
 
@@ -661,19 +661,19 @@ def hausdorff_dice(input_folder_path,
             
             for segment in range(len(config["Alias names"])):
                 #Create binary labelmaps for reference and to compare segments.
-                reference_labelmap = create_binary_labelmap(ct_folder_path,
-                                                            rtstruct_file_path,
-                                                            ref_segs[methods][segment],
-                                                            )
-                compared_labelmap = create_binary_labelmap(ct_folder_path,
-                                                           rtstruct_file_path,
-                                                           comp_segs[methods][segment],
-                                                           )
+                ref_labelmap = create_labelmap(ct_folder_path,
+                                               rtstruct_file_path,
+                                               ref_segs[methods][segment],
+                                               )
+                comp_labelmap = create_labelmap(ct_folder_path,
+                                                rtstruct_file_path,
+                                                comp_segs[methods][segment],
+                                                )
                 
                 # Computing surface Dice similarity coefficient (sdsc), Dice
                 # similarity coefficient (dsc) and Hausdorff distance (hd).
-                sdsc, dsc, hd = compute_metrics(reference_labelmap,
-                                                compared_labelmap,
+                sdsc, dsc, hd = compute_metrics(ref_labelmap,
+                                                comp_labelmap,
                                                 ref_segs[methods][segment],
                                                 comp_segs[methods][segment],
                                                 voxel_spacing_mm,
