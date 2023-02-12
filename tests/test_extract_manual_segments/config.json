@@ -1,0 +1,57 @@
+{
+    "Compared methods": [
+        "Manual-MBS",
+        "Manual-DL",
+        "MBS-DL"
+    ],
+    "MBS segments": [
+        "Prostate_MBS",
+        "Rectum_MBS",
+        "Bladder_MBS",
+        "FemoralHead (Left)_MBS",
+        "FemoralHead (Right)_MBS"
+    ],
+    "DL segments": [
+        "Prostate_DL",
+        "Anorectum_DL",
+        "Bladder_DL",
+        "Femur_Head_L_DL",
+        "Femur_Head_R_DL"
+    ],
+    "Alias names": [
+        "Prostate",
+        "Rectum",
+        "Bladder",
+        "Femoral head (left)",
+        "Femoral head (right)"
+    ],
+    "Bladder names": [
+        "Vescica",
+        "vescica",
+        "Bladder"
+    ],
+    "Prostate names": [
+        "CTV",
+        "Prostata",
+        "prostata"
+    ],
+    "Rectum names": [
+        "Retto",
+        "RettoAno"
+    ],
+    "Left femur names": [
+        "FemoreSn",
+        "TestaFemoraleSn",
+        "FemoreSinistro",
+        "femoreSin"
+    ],
+    "Right femur names": [
+        "FemoreDx",
+        "TestaFemoraleDx",
+        "FemoreDestro",
+        "femoreDes"
+    ],
+    "External names": [
+        "External"
+    ]
+}
