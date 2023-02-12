@@ -203,6 +203,43 @@ def test_find_unknown_segments_with_example_list():
                                                     )
     
     assert expected == observed
+    
+def test_extract_manual_segments_with_example_list():
+    """
+    GIVEN: a list of segments names and the configuration file path
+        
+    WHEN: running the function extract_manual_segments
+        
+    THEN: obtain a list with only the five manual segments ordered in the
+          correct way
+
+    """
+    # Example list to test the function
+    all_segments = ["Prostata",
+                    "Vescica",
+                    "Anorectum_DL",
+                    "FemoreSinistro",
+                    "Retto",
+                    "FemoreDestro",
+                    "Bladder_MBS",
+                    ]
+    
+    # Configuration file
+    config_path = r".\tests\test_extract_manual_segments\config.json"
+    fd = open(config_path)
+    config = json.load(fd)
+    
+    expected = ["Prostata",
+                "Retto",
+                "Vescica",
+                "FemoreSinistro",
+                "FemoreDestro",
+                ]
+    observed = Hausdorff_Dice.extract_manual_segments(all_segments,
+                                                      config,
+                                                      )
+    
+    assert expected == observed
 
 # def test_extract_manual_segments_has_five_elements():
 #     """
