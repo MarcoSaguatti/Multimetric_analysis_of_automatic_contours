@@ -129,7 +129,7 @@ def test_spacing_and_tolerance():
 
     """
     # Path to CT series folder
-    ct_folder_path = r".\tests\test_voxel_spacing_and_tolerance\CT"
+    ct_folder_path = r".\tests\test_spacing_and_tolerance\CT"
     
     expected_spacing = [1.0, 1.0, 3.0]
     expected_tolerance = 3.0
