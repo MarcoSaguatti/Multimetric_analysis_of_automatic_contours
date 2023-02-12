@@ -136,8 +136,10 @@ def test_spacing_and_tolerance():
     expected_tolerance = 3.0
     spacing, tolerance = Hausdorff_Dice.spacing_and_tolerance(ct_folder_path)
     
-    assert expected_spacing == spacing
-    assert expected_tolerance == tolerance
+    assert math.isclose(expected_spacing[0], spacing[0])
+    assert math.isclose(expected_spacing[1], spacing[1])
+    assert math.isclose(expected_spacing[2], spacing[2])
+    assert math.isclose(expected_tolerance, tolerance)
     
 def test_extract_all_segment_with_patient_ref002():
     """
