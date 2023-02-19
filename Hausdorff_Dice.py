@@ -416,6 +416,30 @@ def compute_metrics(reference_labelmap,
     
     return surface_dice, volume_dice, hausdorff_distance
 
+def store_patients(input_folder_path):
+    """
+    Searching input directory for patient folders and storing their names in
+    a list.
+
+    Parameters
+    ----------
+    input_folder_path : str
+        Path to the folder where patients are stored.
+
+    Returns
+    -------
+    patient_folders: list
+        List containing the names of patient folders in the input directory.
+
+    """
+    patient_folders = []
+    for folder in os.listdir(input_folder_path):
+        # Only patient folders are needed, so, files are skipped.
+        if not os.path.isfile(os.path.join(input_folder_path,folder)):
+            patient_folders.append(folder)
+            
+    return patient_folders
+
 def hausdorff_dice(input_folder_path,
                    config_path,
                    excel_path,
@@ -475,11 +499,7 @@ def hausdorff_dice(input_folder_path,
         sys.exit(f"{input_folder_path} is empty, execution halted")
     
     # Input folder must contain patient folders, not directly .dcm files.
-    patient_folders = []
-    for folder in os.listdir(input_folder_path):
-        # Only patient folders are needed, so, files are skipped.
-        if not os.path.isfile(os.path.join(input_folder_path,folder)):
-            patient_folders.append(folder)
+    patient_folders = store_patients(input_folder_path)        
     if len(patient_folders) == 0:
         sys.exit(print(f"{input_folder_path} does not contain folders.",
                   "Be sure to provide as input the folder that contains the",
