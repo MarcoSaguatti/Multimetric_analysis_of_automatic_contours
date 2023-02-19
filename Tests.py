@@ -289,6 +289,24 @@ def test_compute_metrics():
     assert math.isclose(expected_hausdorff,
                         hd,
                         )
+    
+def test_store_patients():
+    """
+    GIVEN: the path of a directory containing one patient folder and some
+           DICOM files
+        
+    WHEN: running the function store_patients 
+        
+    THEN: return a list containing only the name of the patient folder
+
+    """
+    #Path to the directory containing pateint folders
+    input_folder_path = r".\tests\test_store_patients"
+    
+    expected = ["Pelvic-Ref002"]
+    observed = Hausdorff_Dice.store_patients(input_folder_path)
+    
+    assert expected == observed
 
 # def test_extract_manual_segments_has_five_elements():
 #     """
