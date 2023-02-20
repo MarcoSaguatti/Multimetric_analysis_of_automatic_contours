@@ -440,6 +440,38 @@ def store_patients(input_folder_path):
             
     return patient_folders
 
+def create_folder(parent_folder_path,
+                  folder_name,
+                  ):
+    """
+    Creating a new folder and returning the path to it.
+
+    Parameters
+    ----------
+    parent_folder_path : str
+        Path to the folder where the new one must be created.
+    folder_name : str
+        Name of the new folder.
+     
+    Returns
+    -------
+    new_folder_path: str
+        Path to the new folder.
+
+    """
+    # Defining folder path
+    new_folder_path = os.path.join(parent_folder_path,
+                                   folder_name,
+                                   )
+    
+    # Creating folder if does not exist
+    try:
+        os.mkdir(new_folder_path)
+    except FileExistsError:
+        pass
+    
+    return new_folder_path
+
 def hausdorff_dice(input_folder_path,
                    config_path,
                    excel_path,
@@ -521,25 +553,15 @@ def hausdorff_dice(input_folder_path,
         # RTSTRUCT and CT series should be in different folders.
         # Creating RTSTRUCT folder if it is not already present, otherwise
         # going on with the execution.
-        rtstruct_folder = "RTSTRUCT"
-        rtstruct_folder_path = os.path.join(patient_folder_path,
-                                            rtstruct_folder,
-                                            )
-        try:
-            os.mkdir(rtstruct_folder_path)
-        except FileExistsError:
-            pass
+        rtstruct_folder_path = create_folder(patient_folder_path,
+                                             "RTSTRUCT",
+                                             )
         
         # Creating CT folder if it is not already present, otherwise
         # going on with the execution.
-        ct_folder = "CT"
-        ct_folder_path = os.path.join(patient_folder_path,
-                                                ct_folder,
-                                                )
-        try:
-            os.mkdir(ct_folder_path)
-        except FileExistsError:
-            pass
+        ct_folder_path = create_folder(patient_folder_path,
+                                       "CT",
+                                       )
         
         # Filling CT and RTSTRUCT folder if both empty.
         if (is_empty(rtstruct_folder_path) and is_empty(ct_folder_path)):
