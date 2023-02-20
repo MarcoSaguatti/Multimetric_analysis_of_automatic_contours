@@ -336,15 +336,18 @@ def test_create_folder_with_non_existing_folder():
     THEN: the output folder path is returned
 
     """
-    #Path to the parent directory
-    parent_folder_path = r".\tests\test_create_folder"
+    # Create a temporary empty folder
+    temp_folder = tempfile.TemporaryDirectory()
     
-    expected = r".\tests\test_create_folder\RTSTRUCT"
-    observed = Hausdorff_Dice.create_folder(parent_folder_path,
-                                               "RTSTRUCT",
-                                               )
+    expected = temp_folder.name+"\RTSTRUCT"
+    observed = Hausdorff_Dice.create_folder(temp_folder.name,
+                                            "RTSTRUCT",
+                                            )
     
     assert expected == observed
+    
+    # Remove the folder
+    temp_folder.cleanup()
     
 
 # def test_extract_manual_segments_has_five_elements():
