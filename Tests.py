@@ -300,13 +300,52 @@ def test_store_patients():
     THEN: return a list containing only the name of the patient folder
 
     """
-    #Path to the directory containing pateint folders
+    #Path to the directory containing patient folders
     input_folder_path = r".\tests\test_store_patients"
     
     expected = ["Pelvic-Ref002"]
     observed = Hausdorff_Dice.store_patients(input_folder_path)
     
     assert expected == observed
+    
+def test_create_folder_with_existing_folder():
+    """
+    GIVEN: the path to an already existing folder
+        
+    WHEN: running the function create folder
+        
+    THEN: the output folder path is returned
+
+    """
+    #Path to the parent directory
+    parent_folder_path = r".\tests\test_create_folder"
+    
+    expected = r".\tests\test_create_folder\CT"
+    observed = Hausdorff_Dice.create_folder(parent_folder_path,
+                                               "CT",
+                                               )
+    
+    assert expected == observed
+    
+def test_create_folder_with_non_existing_folder():
+    """
+    GIVEN: the path to a non existing folder
+        
+    WHEN: running the function create folder
+        
+    THEN: the output folder path is returned
+
+    """
+    #Path to the parent directory
+    parent_folder_path = r".\tests\test_create_folder"
+    
+    expected = r".\tests\test_create_folder\RTSTRUCT"
+    observed = Hausdorff_Dice.create_folder(parent_folder_path,
+                                               "RTSTRUCT",
+                                               )
+    
+    assert expected == observed
+    
 
 # def test_extract_manual_segments_has_five_elements():
 #     """
