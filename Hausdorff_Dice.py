@@ -472,6 +472,46 @@ def create_folder(parent_folder_path,
     
     return new_folder_path
 
+def move_ct_rtstruct_files(patient_folder_path,
+                           ct_folder_path,
+                           rtstruct_folder_path,
+                           ):
+    """
+    Moving CT files in the CT folder and RS files in the RTSTRUCT folder.
+    Folders and different kind of files won't be moved.
+    
+    Parameters
+    ----------
+    patient_folder_path : str
+        Path to the patient folder
+    ct_folder_path : str
+        Path to the folder where CT files will be stored
+    rtstruct_folder_path : str
+        Path to the folder where RTSTRUCT files will be stored
+
+    Returns
+    -------
+    None.
+
+    """
+    for file in os.listdir(patient_folder_path):
+        file_path = os.path.join(patient_folder_path,
+                                 file,
+                                 )
+        if not os.path.isfile(file_path):
+            pass
+        else:
+            if not (file.startswith("CT") or file.startswith("RS")):
+                pass
+            elif file.startswith("CT"):
+                shutil.move(file_path,
+                            ct_folder_path,
+                            )
+            elif file.startswith("RS"):
+                shutil.move(file_path,
+                            rtstruct_folder_path,
+                            )    
+
 def hausdorff_dice(input_folder_path,
                    config_path,
                    excel_path,
@@ -568,23 +608,10 @@ def hausdorff_dice(input_folder_path,
             print("Moving CT.dcm files into CT folder and RS.dcm files into",
                   "RTSTRUCT folder",
                   )
-            for file in os.listdir(patient_folder_path):
-                file_path = os.path.join(patient_folder_path,
-                                         file,
-                                         )
-                if os.path.isfile(file_path):
-                    if file.startswith("CT"):
-                        shutil.move(file_path,
-                                    ct_folder_path,
-                                    )
-                    elif file.startswith("RS"):
-                        shutil.move(file_path,
-                                    rtstruct_folder_path,
-                                    )  
-                    else:
-                        pass
-                else:
-                    pass
+            move_ct_rtstruct_files(patient_folder_path,
+                                   ct_folder_path,
+                                   rtstruct_folder_path,
+                                   )
         # Exit to not mix different data.
         elif is_empty(rtstruct_folder_path):
             sys.exit(print("RTSTRUCT folder is empty. Execution halted to not",
