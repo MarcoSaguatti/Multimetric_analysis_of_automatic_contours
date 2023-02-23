@@ -510,7 +510,61 @@ def move_ct_rtstruct_files(patient_folder_path,
             elif file.startswith("RS"):
                 shutil.move(file_path,
                             rtstruct_folder_path,
-                            )    
+                            )
+
+def fill_ct_rtstruct_folders(patient_folder_path,
+                             ct_folder_path,
+                             rtstruct_folder_path,
+                             ):
+    """
+    Filling CT and RTSTRUCT folders if both empty.
+    Exiting if only one of the folder is empty.
+    Going on with execution if both folders already have files inside.
+
+    Parameters
+    ----------
+    patient_folder_path : str
+        Path to the patient folder.
+    ct_folder_path : str
+        Path to the folder where CT files will be stored.
+    rtstruct_folder_path : str
+        Path to the folder where RTSTRUCT files will be stored.
+
+    Returns
+    -------
+    None.
+
+    """
+    # If both CT and RTSTRUCT folders have files in them no action is needed.
+    if not (is_empty(rtstruct_folder_path) or is_empty(ct_folder_path)):
+        print("Both RTSTRUCT and CT folders have already files in them.",
+              "Thus, no files will be moved",
+              )
+        pass
+    # Filling CT and RTSTRUCT folders if both empty.
+    elif (is_empty(rtstruct_folder_path) and is_empty(ct_folder_path)):
+        print("Moving CT.dcm files into CT folder and RS.dcm files into",
+              "RTSTRUCT folder",
+              )
+        move_ct_rtstruct_files(patient_folder_path,
+                               ct_folder_path,
+                               rtstruct_folder_path,
+                               )
+    # Exit to not mix different data.
+    elif is_empty(rtstruct_folder_path):
+        sys.exit(print("RTSTRUCT folder is empty. Execution halted to not",
+                       "mix different data. Check the data and try",
+                       "again",
+                       )
+                 )
+    # Exit to not mix different data.
+    else:
+        sys.exit(print("CT folder is empty. Execution halted to",
+                       "not mix different data. Check the data and try",
+                       "again",
+                       )
+                 )
+        
 
 def hausdorff_dice(input_folder_path,
                    config_path,
@@ -603,36 +657,11 @@ def hausdorff_dice(input_folder_path,
                                        "CT",
                                        )
         
-        # Filling CT and RTSTRUCT folder if both empty.
-        if (is_empty(rtstruct_folder_path) and is_empty(ct_folder_path)):
-            print("Moving CT.dcm files into CT folder and RS.dcm files into",
-                  "RTSTRUCT folder",
-                  )
-            move_ct_rtstruct_files(patient_folder_path,
-                                   ct_folder_path,
-                                   rtstruct_folder_path,
-                                   )
-        # Exit to not mix different data.
-        elif is_empty(rtstruct_folder_path):
-            sys.exit(print("RTSTRUCT folder is empty. Execution halted to not",
-                           "mix different data. Check the data and try",
-                           "again",
-                           )
-                     )
-        # Exit to not mix different data.
-        elif is_empty(ct_folder_path):
-            sys.exit(print("CT folder is empty. Execution halted to",
-                           "not mix different data. Check the data and try",
-                           " again",
-                           )
-                     )
-        # Going on if both folders have already data inside, to not mix
-        # different data.
-        else:
-            print("Both RTSTRUCT and CT folders have already files in them.",
-                  "Thus, no files will be moved",
-                  )
-            pass
+        # Filling CT and RTSTRUCT folders if both empty
+        fill_ct_rtstruct_folders(patient_folder_path,
+                                 ct_folder_path,
+                                 rtstruct_folder_path,
+                                 )
         
         # If RTSTRUCT or CT folders are still empty there are no data.
         if (is_empty(rtstruct_folder_path) or is_empty(ct_folder_path)):
