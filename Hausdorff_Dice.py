@@ -565,6 +565,34 @@ def fill_ct_rtstruct_folders(patient_folder_path,
                        )
                  )
         
+def check_new_folder_path(new_folder_path):
+    """
+    Checking if the user provided new_folder_path as argument.
+    If yes the path wil be concerted to python style.
+
+    Parameters
+    ----------
+    new_folder_path : str
+        Path to the folder where patient folders will be moved after execution.
+
+    Returns
+    -------
+    new_folder_path : str or bool
+        Path to the folder where patient folders will be moved after execution
+        converted into python path style.
+        False if the argument was not provided by the user.
+
+    """
+    if new_folder_path == ".":
+        print("New folder path has not been provided. Patient folders won't",
+              "be moved after execution.",
+              )
+        new_folder_path = False
+    else:
+        # Convert to python path style.
+        new_folder_path = new_folder_path.replace("\\", "/")
+    
+    return new_folder_path
 
 def hausdorff_dice(input_folder_path,
                    config_path,
@@ -910,14 +938,7 @@ def main(argv):
     print("\n")
     
     # Check if the user provided new_folder
-    if args.new_folder_path == ".":
-        print("New folder path has not been provided. Patient folders won't",
-              "be moved after execution.",
-              )
-        new_folder_path = False
-    else:
-        # Convert to python path style.
-        new_folder_path = args.new_folder_path.replace("\\", "/")
+    new_folder_path = check_new_folder_path(args.new_folder_path)
         
     # Convert to python path style.
     input_folder_path = args.input_folder_path.replace("\\", "/")
