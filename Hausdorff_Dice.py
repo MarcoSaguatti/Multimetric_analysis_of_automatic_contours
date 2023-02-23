@@ -483,11 +483,11 @@ def move_ct_rtstruct_files(patient_folder_path,
     Parameters
     ----------
     patient_folder_path : str
-        Path to the patient folder
+        Path to the patient folder.
     ct_folder_path : str
-        Path to the folder where CT files will be stored
+        Path to the folder where CT files will be stored.
     rtstruct_folder_path : str
-        Path to the folder where RTSTRUCT files will be stored
+        Path to the folder where RTSTRUCT files will be stored.
 
     Returns
     -------
