@@ -651,6 +651,28 @@ def exit_if_no_patients(input_folder_path,
                   "Execution halted",
                   )
                  )
+        
+def extract_rtstruct_file_path(rtstruct_folder_path):
+    """
+    Extracting rtstruct file path.
+
+    Parameters
+    ----------
+    rtstruct_folder_path : str
+        Path to the RTSTRUCT folder.
+
+    Returns
+    -------
+    rtstruct_file_path : str
+        Path to the RS.dcm file.
+
+    """
+    for file in os.listdir(rtstruct_folder_path):
+        rtstruct_file_path = os.path.join(rtstruct_folder_path,
+                                          file,
+                                          )
+    
+    return rtstruct_file_path
 
 def hausdorff_dice(input_folder_path,
                    config_path,
@@ -747,10 +769,7 @@ def hausdorff_dice(input_folder_path,
         exit_if_empty(ct_folder_path)
         
         # Extracting rtstruct file path.
-        for file in os.listdir(rtstruct_folder_path):
-            rtstruct_file_path = os.path.join(rtstruct_folder_path,
-                                                     file,
-                                                     )
+        rtstruct_file_path = extract_rtstruct_file_path(rtstruct_folder_path)
             
         # Extraction of patient ID and frame of reference UID.
         patient_id = patient_info(rtstruct_file_path,
