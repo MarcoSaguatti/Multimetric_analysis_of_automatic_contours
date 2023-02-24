@@ -554,19 +554,6 @@ def fill_ct_rtstruct_folders(patient_folder_path,
     else:
         exit_if_empty(rtstruct_folder_path)
         exit_if_empty(ct_folder_path)
-    # elif is_empty(rtstruct_folder_path):
-    #     sys.exit(print("RTSTRUCT folder is empty. Execution halted to not",
-    #                    "mix different data. Check the data and try",
-    #                    "again",
-    #                    )
-    #              )
-    # # Exit to not mix different data.
-    # else:
-    #     sys.exit(print("CT folder is empty. Execution halted to",
-    #                    "not mix different data. Check the data and try",
-    #                    "again",
-    #                    )
-    #              )
         
 def check_new_folder_path(new_folder_path):
     """
@@ -734,11 +721,6 @@ def hausdorff_dice(input_folder_path,
         # If RTSTRUCT or CT folders are still empty there are no data.
         exit_if_empty(rtstruct_folder_path)
         exit_if_empty(ct_folder_path)
-        # if (is_empty(rtstruct_folder_path) or is_empty(ct_folder_path)):
-        #     sys.exit(print("CT.dcm and/or RS.dcm files not available.",
-        #                    "Execution halted. Check the data and try again",
-        #                    )
-        #              )
         
         # Extracting rtstruct file path.
         for file in os.listdir(rtstruct_folder_path):
