@@ -606,7 +606,7 @@ def read_config(config_path):
 
 def exit_if_empty(folder_path):
     """
-    Exiting execution if the selected folder is empty.
+    Exiting from execution if the selected folder is empty.
 
     Parameters
     ----------
@@ -623,6 +623,34 @@ def exit_if_empty(folder_path):
         pass
     else:
         sys.exit(f"{folder_path} is empty, execution halted")
+        
+def exit_if_no_patients(input_folder_path,
+                        patient_folders,
+                        ):
+    """
+    Exiting from execution if there are no patient folders.
+
+    Parameters
+    ----------
+    input_folder_path : str
+        Path to the folder where patients are stored.
+    patient_folders : list
+        List of the folders in the input directory.
+
+    Returns
+    -------
+    None.
+
+    """
+    if not len(patient_folders) == 0:
+        pass
+    else:
+        sys.exit(print(f"{input_folder_path} does not contain folders.",
+                  "Be sure to provide as input the folder that contains the",
+                  "patients and not directly .dcm files.",
+                  "Execution halted",
+                  )
+                 )
 
 def hausdorff_dice(input_folder_path,
                    config_path,
@@ -681,14 +709,10 @@ def hausdorff_dice(input_folder_path,
     exit_if_empty(input_folder_path)
     
     # Input folder must contain patient folders, not directly .dcm files.
-    patient_folders = store_patients(input_folder_path)        
-    if len(patient_folders) == 0:
-        sys.exit(print(f"{input_folder_path} does not contain folders.",
-                  "Be sure to provide as input the folder that contains the",
-                  "patients and not directly .dcm files.",
-                  "Execution halted",
-                  )
-                 )
+    patient_folders = store_patients(input_folder_path)   
+    exit_if_no_patients(input_folder_path,
+                        patient_folders,
+                        )
     
     # Selecting one patient at the time and analyzing it.
     for patient_folder in patient_folders:
