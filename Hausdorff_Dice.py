@@ -614,6 +614,26 @@ def read_config(config_path):
     
     return config
 
+def exit_if_empty(folder_path):
+    """
+    Exiting execution if the selected folder is empty.
+
+    Parameters
+    ----------
+    folder_path : str
+        Path to a folder.
+
+    Returns
+    -------
+    None.
+
+    """
+    
+    if not is_empty(folder_path):
+        pass
+    else:
+        sys.exit(f"{folder_path} is empty, execution halted")
+
 def hausdorff_dice(input_folder_path,
                    config_path,
                    excel_path,
@@ -668,8 +688,7 @@ def hausdorff_dice(input_folder_path,
               )
     
     # Input folder can not be empty.
-    if is_empty(input_folder_path):
-        sys.exit(f"{input_folder_path} is empty, execution halted")
+    exit_if_empty(input_folder_path)
     
     # Input folder must contain patient folders, not directly .dcm files.
     patient_folders = store_patients(input_folder_path)        
@@ -688,8 +707,7 @@ def hausdorff_dice(input_folder_path,
                                            )
         
         # Patient folder can not be empty.
-        if is_empty(patient_folder_path):
-            sys.exit(f"{patient_folder_path} is empty, execution halted")
+        exit_if_empty(patient_folder_path)
         
         # RTSTRUCT and CT series should be in different folders.
         # Creating RTSTRUCT folder if it is not already present, otherwise
