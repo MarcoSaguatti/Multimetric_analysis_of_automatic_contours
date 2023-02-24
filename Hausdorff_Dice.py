@@ -594,6 +594,26 @@ def check_new_folder_path(new_folder_path):
     
     return new_folder_path
 
+def read_config(config_path):
+    """
+    Opening the configuration.json file
+
+    Parameters
+    ----------
+    config_path : str
+        Path to the configuration file.
+
+    Returns
+    -------
+    config : dict
+        Content of the configuration file.
+
+    """
+    fd = open(config_path)
+    config = json.load(fd)
+    
+    return config
+
 def hausdorff_dice(input_folder_path,
                    config_path,
                    excel_path,
@@ -625,8 +645,7 @@ def hausdorff_dice(input_folder_path,
 
     """
     # Opening the json file where the lists of names are stored.
-    fd = open(config_path)
-    config = json.load(fd)
+    config = read_config(config_path)
     
     # List where final data will be stored.
     final_data = []
