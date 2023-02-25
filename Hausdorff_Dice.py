@@ -871,14 +871,6 @@ def hausdorff_dice(input_folder_path,
         ref_segs, comp_segs = create_segments_matrices(manual_segments,
                                                        config,
                                                        )
-        # ref_segs = [manual_segments,
-        #             manual_segments,
-        #             config["MBS segments"],
-        #             ]
-        # comp_segs = [config["MBS segments"],
-        #              config["DL segments"],
-        #              config["DL segments"],
-        #              ]
         
         # Computing HD, DSC and SDSC for every segment in manual and MBS lists.
         for methods in range(len(config["Compared methods"])):
