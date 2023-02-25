@@ -884,6 +884,7 @@ def move_patient_folder(new_folder_path,
 
 def hausdorff_dice(input_folder_path,
                    config_path,
+                   new_config_path,
                    excel_path,
                    new_folder_path,
                    join_data,
@@ -899,6 +900,8 @@ def hausdorff_dice(input_folder_path,
         Path to the folder where patients are stored.
     config_path : str
         Path to the configuration json file.
+    new_config_path : str
+        Path to the file where the configuration data will be saved.
     excel_path : str
         Path to the .xlsx file where data will be stored (if it is not already
         there it will be automatically created).
@@ -1089,7 +1092,7 @@ def hausdorff_dice(input_folder_path,
     json_object = json.dumps(config,
                              indent=4,
                              )
-    with open(config_path, "w") as outfile:
+    with open(new_config_path, "w") as outfile:
         outfile.write(json_object)
         
     print("Execution successfully ended")
@@ -1123,6 +1126,13 @@ def main(argv):
                         metavar="config_path",
                         default=None,
                         help="Path to the configuration json file",
+                        )
+    parser.add_argument(dest="new_config_path",
+                        metavar="new_config_path",
+                        default=None,
+                        help=("""Path to the json file where the updated
+                              configuration data will be saved"""
+                              )
                         )
     parser.add_argument(dest="excel_path",
                         metavar="excel_path",
@@ -1162,6 +1172,7 @@ def main(argv):
     # Convert to python path style.
     input_folder_path = args.input_folder_path.replace("\\", "/")
     config_path = args.config_path.replace("\\", "/")
+    new_config_path = args.new_config_path.replace("\\", "/")
     excel_path = args.excel_path.replace("\\", "/")
     
     # If true new data will be concatenated with old ones.
@@ -1170,6 +1181,7 @@ def main(argv):
     # Run hausdorff_dice
     hausdorff_dice(input_folder_path,
                    config_path,
+                   new_config_path,
                    excel_path,
                    new_folder_path,
                    join_data,
