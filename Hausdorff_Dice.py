@@ -904,6 +904,19 @@ def save_config_data(config,
                              )
     with open(new_config_path, "w") as outfile:
         outfile.write(json_object)
+        
+def load_existing_dataframe(excel_path):
+    
+    try:
+        # loading existing data.
+        old_data = pd.read_excel(excel_path)
+        print(f"Successfully loaded {excel_path}")
+    except FileNotFoundError:
+        # There is not an existing excel file in excel path.
+        print(f"Failed to load {excel_path}, a new file will be created")
+        old_data = pd.DataFrame()
+    
+    return old_data
 
 def hausdorff_dice(input_folder_path,
                    config_path,
@@ -947,13 +960,7 @@ def hausdorff_dice(input_folder_path,
     # If join_data is True, old data will be extracted from excel_path,
     # otherwise the old excel file will be overwritten.
     if join_data:
-        try:
-            # loading existing data.
-            old_data = pd.read_excel(excel_path)
-            print(f"Successfully loaded {excel_path}")
-        except FileNotFoundError:
-            # There is not an existing excel file in excel path.
-            print(f"Failed to load {excel_path}, a new file will be created")
+        old_data = load_existing_dataframe(excel_path)
     else:
         print(f"Excel file at {excel_path} will be overwritten if already",
               "present, otherwise it will be created.",
@@ -1038,7 +1045,7 @@ def hausdorff_dice(input_folder_path,
                                         patient_folder,
                                         )
                     continue
-            except UnboundLocalError:
+            except KeyError:
                 pass
             
         # Creating the list of all segments of current patient.
