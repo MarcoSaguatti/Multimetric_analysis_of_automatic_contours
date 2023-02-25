@@ -674,6 +674,39 @@ def extract_rtstruct_file_path(rtstruct_folder_path):
     
     return rtstruct_file_path
 
+def create_segments_matrices(manual_segments,
+                             config,
+                             ):
+    """
+    Creating the reference segments and compared segments matrices to compare
+    manual-MBS, manual-DL and MBS-DL methods.
+
+    Parameters
+    ----------
+    manual_segments : list
+        List of the manual segments.
+    config : dict
+        Dictionary containing lists of possible manual segments names.
+
+    Returns
+    -------
+    ref_segs : list
+        List of reference segments lists.
+    comp_segs : list
+        List of segments to compare lists.
+
+    """
+    ref_segs = [manual_segments,
+                manual_segments,
+                config["MBS segments"],
+                ]
+    comp_segs = [config["MBS segments"],
+                 config["DL segments"],
+                 config["DL segments"],
+                 ]
+    
+    return ref_segs, comp_segs
+
 def hausdorff_dice(input_folder_path,
                    config_path,
                    excel_path,
@@ -835,14 +868,17 @@ def hausdorff_dice(input_folder_path,
                                                   )
         
         # Reference and compared segments lists.
-        ref_segs = [manual_segments,
-                    manual_segments,
-                    config["MBS segments"],
-                    ]
-        comp_segs = [config["MBS segments"],
-                     config["DL segments"],
-                     config["DL segments"],
-                     ]
+        ref_segs, comp_segs = create_segments_matrices(manual_segments,
+                                                       config,
+                                                       )
+        # ref_segs = [manual_segments,
+        #             manual_segments,
+        #             config["MBS segments"],
+        #             ]
+        # comp_segs = [config["MBS segments"],
+        #              config["DL segments"],
+        #              config["DL segments"],
+        #              ]
         
         # Computing HD, DSC and SDSC for every segment in manual and MBS lists.
         for methods in range(len(config["Compared methods"])):
