@@ -847,6 +847,39 @@ def extract_hausdorff_dice(manual_segments,
     
     return final_data
 
+def move_patient_folder(new_folder_path,
+                        patient_folder_path,
+                        patient_folder,
+                        ):
+    """
+    If the user provided new_folder_path as argument, move already used patient
+    folders in the new folder.
+
+    Parameters
+    ----------
+    new_folder_path : str
+        Path where patient folders will be moved after execution.
+    patient_folder_path : str
+        Path to the patient folder.
+    patient_folder : str
+        Name of the patient folder.
+
+    Returns
+    -------
+    None.
+
+    """
+    if not new_folder_path:
+        pass
+    else:
+        shutil.move(patient_folder_path,
+                    os.path.join(new_folder_path,
+                                 patient_folder,
+                                 ),
+                    )
+        print(f"{patient_folder} successfully moved to {new_folder_path}")
+        
+
 def hausdorff_dice(input_folder_path,
                    config_path,
                    excel_path,
@@ -971,17 +1004,10 @@ def hausdorff_dice(input_folder_path,
                     # Moving patient folder to a different location if the
                     # destination folder does not exist it will be
                     # automatically created.
-                    if new_folder_path:
-                        shutil.move(patient_folder_path,
-                                    os.path.join(new_folder_path,
-                                                 patient_folder,
-                                                 ),
-                                    )
-                        print(f"{patient_folder} successfully moved",
-                              f"to {new_folder_path}",
-                              )
-                    else:
-                        pass
+                    move_patient_folder(new_folder_path,
+                                        patient_folder_path,
+                                        patient_folder,
+                                        )
                     continue
             else:
                 # Without an old dataframe every patient will be analyzed.
@@ -1013,15 +1039,10 @@ def hausdorff_dice(input_folder_path,
       
         # Moving patient folder to a different location, if the destination
         # folder does not exist it will be automatically created.
-        if new_folder_path:
-            shutil.move(patient_folder_path,
-                        os.path.join(new_folder_path,
-                                     patient_folder,
-                                     ),
-                        )
-            print(f"{patient_folder} successfully moved to {new_folder_path}")
-        else:
-            pass
+        move_patient_folder(new_folder_path,
+                                        patient_folder_path,
+                                        patient_folder,
+                                        )
         
     # Creating the dataframe
     new_data = pd.DataFrame(final_data,
