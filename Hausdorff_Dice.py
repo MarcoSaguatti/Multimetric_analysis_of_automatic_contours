@@ -951,11 +951,9 @@ def hausdorff_dice(input_folder_path,
             # loading existing data.
             old_data = pd.read_excel(excel_path)
             print(f"Successfully loaded {excel_path}")
-            excel_file_exist = 1
         except FileNotFoundError:
             # There is not an existing excel file in excel path.
             print(f"Failed to load {excel_path}, a new file will be created")
-            excel_file_exist = 0
     else:
         print(f"Excel file at {excel_path} will be overwritten if already",
               "present, otherwise it will be created.",
@@ -1020,7 +1018,7 @@ def hausdorff_dice(input_folder_path,
         if join_data:
             # If the current frame of reference is already in the excel file
             # we can move to the next one.
-            if excel_file_exist:
+            try:
                 for frame_of_reference in old_data.loc[:,"Frame of reference"]:
                     if frame_of_reference == frame_of_reference_uid:
                         print(f"Study {frame_of_reference} of patient",
@@ -1040,8 +1038,7 @@ def hausdorff_dice(input_folder_path,
                                         patient_folder,
                                         )
                     continue
-            else:
-                # Without an old dataframe every patient will be analyzed.
+            except UnboundLocalError:
                 pass
             
         # Creating the list of all segments of current patient.
