@@ -906,7 +906,21 @@ def save_config_data(config,
         outfile.write(json_object)
         
 def load_existing_dataframe(excel_path):
-    
+    """
+    Loading existing dataframe or creating an empty new one.
+
+    Parameters
+    ----------
+    excel_path : str
+        Path to the excel file where the old data are stored.
+
+    Returns
+    -------
+    old_data : DataFrame
+        Dataframe of the data contained in the excel file (if the excel file
+        does not exist it is an empty dataframe).
+
+    """
     try:
         # loading existing data.
         old_data = pd.read_excel(excel_path)
