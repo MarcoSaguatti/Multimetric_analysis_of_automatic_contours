@@ -948,6 +948,42 @@ def concatenate_data(old_data,
     
     return new_data
 
+def check_study(old_data,
+                frame_of_reference_uid,
+                patient_id,
+                ):
+    """
+    Checking if the current patient has been already analysed.
+
+    Parameters
+    ----------
+    old_data : DataFrame
+        Dataframe contained in the excel file (if there is not an excel file
+        it is an empty dataframe).
+    frame_of_reference_uid : pydicom.uid.UID
+        Code of the current patient.
+    patient_id : str
+        Name of the anlysed patient.
+
+    Returns
+    -------
+    frame_uid_in_old_data : bool
+        Flag to know if the current patient study is already in the dataframe.
+
+    """
+    for frame_of_reference in old_data.loc[:,"Frame of reference"]:
+        if frame_of_reference == frame_of_reference_uid:
+            print(f"Study {frame_of_reference} of patient",
+                  f"{patient_id} is alreday in the dataframe,",
+                  "going to the next one",
+                  )
+            frame_uid_in_old_data = True
+            break
+        else:
+            frame_uid_in_old_data = False
+    
+    return frame_uid_in_old_data
+
 def hausdorff_dice(input_folder_path,
                    config_path,
                    new_config_path,
@@ -1056,16 +1092,10 @@ def hausdorff_dice(input_folder_path,
             # If the current frame of reference is already in the excel file
             # we can move to the next one.
             try:
-                for frame_of_reference in old_data.loc[:,"Frame of reference"]:
-                    if frame_of_reference == frame_of_reference_uid:
-                        print(f"Study {frame_of_reference} of patient",
-                              f"{patient_id} is alreday in the dataframe,",
-                              "going to the next one",
-                              )
-                        frame_uid_in_old_data = True
-                        break
-                    else:
-                        frame_uid_in_old_data = False
+                frame_uid_in_old_data = check_study(old_data,
+                                                    frame_of_reference_uid,
+                                                    patient_id,
+                                                    )
                 if frame_uid_in_old_data:
                     # Moving patient folder to a different location if the
                     # destination folder does not exist it will be
