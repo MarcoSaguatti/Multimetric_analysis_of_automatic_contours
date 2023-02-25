@@ -918,6 +918,36 @@ def load_existing_dataframe(excel_path):
     
     return old_data
 
+def concatenate_data(old_data,
+                     new_data,
+                     ):
+    """
+    Concatenating old and new data in a single dataframe.
+
+    Parameters
+    ----------
+    old_data : DataFrame
+        Dataframe contained in the excel file (if there is not an excel file
+        it is an empty dataframe).
+    new_data : DataFrame
+        Dataframe of the new acquired data.
+
+    Returns
+    -------
+    new_data : DataFrame
+        Dataframe of the merged data.
+
+    """
+    frames = [old_data,
+              new_data,
+              ]
+    new_data = pd.concat(frames,
+                         ignore_index=True,
+                         )
+    print("Old and new dataframe concatenated")
+    
+    return new_data
+
 def hausdorff_dice(input_folder_path,
                    config_path,
                    new_config_path,
@@ -1095,18 +1125,10 @@ def hausdorff_dice(input_folder_path,
                             )
     
     if join_data:
-        try:
-            # Concatenating old and new dataframes.
-            frames = [old_data,
-                      new_data,
-                      ]
-            new_data = pd.concat(frames,
-                                 ignore_index=True,
-                                 )
-            print("Old and new dataframe concatenated")
-        except NameError:
-            print("There is not an old dataframe, concatenation not performed")
-        
+        # Concatenating old and new dataframes.
+        new_data = concatenate_data(old_data,
+                                    new_data,
+                                    )        
     
     # Saving dataframe to excel.
     print("Saving data")
