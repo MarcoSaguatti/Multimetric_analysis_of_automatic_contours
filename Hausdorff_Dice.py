@@ -707,6 +707,93 @@ def create_segments_matrices(manual_segments,
     
     return ref_segs, comp_segs
 
+def extract_hausdorff_dice(manual_segments,
+                           config,
+                           ct_folder_path,
+                           rtstruct_file_path,
+                           ):
+    """
+    Extracting Hausdorff distance, Dice similarity coefficient and
+    surface dice similarity coefficient for each segment.
+    The comparisons manual-MBS, manual-DL and MBS-DL are performed.
+
+    Parameters
+    ----------
+    manual_segments : list
+        List of the manual segments.
+    config : dict
+        Dictionary containing lists of possible manual segments names.
+    ct_folder_path : str
+        Path to the folder where CT files will be stored.
+    rtstruct_file_path : str
+        Path to the RS.dcm file.
+
+    Returns
+    -------
+    final_data: list
+        List containing the final data.
+
+    """
+    # Extraction of patient ID and frame of reference UID.
+    patient_id = patient_info(rtstruct_file_path,
+                              "PatientID",
+                              )
+    frame_of_reference_uid = patient_info(rtstruct_file_path,
+                                          "FrameOfReferenceUID",
+                                          )
+    
+    # Reference and compared segments lists.
+    ref_segs, comp_segs = create_segments_matrices(manual_segments,
+                                                   config,
+                                                   )
+    
+    # List where final data will be stored.
+    final_data = []
+    
+    # Computing HD, DSC and SDSC for every segment in manual and MBS lists.
+    for methods in range(len(config["Compared methods"])):
+        print("Computing 95 percentile Hausdorff distance, Dice",
+              "similarity coefficient and surface Dice similarity",
+              f"coefficient between {config['Compared methods'][methods]}",
+              "segments",
+              )
+        
+        for segment in range(len(config["Alias names"])):
+            #Create binary labelmaps for reference and to compare segments.
+            ref_labelmap = create_labelmap(ct_folder_path,
+                                           rtstruct_file_path,
+                                           ref_segs[methods][segment],
+                                           )
+            comp_labelmap = create_labelmap(ct_folder_path,
+                                            rtstruct_file_path,
+                                            comp_segs[methods][segment],
+                                            )
+            
+            # Computing surface Dice similarity coefficient (sdsc), Dice
+            # similarity coefficient (dsc) and Hausdorff distance (hd).
+            sdsc, dsc, hd = compute_metrics(ref_labelmap,
+                                            comp_labelmap,
+                                            ct_folder_path,
+                                            )
+            
+            # Temporary list to store the current row of the final
+            # dataframe.
+            row_data = [patient_id,
+                        frame_of_reference_uid,
+                        config["Compared methods"][methods],
+                        ref_segs[methods][segment],
+                        comp_segs[methods][segment],
+                        config["Alias names"][segment],
+                        hd,
+                        dsc,
+                        sdsc,
+                        ]
+            
+            # Adding the constructed row to final_data.
+            final_data.append(row_data)
+    
+    return final_data
+
 def hausdorff_dice(input_folder_path,
                    config_path,
                    excel_path,
@@ -739,9 +826,6 @@ def hausdorff_dice(input_folder_path,
     """
     # Opening the json file where the lists of names are stored.
     config = read_config(config_path)
-    
-    # List where final data will be stored.
-    final_data = []
     
     # If join_data is True, old data will be extracted from excel_path,
     # otherwise the old excel file will be overwritten.
@@ -867,52 +951,12 @@ def hausdorff_dice(input_folder_path,
                                                   config,
                                                   )
         
-        # Reference and compared segments lists.
-        ref_segs, comp_segs = create_segments_matrices(manual_segments,
-                                                       config,
-                                                       )
-        
         # Computing HD, DSC and SDSC for every segment in manual and MBS lists.
-        for methods in range(len(config["Compared methods"])):
-            print("Computing 95 percentile Hausdorff distance, Dice",
-                  "similarity coefficient and surface Dice similarity",
-                  f"coefficient between {config['Compared methods'][methods]}",
-                  "segments",
-                  )
-            
-            for segment in range(len(config["Alias names"])):
-                #Create binary labelmaps for reference and to compare segments.
-                ref_labelmap = create_labelmap(ct_folder_path,
-                                               rtstruct_file_path,
-                                               ref_segs[methods][segment],
-                                               )
-                comp_labelmap = create_labelmap(ct_folder_path,
-                                                rtstruct_file_path,
-                                                comp_segs[methods][segment],
-                                                )
-                
-                # Computing surface Dice similarity coefficient (sdsc), Dice
-                # similarity coefficient (dsc) and Hausdorff distance (hd).
-                sdsc, dsc, hd = compute_metrics(ref_labelmap,
-                                                comp_labelmap,
-                                                ct_folder_path,
-                                                )
-                
-                # Temporary list to store the current row of the final
-                # dataframe.
-                row_data = [patient_id,
-                            frame_of_reference_uid,
-                            config["Compared methods"][methods],
-                            ref_segs[methods][segment],
-                            comp_segs[methods][segment],
-                            config["Alias names"][segment],
-                            hd,
-                            dsc,
-                            sdsc,
-                            ]
-                
-                # Adding the constructed row to final_data.
-                final_data.append(row_data)
+        final_data = extract_hausdorff_dice(manual_segments,
+                                            config,
+                                            ct_folder_path,
+                                            rtstruct_file_path,
+                                            )
       
         # Moving patient folder to a different location, if the destination
         # folder does not exist it will be automatically created.
