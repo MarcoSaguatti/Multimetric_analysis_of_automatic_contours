@@ -764,11 +764,13 @@ def extract_hausdorff_dice(manual_segments,
                            config,
                            ct_folder_path,
                            rtstruct_file_path,
+                           final_data
                            ):
     """
     Extracting Hausdorff distance, Dice similarity coefficient and
     surface dice similarity coefficient for each segment.
     The comparisons manual-MBS, manual-DL and MBS-DL are performed.
+    Extracted data are saved in the final_data list.
 
     Parameters
     ----------
@@ -780,11 +782,13 @@ def extract_hausdorff_dice(manual_segments,
         Path to the folder where CT files will be stored.
     rtstruct_file_path : str
         Path to the RS.dcm file.
+    final_data: list
+        List containing the final data.
 
     Returns
     -------
     final_data: list
-        List containing the final data.
+        List containing the final data (updated)
 
     """
     # Extraction of patient ID and frame of reference UID.
@@ -800,8 +804,6 @@ def extract_hausdorff_dice(manual_segments,
                                                    config,
                                                    )
     
-    # List where final data will be stored.
-    final_data = []
     
     # Computing HD, DSC and SDSC for every segment in manual and MBS lists.
     for methods in range(len(config["Compared methods"])):
@@ -912,6 +914,9 @@ def hausdorff_dice(input_folder_path,
     """
     # Opening the json file where the lists of names are stored.
     config = read_config(config_path)
+    
+    # List where final data will be stored.
+    final_data = []
     
     # If join_data is True, old data will be extracted from excel_path,
     # otherwise the old excel file will be overwritten.
@@ -1035,6 +1040,7 @@ def hausdorff_dice(input_folder_path,
                                             config,
                                             ct_folder_path,
                                             rtstruct_file_path,
+                                            final_data,
                                             )
       
         # Moving patient folder to a different location, if the destination
