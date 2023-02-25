@@ -881,6 +881,29 @@ def move_patient_folder(new_folder_path,
                     )
         print(f"{patient_folder} successfully moved to {new_folder_path}")
         
+def save_config_data(config,
+                     new_config_path,
+                     ):
+    """
+    Saving the updated configuration data into the new configuration file.
+
+    Parameters
+    ----------
+    config : dict
+        Content of the configuration file.
+    new_config_path : str
+        Path to the new configuration file.
+
+    Returns
+    -------
+    None.
+
+    """
+    json_object = json.dumps(config,
+                             indent=4,
+                             )
+    with open(new_config_path, "w") as outfile:
+        outfile.write(json_object)
 
 def hausdorff_dice(input_folder_path,
                    config_path,
@@ -1088,12 +1111,10 @@ def hausdorff_dice(input_folder_path,
                       index=False,
                       )
      
-    # Updating config.json.
-    json_object = json.dumps(config,
-                             indent=4,
-                             )
-    with open(new_config_path, "w") as outfile:
-        outfile.write(json_object)
+    # Saving configuration data.
+    save_config_data(config,
+                     new_config_path,
+                     )
         
     print("Execution successfully ended")
        
