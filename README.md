@@ -45,11 +45,12 @@ All the code needed to run the program is stored in the [Hausdorff_Dice.py](http
 To run the program, the user has firstly to download the whole repository Hausdorff_Dice_Computation.
 Then, the script Hausdorff_Dice.py can be run from command line by typing:
 
-*python path\to\Hausdorff_Dice.py path\to\patients\folder path\to\config.json path\to\excel_file.xlsx --new-folder path\to\the\folder\where\patients\will\be\moved --join-data True*
+*python path\to\Hausdorff_Dice.py path\to\patients\folder path\to\config.json path\to\new_config.json path\to\excel_file.xlsx --new-folder path\to\the\folder\where\patients\will\be\moved --join-data True*
 
-The first three arguments are required:
+The first four arguments are required:
 * *path\to\patients\folder*: Is the path to the folder where patients folders are stored. **Do not put here directly the path to the folder containing .dcm files!**;
 * *path\to\config.json*: Is the path to [config.json](https://github.com/MarcoSaguatti/Hausdorff_Dice_Computation/blob/master/config.json), a file that stores some important parameters like segment names;
+* *path\to\new_config.json*: Is the path to a new configuration file where the updated configuration data will be saved after executution (if the file does not exist it will be automatically created);
 * *path\to\excel_file.sxlsx*: Is the path to the file where the data will be saved after execution. If the file does not exist in the specified path it will be automatically created.
 
 The last two argument are optional:
