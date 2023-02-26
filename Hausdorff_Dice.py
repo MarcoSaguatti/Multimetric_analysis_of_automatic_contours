@@ -998,141 +998,6 @@ def check_study(old_data,
     
     return frame_uid_in_old_data
 
-def process_patients(patient_folders,
-                     input_folder_path,
-                     join_data,
-                     old_data,
-                     new_folder_path,
-                     config,
-                     final_data,
-                     ):
-    """
-    Processing one patient at the time
-
-    Parameters
-    ----------
-    patient_folders : list
-        List of patient folders names.
-    input_folder_path : str
-        Path to the folder containing all patients.
-    join_data : bool
-        If True new data will be concatenated with older ones, if False old
-        data will be overwritten.
-    old_data : DataFrame
-        DataFrame of the already analysed patients.
-    new_folder_path : str
-        Path to the folder where analysed patients will be moved.
-    config : dict
-        Dictionary of the configuration data.
-    final_data : list
-        List containing the extracted data.
-
-    Returns
-    -------
-    final_data : list
-        List containing the extracted data (updated).
-
-    """
-    for patient_folder in patient_folders:
-        patient_folder_path = os.path.join(input_folder_path,
-                                           patient_folder,
-                                           )
-        
-        # Patient folder can not be empty.
-        exit_if_empty(patient_folder_path)
-        
-        # RTSTRUCT and CT series should be in different folders.
-        # Creating RTSTRUCT folder if it is not already present, otherwise
-        # going on with the execution.
-        rtstruct_folder_path = create_folder(patient_folder_path,
-                                             "RTSTRUCT",
-                                             )
-        
-        # Creating CT folder if it is not already present, otherwise
-        # going on with the execution.
-        ct_folder_path = create_folder(patient_folder_path,
-                                       "CT",
-                                       )
-        
-        # Filling CT and RTSTRUCT folders if both empty
-        fill_ct_rtstruct_folders(patient_folder_path,
-                                 ct_folder_path,
-                                 rtstruct_folder_path,
-                                 )
-        
-        # If RTSTRUCT or CT folders are still empty there are no data.
-        exit_if_empty(rtstruct_folder_path)
-        exit_if_empty(ct_folder_path)
-        
-        # Extracting rtstruct file path.
-        rtstruct_file_path = extract_rtstruct_file_path(rtstruct_folder_path)
-            
-        # Extraction of patient ID and frame of reference UID.
-        patient_id = patient_info(rtstruct_file_path,
-                                  "PatientID",
-                                  )
-        frame_of_reference_uid = patient_info(rtstruct_file_path,
-                                              "FrameOfReferenceUID",
-                                              )
-        
-        print(f"Starting patient {patient_id} analysis")
-        
-        # If the current study is already in the dataframe skip it, otherwise
-        # every study will be analyzed. 
-        if join_data:
-            # If the current frame of reference is already in the excel file
-            # we can move to the next one.
-            try:
-                frame_uid_in_old_data = check_study(old_data,
-                                                    frame_of_reference_uid,
-                                                    patient_id,
-                                                    )
-                if frame_uid_in_old_data:
-                    # Moving patient folder to a different location if the
-                    # destination folder does not exist it will be
-                    # automatically created.
-                    move_patient_folder(new_folder_path,
-                                        patient_folder_path,
-                                        patient_folder,
-                                        )
-                    continue
-            except KeyError:
-                pass
-            
-        # Creating the list of all segments of current patient.
-        all_segments = extract_all_segments(ct_folder_path,
-                                            rtstruct_file_path,
-                                            )
-        
-        # Creating manual segments list.
-        print("Creating the list of manual segments")
-        unknown_segments = find_unknown_segments(all_segments,
-                                                 config,
-                                                 )
-        user_selection(unknown_segments,
-                       config,
-                       )
-        manual_segments = extract_manual_segments(all_segments,
-                                                  config,
-                                                  )
-        
-        # Computing HD, DSC and SDSC for every segment in manual and MBS lists.
-        final_data = extract_hausdorff_dice(manual_segments,
-                                            config,
-                                            ct_folder_path,
-                                            rtstruct_file_path,
-                                            final_data,
-                                            )
-      
-        # Moving patient folder to a different location, if the destination
-        # folder does not exist it will be automatically created.
-        move_patient_folder(new_folder_path,
-                                        patient_folder_path,
-                                        patient_folder,
-                                        )
-        
-    return final_data
-
 def hausdorff_dice(input_folder_path,
                    config_path,
                    new_config_path,
@@ -1172,15 +1037,6 @@ def hausdorff_dice(input_folder_path,
     # List where final data will be stored.
     final_data = []
     
-    # If join_data is True, old data will be extracted from excel_path,
-    # otherwise the old excel file will be overwritten.
-    if join_data:
-        old_data = load_existing_dataframe(excel_path)
-    else:
-        print(f"Excel file at {excel_path} will be overwritten if already",
-              "present, otherwise it will be created.",
-              )
-    
     # Input folder can not be empty.
     exit_if_empty(input_folder_path)
     
@@ -1189,50 +1045,246 @@ def hausdorff_dice(input_folder_path,
     exit_if_no_patients(input_folder_path,
                         patient_folders,
                         )
-    
-    # Selecting one patient at the time and analyzing it.
-    final_data = process_patients(patient_folders,
-                                  input_folder_path,
-                                  join_data,
-                                  old_data,
-                                  new_folder_path,
-                                  config,
-                                  final_data,
-                                  )
-        
-    # Creating the dataframe
-    new_data = pd.DataFrame(final_data,
-                            columns=["Patient ID",
-                                     "Frame of reference",
-                                     "Compared methods",
-                                     "Reference segment name",
-                                     "Compared segment name",
-                                     "Alias name",
-                                     "95% Hausdorff distance (mm)",
-                                     "Volumetric Dice similarity coefficient",
-                                     "Surface Dice similarity coefficient",
-                                     ],
-                            )
-    
+    # If join_data is True, old data will be extracted from excel_path,
+    # otherwise the old excel file will be overwritten.
     if join_data:
+        old_data = load_existing_dataframe(excel_path)
+        
+        for patient_folder in patient_folders:
+            patient_folder_path = os.path.join(input_folder_path,
+                                               patient_folder,
+                                               )
+            
+            # Patient folder can not be empty.
+            exit_if_empty(patient_folder_path)
+            
+            # RTSTRUCT and CT series should be in different folders.
+            # Creating RTSTRUCT folder if it is not already present, otherwise
+            # going on with the execution.
+            rtstruct_folder_path = create_folder(patient_folder_path,
+                                                 "RTSTRUCT",
+                                                 )
+            
+            # Creating CT folder if it is not already present, otherwise
+            # going on with the execution.
+            ct_folder_path = create_folder(patient_folder_path,
+                                           "CT",
+                                           )
+            
+            # Filling CT and RTSTRUCT folders if both empty
+            fill_ct_rtstruct_folders(patient_folder_path,
+                                     ct_folder_path,
+                                     rtstruct_folder_path,
+                                     )
+            
+            # If RTSTRUCT or CT folders are still empty there are no data.
+            exit_if_empty(rtstruct_folder_path)
+            exit_if_empty(ct_folder_path)
+            
+            # Extracting rtstruct file path.
+            rtstruct_file_path = extract_rtstruct_file_path(rtstruct_folder_path)
+                
+            # Extraction of patient ID and frame of reference UID.
+            patient_id = patient_info(rtstruct_file_path,
+                                      "PatientID",
+                                      )
+            frame_of_reference_uid = patient_info(rtstruct_file_path,
+                                                  "FrameOfReferenceUID",
+                                                  )
+            
+            print(f"Starting patient {patient_id} analysis")
+            
+            # If the current frame of reference is already in the excel file
+            # we can move to the next one.
+            try:
+                frame_uid_in_old_data = check_study(old_data,
+                                                    frame_of_reference_uid,
+                                                    patient_id,
+                                                    )
+                if frame_uid_in_old_data:
+                    # Moving patient folder to a different location if the
+                    # destination folder does not exist it will be
+                    # automatically created.
+                    move_patient_folder(new_folder_path,
+                                        patient_folder_path,
+                                        patient_folder,
+                                        )
+                    continue
+            except KeyError:
+                pass
+                    
+            # Creating the list of all segments of current patient.
+            all_segments = extract_all_segments(ct_folder_path,
+                                                rtstruct_file_path,
+                                                )
+            
+            # Creating manual segments list.
+            print("Creating the list of manual segments")
+            unknown_segments = find_unknown_segments(all_segments,
+                                                     config,
+                                                     )
+            user_selection(unknown_segments,
+                           config,
+                           )
+            manual_segments = extract_manual_segments(all_segments,
+                                                      config,
+                                                      )
+            
+            # Computing HD, DSC and SDSC for every segment in manual and MBS lists.
+            final_data = extract_hausdorff_dice(manual_segments,
+                                                config,
+                                                ct_folder_path,
+                                                rtstruct_file_path,
+                                                final_data,
+                                                )
+            
+            # Moving patient folder to a different location, if the destination
+            # folder does not exist it will be automatically created.
+            move_patient_folder(new_folder_path,
+                                patient_folder_path,
+                                patient_folder,
+                                )
+
+        # Creating the dataframe
+        new_data = pd.DataFrame(final_data,
+                                columns=["Patient ID",
+                                         "Frame of reference",
+                                         "Compared methods",
+                                         "Reference segment name",
+                                         "Compared segment name",
+                                         "Alias name",
+                                         "95% Hausdorff distance (mm)",
+                                         "Volumetric Dice similarity coefficient",
+                                         "Surface Dice similarity coefficient",
+                                         ],
+                                )
+        
         # Concatenating old and new dataframes.
         new_data = concatenate_data(old_data,
                                     new_data,
-                                    )        
-    
-    # Saving dataframe to excel.
-    print("Saving data")
-    new_data.to_excel(excel_path,
-                      sheet_name="Data",
-                      index=False,
-                      )
-     
-    # Saving configuration data.
-    save_config_data(config,
-                     new_config_path,
-                     )
+                                    )
         
-    print("Execution successfully ended")
+        # Saving dataframe to excel.
+        print("Saving data")
+        new_data.to_excel(excel_path,
+                          sheet_name="Data",
+                          index=False,
+                          )
+        
+        # Saving configuration data.
+        save_config_data(config,
+                         new_config_path,
+                         )
+        
+        print("Execution successfully ended")
+    
+    else:
+        print(f"Excel file at {excel_path} will be overwritten if already",
+              "present, otherwise it will be created.",
+              )
+        
+        for patient_folder in patient_folders:
+            patient_folder_path = os.path.join(input_folder_path,
+                                               patient_folder,
+                                               )
+            
+            # Patient folder can not be empty.
+            exit_if_empty(patient_folder_path)
+            
+            # RTSTRUCT and CT series should be in different folders.
+            # Creating RTSTRUCT folder if it is not already present, otherwise
+            # going on with the execution.
+            rtstruct_folder_path = create_folder(patient_folder_path,
+                                                 "RTSTRUCT",
+                                                 )
+            
+            # Creating CT folder if it is not already present, otherwise
+            # going on with the execution.
+            ct_folder_path = create_folder(patient_folder_path,
+                                           "CT",
+                                           )
+            
+            # Filling CT and RTSTRUCT folders if both empty
+            fill_ct_rtstruct_folders(patient_folder_path,
+                                     ct_folder_path,
+                                     rtstruct_folder_path,
+                                     )
+            
+            # If RTSTRUCT or CT folders are still empty there are no data.
+            exit_if_empty(rtstruct_folder_path)
+            exit_if_empty(ct_folder_path)
+            
+            # Extracting rtstruct file path.
+            rtstruct_file_path = extract_rtstruct_file_path(rtstruct_folder_path)
+                
+            # Extraction of patient ID and frame of reference UID.
+            patient_id = patient_info(rtstruct_file_path,
+                                      "PatientID",
+                                      )
+            frame_of_reference_uid = patient_info(rtstruct_file_path,
+                                                  "FrameOfReferenceUID",
+                                                  )
+            
+            print(f"Starting patient {patient_id} analysis")
+        
+            # Creating the list of all segments of current patient.
+            all_segments = extract_all_segments(ct_folder_path,
+                                                rtstruct_file_path,
+                                                )
+            
+            # Creating manual segments list.
+            print("Creating the list of manual segments")
+            unknown_segments = find_unknown_segments(all_segments,
+                                                     config,
+                                                     )
+            user_selection(unknown_segments,
+                           config,
+                           )
+            manual_segments = extract_manual_segments(all_segments,
+                                                      config,
+                                                      )
+            
+            # Computing HD, DSC and SDSC for every segment in manual and MBS lists.
+            final_data = extract_hausdorff_dice(manual_segments,
+                                                config,
+                                                ct_folder_path,
+                                                rtstruct_file_path,
+                                                final_data,
+                                                )
+            
+            # Moving patient folder to a different location, if the destination
+            # folder does not exist it will be automatically created.
+            move_patient_folder(new_folder_path,
+                                            patient_folder_path,
+                                            patient_folder,
+                                            )
+    
+        # Creating the dataframe
+        new_data = pd.DataFrame(final_data,
+                                columns=["Patient ID",
+                                         "Frame of reference",
+                                         "Compared methods",
+                                         "Reference segment name",
+                                         "Compared segment name",
+                                         "Alias name",
+                                         "95% Hausdorff distance (mm)",
+                                         "Volumetric Dice similarity coefficient",
+                                         "Surface Dice similarity coefficient",
+                                         ],
+                                )
+        # Saving dataframe to excel.
+        print("Saving data")
+        new_data.to_excel(excel_path,
+                          sheet_name="Data",
+                          index=False,
+                          )
+     
+        # Saving configuration data.
+        save_config_data(config,
+                         new_config_path,
+                         )
+        
+        print("Execution successfully ended")
        
 def main(argv):
     """
