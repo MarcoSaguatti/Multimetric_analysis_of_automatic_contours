@@ -1077,17 +1077,7 @@ def main(argv):
     excel_path = args.excel_path.replace("\\", "/")
     
     # If true new data will be concatenated with old ones.
-    join_data = args.join_data
-    
-    # # Run hausdorff_dice
-    # hausdorff_dice(input_folder_path,
-    #                config_path,
-    #                new_config_path,
-    #                excel_path,
-    #                new_folder_path,
-    #                join_data,
-    #                )
-    
+    join_data = args.join_data    
     
     # Opening the json file where the lists of names are stored.
     config = read_config(config_path)
