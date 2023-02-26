@@ -998,64 +998,41 @@ def check_study(old_data,
     
     return frame_uid_in_old_data
 
-def hausdorff_dice(input_folder_path,
-                   config_path,
-                   new_config_path,
-                   excel_path,
-                   new_folder_path,
-                   join_data,
-                   ):
+def process_patients(patient_folders,
+                     input_folder_path,
+                     join_data,
+                     old_data,
+                     new_folder_path,
+                     config,
+                     final_data,
+                     ):
     """
-    Computation of Hausdorff distance (hd), volumetric Dice similarity 
-    coefficient (dsc) and surface Dice similarity coefficient (sdsc) 
-    between manual and automatic segmentations for pelvic structures.
+    Processing one patient at the time
 
     Parameters
     ----------
+    patient_folders : list
+        List of patient folders names.
     input_folder_path : str
-        Path to the folder where patients are stored.
-    config_path : str
-        Path to the configuration json file.
-    new_config_path : str
-        Path to the file where the configuration data will be saved.
-    excel_path : str
-        Path to the .xlsx file where data will be stored (if it is not already
-        there it will be automatically created).
-    new_folder_path : str
-        Path where patient folders will be moved after execution.
+        Path to the folder containing all patients.
     join_data : bool
-        If true: join previously extracted data with the new ones.
+        If True new data will be concatenated with older ones, if False old
+        data will be overwritten.
+    old_data : DataFrame
+        DataFrame of the already analysed patients.
+    new_folder_path : str
+        Path to the folder where analysed patients will be moved.
+    config : dict
+        Dictionary of the configuration data.
+    final_data : list
+        List containing the extracted data.
 
     Returns
     -------
-    None.
+    final_data : list
+        List containing the extracted data (updated).
 
     """
-    # Opening the json file where the lists of names are stored.
-    config = read_config(config_path)
-    
-    # List where final data will be stored.
-    final_data = []
-    
-    # If join_data is True, old data will be extracted from excel_path,
-    # otherwise the old excel file will be overwritten.
-    if join_data:
-        old_data = load_existing_dataframe(excel_path)
-    else:
-        print(f"Excel file at {excel_path} will be overwritten if already",
-              "present, otherwise it will be created.",
-              )
-    
-    # Input folder can not be empty.
-    exit_if_empty(input_folder_path)
-    
-    # Input folder must contain patient folders, not directly .dcm files.
-    patient_folders = store_patients(input_folder_path)   
-    exit_if_no_patients(input_folder_path,
-                        patient_folders,
-                        )
-    
-    # Selecting one patient at the time and analyzing it.
     for patient_folder in patient_folders:
         patient_folder_path = os.path.join(input_folder_path,
                                            patient_folder,
@@ -1153,6 +1130,75 @@ def hausdorff_dice(input_folder_path,
                                         patient_folder_path,
                                         patient_folder,
                                         )
+        
+    return final_data
+
+def hausdorff_dice(input_folder_path,
+                   config_path,
+                   new_config_path,
+                   excel_path,
+                   new_folder_path,
+                   join_data,
+                   ):
+    """
+    Computation of Hausdorff distance (hd), volumetric Dice similarity 
+    coefficient (dsc) and surface Dice similarity coefficient (sdsc) 
+    between manual and automatic segmentations for pelvic structures.
+
+    Parameters
+    ----------
+    input_folder_path : str
+        Path to the folder where patients are stored.
+    config_path : str
+        Path to the configuration json file.
+    new_config_path : str
+        Path to the file where the configuration data will be saved.
+    excel_path : str
+        Path to the .xlsx file where data will be stored (if it is not already
+        there it will be automatically created).
+    new_folder_path : str
+        Path where patient folders will be moved after execution.
+    join_data : bool
+        If true: join previously extracted data with the new ones.
+
+    Returns
+    -------
+    None.
+
+    """
+    # Opening the json file where the lists of names are stored.
+    config = read_config(config_path)
+    
+    # List where final data will be stored.
+    final_data = []
+    
+    # If join_data is True, old data will be extracted from excel_path,
+    # otherwise the old excel file will be overwritten.
+    if join_data:
+        old_data = load_existing_dataframe(excel_path)
+    else:
+        print(f"Excel file at {excel_path} will be overwritten if already",
+              "present, otherwise it will be created.",
+              )
+    
+    # Input folder can not be empty.
+    exit_if_empty(input_folder_path)
+    
+    # Input folder must contain patient folders, not directly .dcm files.
+    patient_folders = store_patients(input_folder_path)   
+    exit_if_no_patients(input_folder_path,
+                        patient_folders,
+                        )
+    
+    # Selecting one patient at the time and analyzing it.
+    final_data = process_patients(patient_folders,
+                                  input_folder_path,
+                                  join_data,
+                                  old_data,
+                                  new_folder_path,
+                                  config,
+                                  final_data,
+                                  )
         
     # Creating the dataframe
     new_data = pd.DataFrame(final_data,
