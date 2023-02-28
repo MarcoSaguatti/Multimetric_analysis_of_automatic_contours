@@ -443,3 +443,20 @@ def test_read_config():
     observed = Hausdorff_Dice.read_config(config_path)
     
     assert expected == observed
+    
+def test_extract_rtstruct_file_path():
+    """
+    GIVEN: the path to the folder containing the RTSTRUCT file
+        
+    WHEN: running the function extract_rtstruct_file_path
+        
+    THEN: return the path to the RTSTRUCT file
+
+    """
+    # Path to the rtstruct folder
+    rtstruct_folder_path = r".\tests\test_extract_rtstruct_file_path"
+    
+    expected = r".\tests\test_extract_rtstruct_file_path\RS_002.dcm"
+    observed = Hausdorff_Dice.extract_rtstruct_file_path(rtstruct_folder_path)
+    
+    assert expected == observed
