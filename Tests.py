@@ -426,3 +426,20 @@ def test_check_new_folder_path_without_folder():
     observed = Hausdorff_Dice.check_new_folder_path(folder_path)
     
     assert expected == observed
+    
+def test_read_config():
+    """
+    GIVEN: the path to a json file
+        
+    WHEN: running the function read_config
+        
+    THEN: return the data inside the file
+
+    """
+    # Path to the configuration file
+    config_path = r".\tests\test_read_config\test.json"
+    
+    expected = {"External names" : ["External"]}
+    observed = Hausdorff_Dice.read_config(config_path)
+    
+    assert expected == observed
