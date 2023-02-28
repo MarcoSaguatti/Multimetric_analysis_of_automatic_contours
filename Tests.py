@@ -460,3 +460,70 @@ def test_extract_rtstruct_file_path():
     observed = Hausdorff_Dice.extract_rtstruct_file_path(rtstruct_folder_path)
     
     assert expected == observed
+    
+def test_create_segments_matrices():
+    """
+    GIVEN: a list of manual segments and a configuration file
+        
+    WHEN: running the function create_segments_matrices
+        
+    THEN: return the matrix of reference segments and the matrix of segments
+          to compare
+
+    """
+    # List of manual segments names
+    manual_seg = ["Prostata",
+                  "Retto",
+                  "Vescica",
+                  "FemoreSinistro",
+                  "FemoreDestro",
+                  ]
+    
+    # Loading configuration file
+    config_path = r".\tests\test_extract_manual_segments\config.json"
+    config = Hausdorff_Dice.read_config(config_path)
+    
+    expected_ref = [["Prostata",
+                     "Retto",
+                     "Vescica",
+                     "FemoreSinistro",
+                     "FemoreDestro",
+                     ],
+                    ["Prostata",
+                     "Retto",
+                     "Vescica",
+                     "FemoreSinistro",
+                     "FemoreDestro",
+                     ],
+                    ["Prostate_MBS",
+                     "Rectum_MBS",
+                     "Bladder_MBS",
+                     "FemoralHead (Left)_MBS",
+                     "FemoralHead (Right)_MBS",
+                     ],
+                    ]
+    expected_comp = [["Prostate_MBS",
+                      "Rectum_MBS",
+                      "Bladder_MBS",
+                      "FemoralHead (Left)_MBS",
+                      "FemoralHead (Right)_MBS",
+                      ],
+                     ["Prostate_DL",
+                      "Anorectum_DL",
+                      "Bladder_DL",
+                      "Femur_Head_L_DL",
+                      "Femur_Head_R_DL",
+                      ],
+                     ["Prostate_DL",
+                      "Anorectum_DL",
+                      "Bladder_DL",
+                      "Femur_Head_L_DL",
+                      "Femur_Head_R_DL",
+                      ],
+                     ]
+    obs_ref, obs_comp = Hausdorff_Dice.create_segments_matrices(manual_seg,
+                                                                config,
+                                                                )
+    
+    assert expected_ref == obs_ref
+    assert expected_comp == obs_comp
