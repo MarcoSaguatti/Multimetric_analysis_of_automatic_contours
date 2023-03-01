@@ -573,3 +573,24 @@ def test_extract_hausdorff_dice():
     assert expected_2_3 == observed[2][3]
     assert math.isclose(expected_5_6, observed[5][6])
     assert expected_13_2 == observed[13][2]
+    
+def test_load_existing_dataframe():
+    """
+    GIVEN: the path to an existing excel file
+        
+    WHEN: running the function load_existing_dataframe
+        
+    THEN: return the content of the excel file
+
+    """
+    # Path to existing excel file
+    excel_path = r".\tests\test_load_existing_dataframe\test_dataframe.xlsx"
+    
+    expected_0_0 = "Pelvic-Ref-002"
+    expected_0_1 = "Prostate"
+    expected_0_2 = 8
+    observed = Hausdorff_Dice.load_existing_dataframe(excel_path)
+    
+    assert expected_0_0 == observed.values[0][0]
+    assert expected_0_1 == observed.values[0][1]
+    assert expected_0_2 == observed.values[0][2]
