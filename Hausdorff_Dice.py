@@ -707,59 +707,6 @@ def create_segments_matrices(manual_segments,
     
     return ref_segs, comp_segs
 
-def create_dataframe_row(patient_id,
-                         frame_of_reference_uid,
-                         compared_methods,
-                         ref_segment,
-                         comp_segment,
-                         alias_name,
-                         hausdorf,
-                         dice,
-                         surf_dice,
-                         ):
-    """
-    Creating the rows of the datframe.
-
-    Parameters
-    ----------
-    patient_id : str
-        Name of the anlysed patient.
-    frame_of_reference_uid : pydicom.uid.UID
-        Code of the current patient.
-    compared_methods : str
-        Segmentation methods compared (Ex. manual-MBS).
-    ref_segment : str
-        Original name of the reference segment (Ex. Prostata).
-    comp_segment : str
-        Original name of the segment to compare (Ex. Prostate_MBS).
-    alias_name : str
-        Generale name of the segment (Ex. Prostate).
-    hausdorf : float
-        Hausdorff distance between ref_segment and comp_segment.
-    dice : float
-        Dice similarity coefficient between ref_segment and comp_segment.
-    surf_dice : float
-        suface Dice between ref_segment and comp_segment.
-
-    Returns
-    -------
-    row_data : list
-        One row of the dataframe.
-
-    """
-    row_data = [patient_id,
-                frame_of_reference_uid,
-                compared_methods,
-                ref_segment,
-                comp_segment,
-                alias_name,
-                hausdorf,
-                dice,
-                surf_dice,
-                ]
-    
-    return row_data
-
 def extract_hausdorff_dice(manual_segments,
                            config,
                            ct_folder_path,
@@ -833,16 +780,16 @@ def extract_hausdorff_dice(manual_segments,
             
             # Temporary list to store the current row of the final
             # dataframe.
-            row = create_dataframe_row(patient_id,
-                                       frame_of_reference_uid,
-                                       config["Compared methods"][methods],
-                                       ref_segs[methods][segment],
-                                       comp_segs[methods][segment],
-                                       config["Alias names"][segment],
-                                       hd,
-                                       dsc,
-                                       sdsc,
-                                       )
+            row = [patient_id,
+                   frame_of_reference_uid,
+                   config["Compared methods"][methods],
+                   ref_segs[methods][segment],
+                   comp_segs[methods][segment],
+                   config["Alias names"][segment],
+                   hd,
+                   dsc,
+                   sdsc,
+                   ]
             
             # Adding the constructed row to final_data.
             final_data.append(row)
