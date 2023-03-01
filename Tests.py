@@ -527,3 +527,49 @@ def test_create_segments_matrices():
     
     assert expected_ref == obs_ref
     assert expected_comp == obs_comp
+    
+def test_extract_hausdorff_dice():
+    """
+    GIVEN: the list of manual segments, the configuration file, the path to
+           the CT folder, the path to the RTSTRUCT file and the list
+           final_data
+        
+    WHEN: running the function extract_hausdorff_dice
+        
+    THEN: return the correct list of data
+
+    """
+    # List of manual segments names
+    manual_seg = ["Prostata",
+                  "Retto",
+                  "Vescica",
+                  "FemoreSinistro",
+                  "FemoreDestro",
+                  ]
+    
+    # Loading configuration file
+    config_path = r".\tests\test_extract_manual_segments\config.json"
+    config = Hausdorff_Dice.read_config(config_path)
+    
+    # CT folder path
+    ct = r".\tests\test_extract_hausdorff_dice\CT"
+    
+    # RTSTRUCT file path
+    rs = r".\tests\test_extract_hausdorff_dice\RTSTRUCT\RS_002.dcm"
+    
+    # List where data will be stored
+    final_data = []
+    
+    expected_2_3 = "Vescica"
+    expected_5_6 = 9
+    expected_13_2 = "MBS-DL"
+    observed = Hausdorff_Dice.extract_hausdorff_dice(manual_seg,
+                                                     config,
+                                                     ct,
+                                                     rs,
+                                                     final_data,
+                                                     )
+    
+    assert expected_2_3 == observed[2][3]
+    assert math.isclose(expected_5_6, observed[5][6])
+    assert expected_13_2 == observed[13][2]
