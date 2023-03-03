@@ -46,7 +46,7 @@ def test_is_empty_with_non_empty_folder():
 
     """
     # Path to a non empty folder
-    non_empty_folder = r".\tests\test_is_empty\non_empty_folder"
+    non_empty_folder = r".\tests\test_patient"
     
     expected = False
     observed = Hausdorff_Dice.is_empty(non_empty_folder)
