@@ -402,7 +402,7 @@ def test_check_new_folder_path():
     THEN: return the path to the folder in python style
 
     """
-    # Create a temporary empty folder
+    # Path to a folder
     folder_path = r".\tests\test_check_new_folder"
     
     expected = r"./tests/test_check_new_folder"
@@ -419,7 +419,7 @@ def test_check_new_folder_path_without_folder():
     THEN: return False
 
     """
-    # Create a temporary empty folder
+    # Default value of new_folder_path
     folder_path = "."
     
     expected = False
