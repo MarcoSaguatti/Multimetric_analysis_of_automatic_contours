@@ -292,9 +292,9 @@ def test_store_patients():
 
     """
     #Path to the directory containing patient folders
-    input_folder_path = r".\tests\test_store_patients"
+    input_folder_path = r".\tests"
     
-    expected = ["Pelvic-Ref002"]
+    expected = ["test_patient"]
     observed = Hausdorff_Dice.store_patients(input_folder_path)
     
     assert expected == observed
