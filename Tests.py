@@ -531,7 +531,7 @@ def test_load_existing_dataframe():
 
     """
     # Path to existing excel file
-    excel_path = r".\tests\test_load_existing_dataframe\test_dataframe.xlsx"
+    excel_path = r".\tests\test_dataframe.xlsx"
     
     expected_d = {"Patient ID": ["Pelvic-Ref-002"],
                   "Alias name": ["Prostate"],
