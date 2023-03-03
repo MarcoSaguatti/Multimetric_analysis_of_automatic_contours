@@ -495,14 +495,14 @@ def test_extract_hausdorff_dice():
                   ]
     
     # Loading configuration file
-    config_path = r".\tests\test_extract_manual_segments\config.json"
+    config_path = r".\tests\config.json"
     config = Hausdorff_Dice.read_config(config_path)
     
     # CT folder path
-    ct = r".\tests\test_extract_hausdorff_dice\CT"
+    ct = r".\tests\test_patient\CT"
     
     # RTSTRUCT file path
-    rs = r".\tests\test_extract_hausdorff_dice\RTSTRUCT\RS_002.dcm"
+    rs = r".\tests\test_patient\RTSTRUCT\RS_002.dcm"
     
     # List where data will be stored
     final_data = []
