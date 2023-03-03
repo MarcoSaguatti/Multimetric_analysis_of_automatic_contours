@@ -586,15 +586,15 @@ def test_load_existing_dataframe():
     # Path to existing excel file
     excel_path = r".\tests\test_load_existing_dataframe\test_dataframe.xlsx"
     
-    expected_0_0 = "Pelvic-Ref-002"
-    expected_0_1 = "Prostate"
-    expected_0_2 = 8
+    expected_d = {"Patient ID": ["Pelvic-Ref-002"],
+                  "Alias name": ["Prostate"],
+                  "95% Hausdorff distance (mm)": [8],
+                  }
+    expected = pd.DataFrame(data=expected_d)
     observed = Hausdorff_Dice.load_existing_dataframe(excel_path)
     
-    assert expected_0_0 == observed.values[0][0]
-    assert expected_0_1 == observed.values[0][1]
-    assert expected_0_2 == observed.values[0][2]
-    
+    assert expected.equals(observed)
+        
 def test_concatenate_data():
     """
     GIVEN: two pandas dataframes
