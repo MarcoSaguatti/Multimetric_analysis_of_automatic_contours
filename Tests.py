@@ -594,3 +594,35 @@ def test_load_existing_dataframe():
     assert expected_0_0 == observed.values[0][0]
     assert expected_0_1 == observed.values[0][1]
     assert expected_0_2 == observed.values[0][2]
+    
+def test_concatenate_data():
+    """
+    GIVEN: two pandas dataframes
+        
+    WHEN: concatenating them with the function concatenate_data
+        
+    THEN: obtaining the correct dataframe
+
+    """
+    # Path to existing excel file
+    excel_path = r".\tests\test_load_existing_dataframe\test_dataframe.xlsx"
+    
+    old_data = Hausdorff_Dice.load_existing_dataframe(excel_path)
+    d = {"Patient ID": ["Pelvic-Ref-003"],
+         "Alias name": ["Bladder"],
+         "95% Hausdorff distance (mm)": [5],
+         }
+    new_data = pd.DataFrame(data=d)
+    
+    expected_d = {"Patient ID": ["Pelvic-Ref-002","Pelvic-Ref-003"],
+                  "Alias name": ["Prostate","Bladder"],
+                  "95% Hausdorff distance (mm)": [8,5],
+                  }
+    expected = pd.DataFrame(data=expected_d)
+    observed = Hausdorff_Dice.concatenate_data(old_data,
+                                               new_data,
+                                               )
+    
+    assert expected.equals(observed)
+    
+    
