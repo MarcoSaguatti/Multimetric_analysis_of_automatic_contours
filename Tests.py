@@ -99,7 +99,7 @@ def test_read_ct_slices_with_frame_of_reference_uid():
 
     """
     # Path to CT series folder
-    ct_folder_path = r".\tests\test_read_ct_slices\CT"
+    ct_folder_path = r".\tests\test_patient\CT"
     
     # Expected behavior
     UID = "1.3.6.1.4.1.14519.5.2.1.7085.2036.235949374640197733305184528698"
@@ -121,7 +121,7 @@ def test_spacing_and_tolerance():
 
     """
     # Path to CT series folder
-    ct_folder_path = r".\tests\test_spacing_and_tolerance\CT"
+    ct_folder_path = r".\tests\test_patient\CT"
     
     expected_spacing = [1.0, 1.0, 3.0]
     expected_tolerance = 3.0
@@ -142,10 +142,10 @@ def test_extract_all_segment_with_patient_ref002():
         
     """
     # Path to CT series folder
-    ct_folder_path = r".\tests\test_extract_all_segments\CT"
+    ct_folder_path = r".\tests\test_patient\CT"
     
     # Path to RTSTRUCT file
-    rtstruct_file_path = r".\tests\test_extract_all_segments\RS_002.dcm"
+    rtstruct_file_path = r".\tests\test_patient\RTSTRUCT\RS_002.dcm"
     
     expected = ["Bladder_MBS",
                 "FemoralHead (Left)_MBS",
