@@ -60,6 +60,6 @@ The last two argument are optional:
 ## Testing
 In order to run [Tests.py](https://github.com/MarcoSaguatti/Hausdorff_Dice_Computation/blob/master/Tests.py) both [Tests.py](https://github.com/MarcoSaguatti/Hausdorff_Dice_Computation/blob/master/Tests.py) file and [tests](https://github.com/MarcoSaguatti/Hausdorff_Dice_Computation/tree/master/tests) folder must be downloaded.
 
-After downloading [pytest](https://pypi.org/project/pytest/), all the tests can be run from command line typing:
+After downloading [pytest](https://pypi.org/project/pytest/), all the tests can be run from command line from the directory containing tests folder by typing:
 
 python -m pytest -v path/to/Tests.py
