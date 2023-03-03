@@ -309,9 +309,9 @@ def test_create_folder_with_existing_folder():
 
     """
     #Path to the parent directory
-    parent_folder_path = r".\tests\test_create_folder"
+    parent_folder_path = r".\tests\test_patient"
     
-    expected = r".\tests\test_create_folder\CT"
+    expected = r".\tests\test_patient\CT"
     observed = Hausdorff_Dice.create_folder(parent_folder_path,
                                                "CT",
                                                )
