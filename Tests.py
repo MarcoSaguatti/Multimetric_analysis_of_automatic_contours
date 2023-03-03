@@ -250,8 +250,8 @@ def test_compute_metrics():
 
     """
     # Path to CT series folder and RTSTRUCT file
-    ct_folder_path = r".\tests\test_compute_metrics\CT"
-    rtstruct_file_path = r".\tests\test_compute_metrics\RS_002.dcm"
+    ct_folder_path = r".\tests\test_patient\CT"
+    rtstruct_file_path = r".\tests\test_patient\RTSTRUCT\RS_002.dcm"
     
     # Extracting reference segment and segment to compare labelmaps
     ref_labelmap = Hausdorff_Dice.create_labelmap(ct_folder_path,
