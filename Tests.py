@@ -340,59 +340,6 @@ def test_create_folder_with_non_existing_folder():
     # Remove the folder
     temp_folder.cleanup()
     
-# # FIXME: does not work
-# def test_move_ct_rtstruct_files():
-#     """
-#     GIVEN: a patient folder path and the path to the CT and RTSTRUCT
-#            directories inside it
-        
-#     WHEN: running the function move_ct_rtstruct_files
-        
-#     THEN: CT files will be moved into the CT folder, RS files will be moved
-#           into the RTSTRUCT folder, other files will not be moved.
-        
-#     """
-#     # Patient folder path
-#     patient_folder_path = r".\tests\test_move_ct_rtstruct_files"
-#     # CT folder path
-#     ct_folder_path = patient_folder_path+"\CT"
-#     # RTSTRUCT folder path
-#     rtstruct_folder_path = patient_folder_path+"\RTSTRUCT"
-    
-#     # Check CT file initial path
-#     expected_ct_start = patient_folder_path+"CT_move_test.dcm"
-#     assert os.path.exists(expected_ct_start) == True
-#     # Check RS file initial path
-#     expected_rs_start = patient_folder_path+"RS_move_test.dcm"
-#     assert os.path.exists(expected_rs_start) == True
-#     # Check non CT and non RS file initial path
-#     expected_txt_start = patient_folder_path+"txt_move_test.txt"
-#     assert os.path.exists(expected_txt_start) == True
-    
-#     # Moving files
-#     Hausdorff_Dice.move_ct_and_rtstruct_files(patient_folder_path,
-#                                               ct_folder_path,
-#                                               rtstruct_folder_path,
-#                                               )
-    
-#     # Check CT file final path
-#     expected_ct_end = ct_folder_path+"CT_move_test.dcm"
-#     assert os.path.exists(expected_ct_end) == True
-#     # Check RS file final path
-#     expected_rs_end = rtstruct_folder_path+"RS_move_test.dcm"
-#     assert os.path.exists(expected_rs_end) == True
-#     # Check non CT and non RS file final path
-#     expected_txt_end = patient_folder_path+"txt_move_test.txt"
-#     assert os.path.exists(expected_txt_end) == True
-    
-#     # Restoring files initial positions
-#     shutil.move(expected_ct_end,
-#                 patient_folder_path,
-#                 )
-#     shutil.move(expected_rs_end,
-#                 patient_folder_path,
-#                 )
-    
 def test_check_new_folder_path():
     """
     GIVEN: the path to a folder
