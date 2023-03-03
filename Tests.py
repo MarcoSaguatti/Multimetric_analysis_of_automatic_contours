@@ -350,9 +350,9 @@ def test_check_new_folder_path():
 
     """
     # Path to a folder
-    folder_path = r".\tests\test_check_new_folder"
+    folder_path = r".\tests\test_patient"
     
-    expected = r"./tests/test_check_new_folder"
+    expected = r"./tests/test_patient"
     observed = Hausdorff_Dice.check_new_folder_path(folder_path)
     
     assert expected == observed
