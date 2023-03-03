@@ -401,9 +401,9 @@ def test_extract_rtstruct_file_path():
 
     """
     # Path to the rtstruct folder
-    rtstruct_folder_path = r".\tests\test_extract_rtstruct_file_path"
+    rtstruct_folder_path = r".\tests\test_patient\RTSTRUCT"
     
-    expected = r".\tests\test_extract_rtstruct_file_path\RS_002.dcm"
+    expected = r".\tests\test_patient\RTSTRUCT\RS_002.dcm"
     observed = Hausdorff_Dice.extract_rtstruct_file_path(rtstruct_folder_path)
     
     assert expected == observed
