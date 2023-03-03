@@ -588,7 +588,7 @@ def test_load_existing_dataframe():
     
     expected_d = {"Patient ID": ["Pelvic-Ref-002"],
                   "Alias name": ["Prostate"],
-                  "95% Hausdorff distance (mm)": [8],
+                  "Frame of reference": [8],
                   }
     expected = pd.DataFrame(data=expected_d)
     observed = Hausdorff_Dice.load_existing_dataframe(excel_path)
@@ -628,13 +628,13 @@ def test_concatenate_data():
     old_data = Hausdorff_Dice.load_existing_dataframe(excel_path)
     d = {"Patient ID": ["Pelvic-Ref-003"],
          "Alias name": ["Bladder"],
-         "95% Hausdorff distance (mm)": [5],
+         "Frame of reference": [5],
          }
     new_data = pd.DataFrame(data=d)
     
     expected_d = {"Patient ID": ["Pelvic-Ref-002","Pelvic-Ref-003"],
                   "Alias name": ["Prostate","Bladder"],
-                  "95% Hausdorff distance (mm)": [8,5],
+                  "Frame of reference": [8,5],
                   }
     expected = pd.DataFrame(data=expected_d)
     observed = Hausdorff_Dice.concatenate_data(old_data,
@@ -643,4 +643,4 @@ def test_concatenate_data():
     
     assert expected.equals(observed)
     
-    
+  
