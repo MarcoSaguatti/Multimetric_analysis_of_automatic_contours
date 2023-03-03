@@ -384,7 +384,7 @@ def test_read_config():
 
     """
     # Path to the configuration file
-    config_path = r".\tests\test_read_config\test.json"
+    config_path = r".\tests\test.json"
     
     expected = {"External names" : ["External"]}
     observed = Hausdorff_Dice.read_config(config_path)
