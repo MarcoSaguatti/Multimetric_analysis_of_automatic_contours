@@ -623,3 +623,18 @@ def test_check_study():
     
     assert correct_expected == correct_observed
     assert wrong_expected == wrong_observed
+    
+def test_exit_if_empty():
+    """
+    GIVEN: an empty folder path
+        
+    WHEN: running the function exit_if_empty
+        
+    THEN: raises SystemExit
+
+    """
+    # Create a temporary empty folder
+    temp_empty_folder = tempfile.TemporaryDirectory()
+    
+    with pytest.raises(SystemExit):
+        Hausdorff_Dice.exit_if_empty(temp_empty_folder.name)
