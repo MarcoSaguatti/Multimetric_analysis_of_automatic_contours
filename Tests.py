@@ -188,7 +188,7 @@ def test_find_unknown_segments_with_example_list():
                     ]
     
     # Configuration file
-    config_path = r".\tests\test_find_unknown_segments\config.json"
+    config_path = r".\tests\config.json"
     fd = open(config_path)
     config = json.load(fd)
     
@@ -222,7 +222,7 @@ def test_extract_manual_segments_with_example_list():
                     ]
     
     # Configuration file
-    config_path = r".\tests\test_extract_manual_segments\config.json"
+    config_path = r".\tests\config.json"
     fd = open(config_path)
     config = json.load(fd)
     
