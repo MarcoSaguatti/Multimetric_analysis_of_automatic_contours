@@ -643,4 +643,36 @@ def test_concatenate_data():
     
     assert expected.equals(observed)
     
-  
+def test_check_study():
+    """
+    GIVEN: A dataframe, a frame of reference uid in the dataframe, a frame of
+           reference uid not in the dataframe and the patient id
+        
+    WHEN: running the function check_study
+        
+    THEN: it is returned True for the frame of reference uid that is in the
+          dataframe, while it is returned False for the frame of reference
+          uid not in the dataframe
+
+    """
+    # Path to existing excel file
+    excel_path = r".\tests\test_load_existing_dataframe\test_dataframe.xlsx"
+    
+    old_data = Hausdorff_Dice.load_existing_dataframe(excel_path)
+    correct_frame_of_reference = 8
+    wrong_frame_of_reference = 55
+    patient_id = "Pelvic-Ref-002"
+    
+    correct_expected = True
+    correct_observed = Hausdorff_Dice.check_study(old_data,
+                                                  correct_frame_of_reference,
+                                                  patient_id,
+                                                  )
+    wrong_expected = False
+    wrong_observed = Hausdorff_Dice.check_study(old_data,
+                                                wrong_frame_of_reference,
+                                                patient_id,
+                                                )
+    
+    assert correct_expected == correct_observed
+    assert wrong_expected == wrong_observed
