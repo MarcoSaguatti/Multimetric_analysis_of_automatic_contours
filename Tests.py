@@ -427,7 +427,7 @@ def test_create_segments_matrices():
                   ]
     
     # Loading configuration file
-    config_path = r".\tests\test_extract_manual_segments\config.json"
+    config_path = r".\tests\config.json"
     config = Hausdorff_Dice.read_config(config_path)
     
     expected_ref = [["Prostata",
