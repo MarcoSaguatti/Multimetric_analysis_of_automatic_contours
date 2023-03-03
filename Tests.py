@@ -570,7 +570,7 @@ def test_concatenate_data():
 
     """
     # Path to existing excel file
-    excel_path = r".\tests\test_load_existing_dataframe\test_dataframe.xlsx"
+    excel_path = r".\tests\test_dataframe.xlsx"
     
     old_data = Hausdorff_Dice.load_existing_dataframe(excel_path)
     d = {"Patient ID": ["Pelvic-Ref-003"],
@@ -603,7 +603,7 @@ def test_check_study():
 
     """
     # Path to existing excel file
-    excel_path = r".\tests\test_load_existing_dataframe\test_dataframe.xlsx"
+    excel_path = r".\tests\test_dataframe.xlsx"
     
     old_data = Hausdorff_Dice.load_existing_dataframe(excel_path)
     correct_frame_of_reference = 8
