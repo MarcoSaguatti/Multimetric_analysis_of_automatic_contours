@@ -594,6 +594,24 @@ def test_load_existing_dataframe():
     observed = Hausdorff_Dice.load_existing_dataframe(excel_path)
     
     assert expected.equals(observed)
+    
+def test_load_existing_dataframe_with_no_excel():
+    """
+    GIVEN: the path to a non existing excel file
+        
+    WHEN: running the function load_existing_dataframe
+        
+    THEN: an empty dataframe is returned
+
+    """
+    # Create a temporary empty folder
+    temp_folder = tempfile.TemporaryDirectory()
+    excel_path = temp_folder.name+"non_existing_excel.xlsx"
+    
+    expected = pd.DataFrame()
+    observed = Hausdorff_Dice.load_existing_dataframe(excel_path)
+    
+    assert expected.equals(observed)
         
 def test_concatenate_data():
     """
