@@ -638,3 +638,24 @@ def test_exit_if_empty():
     
     with pytest.raises(SystemExit):
         Hausdorff_Dice.exit_if_empty(temp_empty_folder.name)
+        
+def test_exit_if_no_patients():
+    """
+    GIVEN: an empty patients list
+        
+    WHEN: running the function exit_if_no_patients
+        
+    THEN: raises SystemExit
+
+    """
+    # Create a temporary empty folder
+    temp_empty_folder = tempfile.TemporaryDirectory()
+    
+    # Empty patient folders list
+    patient_folders = []
+    
+    with pytest.raises(SystemExit):
+        Hausdorff_Dice.exit_if_no_patients(temp_empty_folder.name,
+                                           patient_folders,
+                                           )
+    
