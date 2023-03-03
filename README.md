@@ -60,16 +60,6 @@ The last two argument are optional:
 ## Testing
 In order to run [Tests.py](https://github.com/MarcoSaguatti/Hausdorff_Dice_Computation/blob/master/Tests.py) both [Tests.py](https://github.com/MarcoSaguatti/Hausdorff_Dice_Computation/blob/master/Tests.py) file and [tests](https://github.com/MarcoSaguatti/Hausdorff_Dice_Computation/tree/master/tests) folder must be downloaded.
 
-Then the follwing paths inside [Tests.py](https://github.com/MarcoSaguatti/Hausdorff_Dice_Computation/blob/master/Tests.py) must be changed:
-* *Path\to\tests\test_is_empty\empty_folder*: Is the path to an empty folder (any empty folder can be used);
-* *Path\to\tests\test_is_empty\non_empty_folder*: Is the path to a non empty folder (any non empty folder can be used);
-* *Path\to\tests\test_patient_info\RTSTRUCT\RS1.2.752.243.1.1.20230123144246076.4000.75633.dcm*: Is the path to the RTSTRUCT file contained in *tests\test_patient_info\RTSTRUCT*;
-* *Path\to\tests\test_voxel_spacing\CT*: Is the path to the folder *tests\test_voxel_spacing_CT* that contains the dicom serie of one patient;
-* *Path\to\config.json*: Is the path to the file *config.json*;
-* *Path\to\tests\test_hausdorff_dice\input_folder*: Is the path to the folder *tests\test_hausdorff_dice\input_folder* that contains one patient to run *test_hausdorff_dice*;
-* *Path\to\tests\test_hausdorff_dice\test.xlsx*: Is the path to *tests\test_hausdorff_dice\test.xlsx*, the excel file where the results of *test_hausdorff_dice* will be saved;
-* *Path\to\tests\test_hausdorff_dice\new_folder*: Is the path to *tests\test_hausdorff_dice\new_folder*, the folder where patients will be moved after the execution of *test_hausdorff_dice*.
-
 After downloading [pytest](https://pypi.org/project/pytest/), all the tests can be run from command line typing:
 
 python -m pytest -v path/to/Tests.py
