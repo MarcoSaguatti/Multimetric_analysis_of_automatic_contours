@@ -31,7 +31,9 @@ SDSC is exactly the same with the difference that the overlap is measured betwee
 [numpy](https://numpy.org/install/) and [pandas](https://pandas.pydata.org/docs/getting_started/install.html) are other required libraries.
 
 ## General informations
-All the code needed to run the program is stored in the [Hausdorff_Dice.py](https://github.com/MarcoSaguatti/Hausdorff_Dice_Computation/blob/master/Hausdorff_Dice.py) script.
+The main part of the program is stored in the [Main.py](https://github.com/MarcoSaguatti/Hausdorff_Dice_Computation/blob/master/Main.py) script.
+
+All the library functions of the program are stored in the [Hausdorff_Dice.py](https://github.com/MarcoSaguatti/Hausdorff_Dice_Computation/blob/master/Hausdorff_Dice.py) script.
 
 [patients](https://github.com/MarcoSaguatti/Hausdorff_Dice_Computation/tree/master/patients) folder contains three patients where the organs at risk were contoured manually and using a deep learning and a model based segmentation algorithms.
 
@@ -45,7 +47,7 @@ All the code needed to run the program is stored in the [Hausdorff_Dice.py](http
 To run the program, the user has firstly to download the whole repository Hausdorff_Dice_Computation.
 Then, the script Hausdorff_Dice.py can be run from command line by typing:
 
-*python path\to\Hausdorff_Dice.py path\to\patients\folder path\to\config.json path\to\new_config.json path\to\excel_file.xlsx --new-folder path\to\the\folder\where\patients\will\be\moved --join-data True*
+*python path\to\Main.py path\to\patients\folder path\to\config.json path\to\new_config.json path\to\excel_file.xlsx --new-folder path\to\the\folder\where\patients\will\be\moved --join-data True*
 
 The first four arguments are required:
 * *path\to\patients\folder*: Is the path to the folder where patients folders are stored. **Do not put here directly the path to the folder containing .dcm files!**;
