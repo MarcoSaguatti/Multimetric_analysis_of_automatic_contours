@@ -189,12 +189,12 @@ def main(argv):
             
             # Computing HD, DSC and SDSC for every segment in manual and MBS
             # lists.
-            final_data = HD_DSC.extract_HD_DSC(manual_segments,
-                                               config,
-                                               ct_folder_path,
-                                               rtstruct_file_path,
-                                               final_data,
-                                               )
+            final_data = HD_DSC.extract_hausdorff_dice(manual_segments,
+                                                       config,
+                                                       ct_folder_path,
+                                                       rtstruct_file_path,
+                                                       final_data,
+                                                       )
             
             # Moving patient folder to a different location, if the destination
             # folder does not exist it will be automatically created.
@@ -304,12 +304,12 @@ def main(argv):
             
             # Computing HD, DSC and SDSC for every segment in manual and MBS
             # lists.
-            final_data = HD_DSC.extract_HD_DSC(manual_segments,
-                                               config,
-                                               ct_folder_path,
-                                               rtstruct_file_path,
-                                               final_data,
-                                               )
+            final_data = HD_DSC.extract_hausdorff_dice(manual_segments,
+                                                       config,
+                                                       ct_folder_path,
+                                                       rtstruct_file_path,
+                                                       final_data,
+                                                       )
             
             # Moving patient folder to a different location, if the destination
             # folder does not exist it will be automatically created.

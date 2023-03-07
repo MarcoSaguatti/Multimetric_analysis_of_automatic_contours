@@ -475,13 +475,13 @@ def test_create_segments_matrices():
     assert expected_ref == obs_ref
     assert expected_comp == obs_comp
     
-def test_extract_HD_DSC():
+def test_extract_hausdorff_dice():
     """
     GIVEN: the list of manual segments, the configuration file, the path to
            the CT folder, the path to the RTSTRUCT file and the list
            final_data
         
-    WHEN: running the function extract_HD_DSC
+    WHEN: running the function extract_hausdorff_dice
         
     THEN: return the correct list of data
 
@@ -510,12 +510,12 @@ def test_extract_HD_DSC():
     expected_2_3 = "Vescica"
     expected_5_6 = 9
     expected_13_2 = "MBS-DL"
-    observed = HD_DSC.extract_HD_DSC(manual_seg,
-                                     config,
-                                     ct,
-                                     rs,
-                                     final_data,
-                                     )
+    observed = HD_DSC.extract_hausdorff_dice(manual_seg,
+                                             config,
+                                             ct,
+                                             rs,
+                                             final_data,
+                                             )
     
     assert expected_2_3 == observed[2][3]
     assert math.isclose(expected_5_6, observed[5][6])
