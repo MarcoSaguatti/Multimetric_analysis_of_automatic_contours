@@ -4,7 +4,7 @@ import os
 
 import pandas as pd
 
-import Hausdorff_Dice
+import HD_DSC
 
 
 def main(argv):
@@ -77,7 +77,7 @@ def main(argv):
     print("\n")
     
     # Check if the user provided new_folder
-    new_folder_path = Hausdorff_Dice.check_new_folder_path(args.new_folder_path)
+    new_folder_path = HD_DSC.check_new_folder_path(args.new_folder_path)
         
     # Convert to python path style.
     input_folder_path = args.input_folder_path.replace("\\", "/")
@@ -89,23 +89,23 @@ def main(argv):
     join_data = args.join_data    
     
     # Opening the json file where the lists of names are stored.
-    config = Hausdorff_Dice.read_config(config_path)
+    config = HD_DSC.read_config(config_path)
     
     # List where final data will be stored.
     final_data = []
     
     # Input folder can not be empty.
-    Hausdorff_Dice.exit_if_empty(input_folder_path)
+    HD_DSC.exit_if_empty(input_folder_path)
     
     # Input folder must contain patient folders, not directly .dcm files.
-    patient_folders = Hausdorff_Dice.store_patients(input_folder_path)   
-    Hausdorff_Dice.exit_if_no_patients(input_folder_path,
-                                       patient_folders,
-                                       )
+    patient_folders = HD_DSC.store_patients(input_folder_path)   
+    HD_DSC.exit_if_no_patients(input_folder_path,
+                               patient_folders,
+                               )
     # If join_data is True, old data will be extracted from excel_path,
     # otherwise the old excel file will be overwritten.
     if join_data:
-        old_data = Hausdorff_Dice.load_existing_dataframe(excel_path)
+        old_data = HD_DSC.load_existing_dataframe(excel_path)
         
         for patient_folder in patient_folders:
             patient_folder_path = os.path.join(input_folder_path,
@@ -113,94 +113,95 @@ def main(argv):
                                                )
             
             # Patient folder can not be empty.
-            Hausdorff_Dice.exit_if_empty(patient_folder_path)
+            HD_DSC.exit_if_empty(patient_folder_path)
             
             # RTSTRUCT and CT series should be in different folders.
             # Creating RTSTRUCT folder if it is not already present, otherwise
             # going on with the execution.
-            rtstruct_folder_path = Hausdorff_Dice.create_folder(patient_folder_path,
-                                                                "RTSTRUCT",
-                                                                )
+            rtstruct_folder_path = HD_DSC.create_folder(patient_folder_path,
+                                                        "RTSTRUCT",
+                                                        )
             
             # Creating CT folder if it is not already present, otherwise
             # going on with the execution.
-            ct_folder_path = Hausdorff_Dice.create_folder(patient_folder_path,
-                                                          "CT",
-                                                          )
+            ct_folder_path = HD_DSC.create_folder(patient_folder_path,
+                                                  "CT",
+                                                  )
             
             # Filling CT and RTSTRUCT folders if both empty
-            Hausdorff_Dice.fill_ct_rtstruct_folders(patient_folder_path,
-                                                    ct_folder_path,
-                                                    rtstruct_folder_path,
-                                                    )
+            HD_DSC.fill_ct_rtstruct_folders(patient_folder_path,
+                                            ct_folder_path,
+                                            rtstruct_folder_path,
+                                            )
             
             # If RTSTRUCT or CT folders are still empty there are no data.
-            Hausdorff_Dice.exit_if_empty(rtstruct_folder_path)
-            Hausdorff_Dice.exit_if_empty(ct_folder_path)
+            HD_DSC.exit_if_empty(rtstruct_folder_path)
+            HD_DSC.exit_if_empty(ct_folder_path)
             
             # Extracting rtstruct file path.
-            rtstruct_file_path = Hausdorff_Dice.extract_rtstruct_file_path(rtstruct_folder_path)
+            rtstruct_file_path = HD_DSC.extract_rtstruct_file_path(rtstruct_folder_path)
                 
             # Extraction of patient ID and frame of reference UID.
-            patient_id = Hausdorff_Dice.patient_info(rtstruct_file_path,
-                                                     "PatientID",
-                                                     )
-            frame_of_reference_uid = Hausdorff_Dice.patient_info(rtstruct_file_path,
-                                                                 "FrameOfReferenceUID",
-                                                                 )
+            patient_id = HD_DSC.patient_info(rtstruct_file_path,
+                                             "PatientID",
+                                             )
+            frame_of_reference_uid = HD_DSC.patient_info(rtstruct_file_path,
+                                                         "FrameOfReferenceUID",
+                                                         )
             
             print(f"Starting patient {patient_id} analysis")
             
             # If the current frame of reference is already in the excel file
             # we can move to the next one.
             try:
-                frame_uid_in_old_data = Hausdorff_Dice.check_study(old_data,
-                                                                   frame_of_reference_uid,
-                                                                   patient_id,
-                                                                   )
+                frame_uid_in_old_data = HD_DSC.check_study(old_data,
+                                                           frame_of_reference_uid,
+                                                           patient_id,
+                                                           )
                 if frame_uid_in_old_data:
                     # Moving patient folder to a different location if the
                     # destination folder does not exist it will be
                     # automatically created.
-                    Hausdorff_Dice.move_patient_folder(new_folder_path,
-                                                       patient_folder_path,
-                                                       patient_folder,
-                                                       )
+                    HD_DSC.move_patient_folder(new_folder_path,
+                                               patient_folder_path,
+                                               patient_folder,
+                                               )
                     continue
             except KeyError:
                 pass
                     
             # Creating the list of all segments of current patient.
-            all_segments = Hausdorff_Dice.extract_all_segments(ct_folder_path,
-                                                               rtstruct_file_path,
-                                                               )
+            all_segments = HD_DSC.extract_all_segments(ct_folder_path,
+                                                       rtstruct_file_path,
+                                                       )
             
             # Creating manual segments list.
             print("Creating the list of manual segments")
-            unknown_segments = Hausdorff_Dice.find_unknown_segments(all_segments,
-                                                                    config,
-                                                                    )
-            Hausdorff_Dice.user_selection(unknown_segments,
-                                          config,
-                                          )
-            manual_segments = Hausdorff_Dice.extract_manual_segments(all_segments,
-                                                                     config,
-                                                                     )
+            unknown_segments = HD_DSC.find_unknown_segments(all_segments,
+                                                            config,
+                                                            )
+            HD_DSC.user_selection(unknown_segments,
+                                  config,
+                                  )
+            manual_segments = HD_DSC.extract_manual_segments(all_segments,
+                                                             config,
+                                                             )
             
-            # Computing HD, DSC and SDSC for every segment in manual and MBS lists.
-            final_data = Hausdorff_Dice.extract_hausdorff_dice(manual_segments,
-                                                               config,
-                                                               ct_folder_path,
-                                                               rtstruct_file_path,
-                                                               final_data,
-                                                               )
+            # Computing HD, DSC and SDSC for every segment in manual and MBS
+            # lists.
+            final_data = HD_DSC.extract_HD_DSC(manual_segments,
+                                               config,
+                                               ct_folder_path,
+                                               rtstruct_file_path,
+                                               final_data,
+                                               )
             
             # Moving patient folder to a different location, if the destination
             # folder does not exist it will be automatically created.
-            Hausdorff_Dice.move_patient_folder(new_folder_path,
-                                               patient_folder_path,
-                                               patient_folder,
-                                               )
+            HD_DSC.move_patient_folder(new_folder_path,
+                                       patient_folder_path,
+                                       patient_folder,
+                                       )
 
         # Creating the dataframe
         new_data = pd.DataFrame(final_data,
@@ -217,9 +218,9 @@ def main(argv):
                                 )
         
         # Concatenating old and new dataframes.
-        new_data = Hausdorff_Dice.concatenate_data(old_data,
-                                                   new_data,
-                                                   )
+        new_data = HD_DSC.concatenate_data(old_data,
+                                           new_data,
+                                           )
         
         # Saving dataframe to excel.
         print("Saving data")
@@ -229,9 +230,9 @@ def main(argv):
                           )
         
         # Saving configuration data.
-        Hausdorff_Dice.save_config_data(config,
-                                        new_config_path,
-                                        )
+        HD_DSC.save_config_data(config,
+                                new_config_path,
+                                )
         
         print("Execution successfully ended")
     
@@ -246,75 +247,76 @@ def main(argv):
                                                )
             
             # Patient folder can not be empty.
-            Hausdorff_Dice.exit_if_empty(patient_folder_path)
+            HD_DSC.exit_if_empty(patient_folder_path)
             
             # RTSTRUCT and CT series should be in different folders.
             # Creating RTSTRUCT folder if it is not already present, otherwise
             # going on with the execution.
-            rtstruct_folder_path = Hausdorff_Dice.create_folder(patient_folder_path,
-                                                                "RTSTRUCT",
-                                                                )
+            rtstruct_folder_path = HD_DSC.create_folder(patient_folder_path,
+                                                        "RTSTRUCT",
+                                                        )
             
             # Creating CT folder if it is not already present, otherwise
             # going on with the execution.
-            ct_folder_path = Hausdorff_Dice.create_folder(patient_folder_path,
-                                                          "CT",
-                                                          )
+            ct_folder_path = HD_DSC.create_folder(patient_folder_path,
+                                                  "CT",
+                                                  )
             
             # Filling CT and RTSTRUCT folders if both empty
-            Hausdorff_Dice.fill_ct_rtstruct_folders(patient_folder_path,
-                                                    ct_folder_path,
-                                                    rtstruct_folder_path,
-                                                    )
+            HD_DSC.fill_ct_rtstruct_folders(patient_folder_path,
+                                            ct_folder_path,
+                                            rtstruct_folder_path,
+                                            )
             
             # If RTSTRUCT or CT folders are still empty there are no data.
-            Hausdorff_Dice.exit_if_empty(rtstruct_folder_path)
-            Hausdorff_Dice.exit_if_empty(ct_folder_path)
+            HD_DSC.exit_if_empty(rtstruct_folder_path)
+            HD_DSC.exit_if_empty(ct_folder_path)
             
             # Extracting rtstruct file path.
-            rtstruct_file_path = Hausdorff_Dice.extract_rtstruct_file_path(rtstruct_folder_path)
+            rtstruct_file_path = HD_DSC.extract_rtstruct_file_path(rtstruct_folder_path)
                 
             # Extraction of patient ID and frame of reference UID.
-            patient_id = Hausdorff_Dice.patient_info(rtstruct_file_path,
-                                                     "PatientID",
-                                                     )
-            frame_of_reference_uid = Hausdorff_Dice.patient_info(rtstruct_file_path,
-                                                                 "FrameOfReferenceUID",
-                                                                 )
+            patient_id = HD_DSC.patient_info(rtstruct_file_path,
+                                             "PatientID",
+                                             )
+            frame_of_reference_uid = HD_DSC.patient_info(rtstruct_file_path,
+                                                         "FrameOfReferenceUID",
+                                                         )
             
             print(f"Starting patient {patient_id} analysis")
         
             # Creating the list of all segments of current patient.
-            all_segments = Hausdorff_Dice.extract_all_segments(ct_folder_path,
-                                                               rtstruct_file_path,
-                                                               )
+            all_segments = HD_DSC.extract_all_segments(ct_folder_path,
+                                                       rtstruct_file_path,
+                                                       )
             
             # Creating manual segments list.
             print("Creating the list of manual segments")
-            unknown_segments = Hausdorff_Dice.find_unknown_segments(all_segments,
-                                                                    config,
-                                                                    )
-            Hausdorff_Dice.user_selection(unknown_segments,
-                                          config,
-                                          )
-            manual_segments = Hausdorff_Dice.extract_manual_segments(all_segments,
-                                                                     config,
-                                                                     )
+            unknown_segments = HD_DSC.find_unknown_segments(all_segments,
+                                                            config,
+                                                            )
+            HD_DSC.user_selection(unknown_segments,
+                                  config,
+                                  )
+            manual_segments = HD_DSC.extract_manual_segments(all_segments,
+                                                             config,
+                                                             )
             
-            # Computing HD, DSC and SDSC for every segment in manual and MBS lists.
-            final_data = Hausdorff_Dice.extract_hausdorff_dice(manual_segments,
-                                                               config,
-                                                               ct_folder_path,
-                                                               rtstruct_file_path,
-                                                               final_data,
-                                                               )
+            # Computing HD, DSC and SDSC for every segment in manual and MBS
+            # lists.
+            final_data = HD_DSC.extract_HD_DSC(manual_segments,
+                                               config,
+                                               ct_folder_path,
+                                               rtstruct_file_path,
+                                               final_data,
+                                               )
             
             # Moving patient folder to a different location, if the destination
             # folder does not exist it will be automatically created.
-            Hausdorff_Dice.move_patient_folder(new_folder_path,
-                                               patient_folder_path,
-                                               patient_folder,
-                                               )
+            HD_DSC.move_patient_folder(new_folder_path,
+                                       patient_folder_path,
+                                       patient_folder,
+                                       )
     
         # Creating the dataframe
         new_data = pd.DataFrame(final_data,
@@ -337,9 +339,9 @@ def main(argv):
                           )
      
         # Saving configuration data.
-        Hausdorff_Dice.save_config_data(config,
-                                        new_config_path,
-                                        )
+        HD_DSC.save_config_data(config,
+                                new_config_path,
+                                )
         
         print("Execution successfully ended")
     

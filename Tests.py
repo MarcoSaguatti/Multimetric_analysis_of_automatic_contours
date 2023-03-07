@@ -14,7 +14,7 @@ import pydicom
 from rt_utils import RTStructBuilder
 import surface_distance as sd
 
-import Hausdorff_Dice
+import HD_DSC
 
 
 def test_is_empty_with_empty_folder():
@@ -30,7 +30,7 @@ def test_is_empty_with_empty_folder():
     temp_empty_folder = tempfile.TemporaryDirectory()
     
     expected = True
-    observed = Hausdorff_Dice.is_empty(temp_empty_folder.name)
+    observed = HD_DSC.is_empty(temp_empty_folder.name)
     assert expected == observed
     
     # Remove the folder
@@ -49,7 +49,7 @@ def test_is_empty_with_non_empty_folder():
     non_empty_folder = r".\tests\test_patient"
     
     expected = False
-    observed = Hausdorff_Dice.is_empty(non_empty_folder)
+    observed = HD_DSC.is_empty(non_empty_folder)
     assert expected == observed
     
 def test_patient_info_with_patient_id():
@@ -65,9 +65,9 @@ def test_patient_info_with_patient_id():
     rtstruct_file_path = r".\tests\test_patient\RTSTRUCT\RS_002.dcm"
     
     expected = "Pelvic-Ref-002"
-    observed = Hausdorff_Dice.patient_info(rtstruct_file_path,
-                                           "PatientID",
-                                           )
+    observed = HD_DSC.patient_info(rtstruct_file_path,
+                                   "PatientID",
+                                   )
     assert expected == observed
     
 def test_patient_info_with_frame_of_reference_uid():
@@ -84,9 +84,9 @@ def test_patient_info_with_frame_of_reference_uid():
     
     UID = "1.3.6.1.4.1.14519.5.2.1.7085.2036.235949374640197733305184528698"
     expected = UID
-    observed = Hausdorff_Dice.patient_info(rtstruct_file_path,
-                                           "FrameOfReferenceUID",
-                                           )
+    observed = HD_DSC.patient_info(rtstruct_file_path,
+                                   "FrameOfReferenceUID",
+                                   )
     assert expected == observed
     
 def test_read_ct_slices_with_frame_of_reference_uid():
@@ -106,7 +106,7 @@ def test_read_ct_slices_with_frame_of_reference_uid():
     expected = [UID for i in range(163)]
     
     # Observed behavior
-    slices = Hausdorff_Dice.read_ct_slices(ct_folder_path)
+    slices = HD_DSC.read_ct_slices(ct_folder_path)
     observed = [slices[i].FrameOfReferenceUID for i in range(len(slices))]
     
     assert expected == observed
@@ -125,7 +125,7 @@ def test_spacing_and_tolerance():
     
     expected_spacing = [1.0, 1.0, 3.0]
     expected_tolerance = 3.0
-    spacing, tolerance = Hausdorff_Dice.spacing_and_tolerance(ct_folder_path)
+    spacing, tolerance = HD_DSC.spacing_and_tolerance(ct_folder_path)
     
     assert math.isclose(expected_spacing[0], spacing[0])
     assert math.isclose(expected_spacing[1], spacing[1])
@@ -164,9 +164,9 @@ def test_extract_all_segment_with_patient_ref002():
                 "Femur_Head_L_DL",
                 "Femur_Head_R_DL",
                 ]
-    observed = Hausdorff_Dice.extract_all_segments(ct_folder_path,
-                                                   rtstruct_file_path,
-                                                   )
+    observed = HD_DSC.extract_all_segments(ct_folder_path,
+                                           rtstruct_file_path,
+                                           )
     assert expected == observed
     
 def test_find_unknown_segments_with_example_list():
@@ -195,9 +195,9 @@ def test_find_unknown_segments_with_example_list():
     expected = ["DestroFemore",
                 "SinistroFemore",
                 ]
-    observed = Hausdorff_Dice.find_unknown_segments(all_segments,
-                                                    config,
-                                                    )
+    observed = HD_DSC.find_unknown_segments(all_segments,
+                                            config,
+                                            )
     
     assert expected == observed
     
@@ -232,9 +232,9 @@ def test_extract_manual_segments_with_example_list():
                 "FemoreSinistro",
                 "FemoreDestro",
                 ]
-    observed = Hausdorff_Dice.extract_manual_segments(all_segments,
-                                                      config,
-                                                      )
+    observed = HD_DSC.extract_manual_segments(all_segments,
+                                              config,
+                                              )
     
     assert expected == observed
     
@@ -254,22 +254,22 @@ def test_compute_metrics():
     rtstruct_file_path = r".\tests\test_patient\RTSTRUCT\RS_002.dcm"
     
     # Extracting reference segment and segment to compare labelmaps
-    ref_labelmap = Hausdorff_Dice.create_labelmap(ct_folder_path,
-                                                  rtstruct_file_path,
-                                                  "Vescica",
-                                                  )
-    comp_labelmap = Hausdorff_Dice.create_labelmap(ct_folder_path,
-                                                   rtstruct_file_path,
-                                                   "Bladder_MBS",
-                                                   )
+    ref_labelmap = HD_DSC.create_labelmap(ct_folder_path,
+                                          rtstruct_file_path,
+                                          "Vescica",
+                                          )
+    comp_labelmap = HD_DSC.create_labelmap(ct_folder_path,
+                                           rtstruct_file_path,
+                                           "Bladder_MBS",
+                                           )
     
     expected_surface_dice = 0.9049208597597801
     expected_dice = 0.8680934291194945
     expected_hausdorff = 4.242640687119285
-    sdsc, dsc, hd = Hausdorff_Dice.compute_metrics(ref_labelmap,
-                                                   comp_labelmap,
-                                                   ct_folder_path,
-                                                   )
+    sdsc, dsc, hd = HD_DSC.compute_metrics(ref_labelmap,
+                                           comp_labelmap,
+                                           ct_folder_path,
+                                           )
     
     assert math.isclose(expected_surface_dice,
                         sdsc,
@@ -295,7 +295,7 @@ def test_store_patients():
     input_folder_path = r".\tests"
     
     expected = ["test_patient"]
-    observed = Hausdorff_Dice.store_patients(input_folder_path)
+    observed = HD_DSC.store_patients(input_folder_path)
     
     assert expected == observed
     
@@ -312,9 +312,9 @@ def test_create_folder_with_existing_folder():
     parent_folder_path = r".\tests\test_patient"
     
     expected = r".\tests\test_patient\CT"
-    observed = Hausdorff_Dice.create_folder(parent_folder_path,
-                                               "CT",
-                                               )
+    observed = HD_DSC.create_folder(parent_folder_path,
+                                    "CT",
+                                    )
     
     assert expected == observed
     
@@ -331,9 +331,9 @@ def test_create_folder_with_non_existing_folder():
     temp_folder = tempfile.TemporaryDirectory()
     
     expected = temp_folder.name+"\RTSTRUCT"
-    observed = Hausdorff_Dice.create_folder(temp_folder.name,
-                                            "RTSTRUCT",
-                                            )
+    observed = HD_DSC.create_folder(temp_folder.name,
+                                    "RTSTRUCT",
+                                    )
     
     assert expected == observed
     
@@ -353,7 +353,7 @@ def test_check_new_folder_path():
     folder_path = r".\tests\test_patient"
     
     expected = r"./tests/test_patient"
-    observed = Hausdorff_Dice.check_new_folder_path(folder_path)
+    observed = HD_DSC.check_new_folder_path(folder_path)
     
     assert expected == observed
     
@@ -370,7 +370,7 @@ def test_check_new_folder_path_without_folder():
     folder_path = "."
     
     expected = False
-    observed = Hausdorff_Dice.check_new_folder_path(folder_path)
+    observed = HD_DSC.check_new_folder_path(folder_path)
     
     assert expected == observed
     
@@ -387,7 +387,7 @@ def test_read_config():
     config_path = r".\tests\test.json"
     
     expected = {"External names" : ["External"]}
-    observed = Hausdorff_Dice.read_config(config_path)
+    observed = HD_DSC.read_config(config_path)
     
     assert expected == observed
     
@@ -404,7 +404,7 @@ def test_extract_rtstruct_file_path():
     rtstruct_folder_path = r".\tests\test_patient\RTSTRUCT"
     
     expected = r".\tests\test_patient\RTSTRUCT\RS_002.dcm"
-    observed = Hausdorff_Dice.extract_rtstruct_file_path(rtstruct_folder_path)
+    observed = HD_DSC.extract_rtstruct_file_path(rtstruct_folder_path)
     
     assert expected == observed
     
@@ -428,7 +428,7 @@ def test_create_segments_matrices():
     
     # Loading configuration file
     config_path = r".\tests\config.json"
-    config = Hausdorff_Dice.read_config(config_path)
+    config = HD_DSC.read_config(config_path)
     
     expected_ref = [["Prostata",
                      "Retto",
@@ -468,20 +468,20 @@ def test_create_segments_matrices():
                       "Femur_Head_R_DL",
                       ],
                      ]
-    obs_ref, obs_comp = Hausdorff_Dice.create_segments_matrices(manual_seg,
-                                                                config,
-                                                                )
+    obs_ref, obs_comp = HD_DSC.create_segments_matrices(manual_seg,
+                                                        config,
+                                                        )
     
     assert expected_ref == obs_ref
     assert expected_comp == obs_comp
     
-def test_extract_hausdorff_dice():
+def test_extract_HD_DSC():
     """
     GIVEN: the list of manual segments, the configuration file, the path to
            the CT folder, the path to the RTSTRUCT file and the list
            final_data
         
-    WHEN: running the function extract_hausdorff_dice
+    WHEN: running the function extract_HD_DSC
         
     THEN: return the correct list of data
 
@@ -496,7 +496,7 @@ def test_extract_hausdorff_dice():
     
     # Loading configuration file
     config_path = r".\tests\config.json"
-    config = Hausdorff_Dice.read_config(config_path)
+    config = HD_DSC.read_config(config_path)
     
     # CT folder path
     ct = r".\tests\test_patient\CT"
@@ -510,12 +510,12 @@ def test_extract_hausdorff_dice():
     expected_2_3 = "Vescica"
     expected_5_6 = 9
     expected_13_2 = "MBS-DL"
-    observed = Hausdorff_Dice.extract_hausdorff_dice(manual_seg,
-                                                     config,
-                                                     ct,
-                                                     rs,
-                                                     final_data,
-                                                     )
+    observed = HD_DSC.extract_HD_DSC(manual_seg,
+                                     config,
+                                     ct,
+                                     rs,
+                                     final_data,
+                                     )
     
     assert expected_2_3 == observed[2][3]
     assert math.isclose(expected_5_6, observed[5][6])
@@ -538,7 +538,7 @@ def test_load_existing_dataframe():
                   "Frame of reference": [8],
                   }
     expected = pd.DataFrame(data=expected_d)
-    observed = Hausdorff_Dice.load_existing_dataframe(excel_path)
+    observed = HD_DSC.load_existing_dataframe(excel_path)
     
     assert expected.equals(observed)
     
@@ -556,7 +556,7 @@ def test_load_existing_dataframe_with_no_excel():
     excel_path = temp_folder.name+"non_existing_excel.xlsx"
     
     expected = pd.DataFrame()
-    observed = Hausdorff_Dice.load_existing_dataframe(excel_path)
+    observed = HD_DSC.load_existing_dataframe(excel_path)
     
     assert expected.equals(observed)
         
@@ -572,7 +572,7 @@ def test_concatenate_data():
     # Path to existing excel file
     excel_path = r".\tests\test_dataframe.xlsx"
     
-    old_data = Hausdorff_Dice.load_existing_dataframe(excel_path)
+    old_data = HD_DSC.load_existing_dataframe(excel_path)
     d = {"Patient ID": ["Pelvic-Ref-003"],
          "Alias name": ["Bladder"],
          "Frame of reference": [5],
@@ -584,9 +584,9 @@ def test_concatenate_data():
                   "Frame of reference": [8,5],
                   }
     expected = pd.DataFrame(data=expected_d)
-    observed = Hausdorff_Dice.concatenate_data(old_data,
-                                               new_data,
-                                               )
+    observed = HD_DSC.concatenate_data(old_data,
+                                       new_data,
+                                       )
     
     assert expected.equals(observed)
     
@@ -605,21 +605,21 @@ def test_check_study():
     # Path to existing excel file
     excel_path = r".\tests\test_dataframe.xlsx"
     
-    old_data = Hausdorff_Dice.load_existing_dataframe(excel_path)
+    old_data = HD_DSC.load_existing_dataframe(excel_path)
     correct_frame_of_reference = 8
     wrong_frame_of_reference = 55
     patient_id = "Pelvic-Ref-002"
     
     correct_expected = True
-    correct_observed = Hausdorff_Dice.check_study(old_data,
-                                                  correct_frame_of_reference,
-                                                  patient_id,
-                                                  )
+    correct_observed = HD_DSC.check_study(old_data,
+                                          correct_frame_of_reference,
+                                          patient_id,
+                                          )
     wrong_expected = False
-    wrong_observed = Hausdorff_Dice.check_study(old_data,
-                                                wrong_frame_of_reference,
-                                                patient_id,
-                                                )
+    wrong_observed = HD_DSC.check_study(old_data,
+                                        wrong_frame_of_reference,
+                                        patient_id,
+                                        )
     
     assert correct_expected == correct_observed
     assert wrong_expected == wrong_observed
@@ -637,7 +637,7 @@ def test_exit_if_empty():
     temp_empty_folder = tempfile.TemporaryDirectory()
     
     with pytest.raises(SystemExit):
-        Hausdorff_Dice.exit_if_empty(temp_empty_folder.name)
+        HD_DSC.exit_if_empty(temp_empty_folder.name)
         
 def test_exit_if_no_patients():
     """
@@ -655,7 +655,6 @@ def test_exit_if_no_patients():
     patient_folders = []
     
     with pytest.raises(SystemExit):
-        Hausdorff_Dice.exit_if_no_patients(temp_empty_folder.name,
-                                           patient_folders,
-                                           )
-    
+        HD_DSC.exit_if_no_patients(temp_empty_folder.name,
+                                   patient_folders,
+                                   )
