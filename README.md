@@ -35,7 +35,7 @@ The main part of the program is stored in the [Main.py](https://github.com/Marco
 
 All the library functions of the program are stored in the [Hausdorff_Dice.py](https://github.com/MarcoSaguatti/Hausdorff_Dice_Computation/blob/master/Hausdorff_Dice.py) script.
 
-[patients](https://github.com/MarcoSaguatti/Hausdorff_Dice_Computation/tree/master/patients) folder contains three patients where the organs at risk were contoured manually and using a deep learning and a model based segmentation algorithms.
+[patients](https://github.com/MarcoSaguatti/Hausdorff_Dice_Computation/tree/master/patients) folder contains a CT scan downloded from the cancer imaging archive(https://www.cancerimagingarchive.net/) where the organs at risk were contoured manually and using a deep learning and a model based segmentation algorithms.
 
 [tests](https://github.com/MarcoSaguatti/Hausdorff_Dice_Computation/tree/master/tests) folder contains the data required to run [Tests.py](https://github.com/MarcoSaguatti/Hausdorff_Dice_Computation/blob/master/Tests.py).
 
