@@ -35,8 +35,6 @@ The main part of the program is stored in the [Main.py](https://github.com/Marco
 
 All the library functions of the program are stored in the [Hausdorff_Dice.py](https://github.com/MarcoSaguatti/Hausdorff_Dice_Computation/blob/master/Hausdorff_Dice.py) script.
 
-[tests](https://github.com/MarcoSaguatti/Hausdorff_Dice_Computation/tree/master/tests) folder contains the data required to run [Tests.py](https://github.com/MarcoSaguatti/Hausdorff_Dice_Computation/blob/master/Tests.py).
-
 [Tests.py](https://github.com/MarcoSaguatti/Hausdorff_Dice_Computation/blob/master/Tests.py) is the python script used for testing [Hausdorff_Dice.py](https://github.com/MarcoSaguatti/Hausdorff_Dice_Computation/blob/master/Hausdorff_Dice.py).
 
 [config.json](https://github.com/MarcoSaguatti/Hausdorff_Dice_Computation/blob/master/config.json) is a file containing the lists of manual segments names. If, running the script, new names for the five organs at risk are met they will be saved in this file.
@@ -56,10 +54,3 @@ The first four arguments are required:
 The last two argument are optional:
 * *--new-folder path\to\the\folder\where\patients\will\be\moved*: Is the path where patient folders will be moved after execution. If not specified patient folders will remain in *path\to\input\folder*;
 * *--join-data True*: If *True*, the new data extracted will be appended to the ones already present in the excel file. if *False* (default), the data already in the excel file will be overwritten by the new ones.
-
-## Testing
-In order to run [Tests.py](https://github.com/MarcoSaguatti/Hausdorff_Dice_Computation/blob/master/Tests.py) both [Tests.py](https://github.com/MarcoSaguatti/Hausdorff_Dice_Computation/blob/master/Tests.py) file and [tests](https://github.com/MarcoSaguatti/Hausdorff_Dice_Computation/tree/master/tests) folder must be downloaded.
-
-After downloading [pytest](https://pypi.org/project/pytest/), all the tests can be run from command line from the directory containing tests folder by typing:
-
-python -m pytest -v path/to/Tests.py
